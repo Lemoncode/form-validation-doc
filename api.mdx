@@ -5,3 +5,61 @@ name: api
 # api
 
 In this page we will defined the form-validation api.
+
+## ValidationResult
+
+```typescript
+export class ValidationResult {
+  key?: string;
+  type: string;
+  succeeded: boolean;
+  errorMessage: string;
+}
+```
+
+## FieldValidation
+
+```typescript
+interface FieldValidationFunction {
+  (value: any, vm: any, customParams: any): ValidationResultSyncAsync;
+}
+
+interface FieldValidationFull {
+  validator: FieldValidationFunction;
+  customArgs?: object;
+  errorMessage: string | string[];
+}
+
+export type FieldValidation = FieldValidationFunction | FielValidationFull;
+```
+
+## RecordValidationResult
+
+```typescript
+export interface RecordValidationResult {
+  succeeded: boolean;
+  fieldErrors: { [key: string]: ValidationResult };
+  formGlobalErrors: Array<ValidationResult>;
+}
+```
+
+## ValidationSchema
+
+```typescript
+export interface ValidationSchema {
+  global?: RecordValidationFunction[];
+  fields?: { [key: string]: FieldValidation[] };
+}
+```
+
+## validateField
+
+```typescript
+validateField(fieldId : string, value : any, viewModel? : any) : Promise<ValidationResult>
+```
+
+## validateRecord
+
+```typescript
+validateRecord(record : any) : Promise<FormValidationResult>
+```
