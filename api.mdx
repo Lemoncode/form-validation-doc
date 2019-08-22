@@ -33,10 +33,10 @@ interface FieldValidationFull {
 export type FieldValidation = FieldValidationFunction | FielValidationFull;
 ```
 
-## RecordValidationResult
+## FormValidationResult
 
 ```typescript
-export interface RecordValidationResult {
+export interface FormValidationResult {
   succeeded: boolean;
   fieldErrors: { [key: string]: ValidationResult };
   formGlobalErrors: Array<ValidationResult>;
@@ -58,8 +58,8 @@ export interface ValidationSchema {
 validateField(fieldId : string, value : any, viewModel? : any) : Promise<ValidationResult>
 ```
 
-## validateRecord
+## validateForm
 
 ```typescript
-validateRecord(record : any) : Promise<FormValidationResult>
+validateForm(record : any) : Promise<FormValidationResult>
 ```
