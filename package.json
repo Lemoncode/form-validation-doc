@@ -1,28 +1,15 @@
 {
-  "name": "form-validation-doc",
-  "version": "0.0.1",
-  "description": "@lemoncode/form-validation library documentation",
-  "main": "index.js",
+  "name": "mydocz",
   "scripts": {
     "docz:dev": "docz dev",
     "docz:build": "docz build"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Lemoncode/form-validation-doc.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Lemoncode/form-validation-doc/issues"
-  },
-  "homepage": "https://github.com/Lemoncode/form-validation-doc#readme",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
   "devDependencies": {
-    "docz": "^2.0.0-rc.1",
+    "docz": "^2.0.0-rc.10",
     "react": "^16.9.0",
     "react-dom": "^16.9.0"
-  },
-  "dependencies": {
-    "scheduler": "^0.15.0"
   }
 }
