@@ -1,41 +1,19 @@
 export default {
   menu: [
     {
-      name: "General",
-      docs: [
-        "home",
-        "getting-started",
-        "validating-schema",
-        "validating-field",
-        "validating-record",
-        "validating-form"
-      ]
+      name: "1. General"
     },
     {
-      name: "Validators",
-      menu: [
-        "builtin-validators",
-        "custom-validators-async",
-        "custom-validators-sync",
-        "third-party-validators"
-      ]
+      name: "2. Validators"
     },
     {
-      name: "Messages",
-      menu: ["error-message", "internalization"]
+      name: "3. Messages"
     },
     {
-      name: "React Final form",
-      menu: [
-        "react-final-form",
-        "sync-validations",
-        "async-validations",
-        "record-validations"
-      ]
+      name: "4. React Final form"
     },
     {
-      name: "api",
-      menu: ["api", "validation-schema", "validation-form", "validators"]
+      name: "5. api"
     }
   ]
 };
