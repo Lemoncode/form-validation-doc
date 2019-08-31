@@ -14,20 +14,37 @@ export default {
     {
       name: "2. Validators",
       menu: [
-        {name: 'Built in validators', order: 1},
-        {name: 'Custom validators synchronous', order: 2},
-        {name: 'Custom validators asynchronous', order: 3},
-        {name: 'Third Party validators', order: 4},
+        { name: "Built in validators", order: 1 },
+        { name: "Custom validators synchronous", order: 2 },
+        { name: "Custom validators asynchronous", order: 3 },
+        { name: "Third Party validators", order: 4 }
       ]
     },
     {
-      name: "3. Messages"
+      name: "3. Messages",
+      menu: [
+        { name: "messages", order: 1 },
+        { name: "Internazionalization", order: 2 }
+      ]
     },
     {
-      name: "4. React Final form"
+      name: "4. React Final form",
+      menu: [
+        { name: "React Final Form", order: 1 },
+        { name: "Synchrounous Validations", order: 2 },
+        { name: "Async Validations", order: 3 },
+        { name: "Record Validations", order: 4 },
+        { name: "Form Validations", order: 5 }
+      ]
     },
     {
-      name: "5. api"
+      name: "5. api",
+      menu: [
+        { name: "api", order: 1 },
+        { name: "validation-schema", order: 2 },
+        { name: "validation-form", order: 3 },
+        { name: "validators", order: 4 }
+      ]
     }
   ]
 };
