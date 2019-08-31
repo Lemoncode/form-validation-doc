@@ -12,7 +12,13 @@ export default {
       ]
     },
     {
-      name: "2. Validators"
+      name: "2. Validators",
+      menu: [
+        {name: 'Built in validators', order: 1},
+        {name: 'Custom validators synchronous', order: 2},
+        {name: 'Custom validators asynchronous', order: 3},
+        {name: 'Third Party validators', order: 4},
+      ]
     },
     {
       name: "3. Messages"
