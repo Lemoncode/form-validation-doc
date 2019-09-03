@@ -7,60 +7,90 @@ menu: 5. api
 
 In this page we will defined the form-validation api.
 
-## ValidationResult
+## Validaton Result structures
+
+### ValidationResult
+
+A field or record validation function will return a
+_ValidationResult_
+
+Properties
+
+- **type**: Validator applied (e.g. required, email, min-lenght...).
+- **succeeded**: Wether if the validation succeeded (true) or failed (false).
+- **message**: Error message. Empty if all the validations evaluated succeeded.
 
 ```typescript
 export class ValidationResult {
-  key?: string;
   type: string;
   succeeded: boolean;
-  errorMessage: string;
+  message: string;
 }
 ```
 
-## FieldValidation
+### RecordValidationResults
+
+Whenever we validate all form record entries (firedRecordValidations),
+a \_RecordValidationResult is returned.
+
+- **succeeded**: Wether if the record validations succeeded (true) or failed (false).
+- **recordErrors**: collection of validation results.
 
 ```typescript
-interface FieldValidationFunction {
-  (value: any, vm: any, customParams: any): ValidationResultSyncAsync;
+export interface RecordValidationResult {
+  succeeded: boolean;
+  recordErrors: { [recordId: string]: ValidationResult };
 }
-
-interface FieldValidationFull {
-  validator: FieldValidationFunction;
-  customArgs?: object;
-  errorMessage: string | string[];
-}
-
-export type FieldValidation = FieldValidationFunction | FielValidationFull;
 ```
 
-## FormValidationResult
+### FormValidationResult
+
+Whenever we validate a form _validateFullForm_ (trigger
+all field and record validations associated to that form) it
+will return a _FormValidationResult_.
 
 ```typescript
 export interface FormValidationResult {
   succeeded: boolean;
-  fieldErrors: { [key: string]: ValidationResult };
-  formGlobalErrors: Array<ValidationResult>;
+  fieldErrors: { [fieldId: string]: ValidationResult };
+  recordErrors: { [recordId: string]: ValidationResult };
 }
 ```
 
-## ValidationSchema
+Properties:
 
-```typescript
-export interface ValidationSchema {
-  global?: RecordValidationFunction[];
-  fields?: { [key: string]: FieldValidation[] };
-}
+- **succeeded**: Wether if all validations succeeded (true) or any of them failed (false).
+- **fieldErrors**: Collection of field / ValidationResults.
+- **recordErrors**: Collections of record / ValidatinResults.
+
+## Validation Schema definition
+
+### FieldValidationArgs
+
+### FieldValidation
+
+Field validator functions must comply with a given signature, in this case we accept
+two signatures, sync and async.
+
+Sync version
+
+Arguments
+
+- **fieldValidatorArgs**: We pass here information like id of the field
+  to validate, actual value, values and customArgs. See **internal link**
+  for more information.
+
+Return Value
+
+- **ValidationResult**: Wether if field validations applied to the selected field
+  succeeded or not (in casenot additional information to be provided like id of the validator that failed plus error message).
+
+```javascript
+(fieldValidatorArgs: FieldValidatorArgs) => ValidationResult;
 ```
 
-## validateField
+Async version
 
-```typescript
-validateField(fieldId : string, value : any, viewModel? : any) : Promise<ValidationResult>
-```
-
-## validateForm
-
-```typescript
-validateForm(record : any) : Promise<FormValidationResult>
+```javascript
+(fieldValidatorArgs: FieldValidatorArgs) => Promise<ValidationResult>;
 ```
