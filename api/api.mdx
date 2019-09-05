@@ -270,6 +270,8 @@ const loginFormValidationSchema = {
 };
 ```
 
+TODO: Add codepen for both cases (or codesandbox)
+
 You can define as well:
 
 - Asynchronous validations, example.
@@ -277,11 +279,35 @@ You can define as well:
 
 **Record Field validations**
 
-Sometimes you need to create global validation that are not tied up to a specific case, or
+Sometimes you need to create global validation that is not tied up to a specific field, or
 you want it to be fired once the user has fullfilled all the data in the validation form, a
-use case for this type of validation could be:
+use case for this type of validation could be: shopping cart checkout, offer free shipping
+if total amount (including discount) is greater than 30 USD
 
-Shopping cart checkout form, free shipping is only possible if the total amount (including discount)
-is greater than 30 USD.
+```javascript
+import { required, email } from "form-validation";
+const checkoutForm = {
+   subtotal,
+   discount,
+   total,
+   freeshipping,
+  }
+};
+```
+
+Let's define our record validator rule:
+
+```javascript
+const freeShippingAllowed = values => ({});
+```
+
+```javascript
+const checkoutFormValidationSchema = {
+  record: {
+    user: [required, email],
+    password: [required]
+  }
+};
+```
 
 (Amount, discount, free shpping,total)
