@@ -193,7 +193,7 @@ This allow us to define all validation associated to a given form in a declarati
 Properties:
 
 - **field**: optional entry, here we can define all field validations associated to a given form
-  (see [FieldValidationSchema](###field-validation-schema) for more info.
+  (see [FieldValidationSchema](###field-validation-schema) for more info link.
 
 - **record**: optional entry, here we can define all record validations associated to a given form
   (see [RecordValidationSchema)[###record-validation-schema])
@@ -206,6 +206,8 @@ export interface ValidationSchema {
 ```
 
 #### Examples:
+
+**Schema Field validations**
 
 Let's say we have a login form, and the following record:
 
@@ -244,22 +246,42 @@ const loginFormValidationSchema = {
 };
 ```
 
-Let's add one more step of complexity in this case we want to ensure that 
+Let's add one more step of complexity in this case we want to ensure that
 the password field name is at least 5 characters length, we can use the
-min-length validator, but we have to feed and additional parameter to 
+min-length validator, but we have to feed and additional parameter to
 indicate the minumum length, in this case the validation schema accepts
 both function and structure based definition to include validation we will
 use the second option.
 
 ```javascript
-import { required, email } from "form-validation";
+import { required, email, minLength } from "form-validation";
 
 const loginFormValidationSchema = {
   field: {
     user: [required, email],
-    password: [required]
+    password: [
+      required,
+      {
+        validator: minLength,
+        customArgs: { length: 3 }
+      }
+    ]
   }
 };
 ```
 
+You can define as well:
 
+- Asynchronous validations, example.
+- FieldValidators that read from other record field values, example.
+
+**Record Field validations**
+
+Sometimes you need to create global validation that are not tied up to a specific case, or
+you want it to be fired once the user has fullfilled all the data in the validation form, a
+use case for this type of validation could be:
+
+Shopping cart checkout form, free shipping is only possible if the total amount (including discount)
+is greater than 30 USD.
+
+(Amount, discount, free shpping,total)
