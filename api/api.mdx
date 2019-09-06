@@ -3,6 +3,13 @@ name: api
 menu: 5. api
 ---
 
+---
+
+name: api
+menu: 5. api
+
+---
+
 # api
 
 In this page we will defined the form-validation api.
@@ -368,7 +375,7 @@ Arguments:
 
 Returns:
 
-- **Promise<ValidationResult>**: Result of firing all the field validation results.
+- **Promise<ValidationResult\>**: Result of firing all the field validation results.
 
 ```typescript
 public validateField(fieldId: string, value: any, values?: any): Promise<ValidationResult>
@@ -408,7 +415,7 @@ Fires all fields and record validations in one go, how does it work:
 - Once the engine it's done with field and form validations it returns the whole result, grouped in two areas:
   - An Object containing two keys:
     - 'fieldErrors': contains an object fieldId/FieldValidationResult.
-    - 'recordErrors': contains an boejcti with validationType/FieldValidationResult.
+    - 'recordErrors': contains an object with validationType/FieldValidationResult.
 
 ```typescript
 validateForm(values: any): Promise<FormValidationResult>
@@ -420,4 +427,211 @@ Arguments:
 
 Returns:
 
-- **Promise<FormValidationResult>**: Result of firing all the record and form validation results.
+- **Promise<FormValidationResult\>**: Result of firing all the record and form validation results.
+
+## Validators
+
+### Field Validators
+
+#### Built in
+
+##### required
+
+Succeeds if a field value is informed, fails if the field is not informed (null, undefined, or empty string).
+
+Accepts a custom paramater to instruct the validator to trim the incoming values
+(if true a value like ' ' would be treated as an empty string).
+
+```typescript
+```
+
+Sample usage:
+
+Simple
+
+```typescript
+```
+
+customArgs
+
+```typescript
+```
+
+##### email
+
+Succeeds if a field value is a well formed email, fails if not.
+
+> If the string is empty it won't fail (to cover this case use the _required_ validator).
+
+##### pattern
+
+Succeeds if a field matches with a define regex, fails if not.
+
+> If the string is empty it won't fail (to cover this case use the _required_ validator).
+
+Is mandatory to pass the regEx expression to be evaluated.
+
+```typescript
+```
+
+Sample usage:
+
+```typescript
+```
+
+##### min-length
+
+Succeeds if a field matches with a define regex, fails if not.
+
+> If the string is empty it won't fail (to cover this case use the _required_ validator).
+
+Is mandatory to pass the regEx expression to be evaluated.
+
+```typescript
+```
+
+Sample usage:
+
+```typescript
+```
+
+##### max-length
+
+Succeeds if a field matches with a define regex, fails if not.
+
+> If the string is empty it won't fail (to cover this case use the _required_ validator).
+
+Is mandatory to pass the regEx expression to be evaluated.
+
+```typescript
+```
+
+Sample usage:
+
+```typescript
+```
+
+#### Third party validators:
+
+Prior to create a custom validator, check out if there is already one implemented that covers
+the functionallity you need.
+
+You can find a list of validators in this link.
+
+#### Custom validators
+
+##### Arguments
+
+Arguments that can be passed to validatiors:
+
+Properties:
+
+- value: current field value.
+- values: form values (record).
+- customArgs: optional, here we can pass any additional configuration, needed
+  to setup the validator (e.g. in a max-length validation the length value, or in a regEx
+  validator the regEx pattern).
+- message: optional, in this parameter we can override the default message(s) that the validator
+  generates.
+
+```typescript
+export interface FieldValidatorArgs {
+  value: any;
+  values?: any;
+  customArgs?: any;
+  message?: string | string[];
+}
+```
+
+##### Validator Synchronous
+
+Validator, synchronous option:
+
+Arguments:
+
+- **fieldValidatorArgs**: current value, values, customArguments, see FieldValidationArgs definition
+  for more information.
+
+Return value:
+
+- **ValidationResult**: Whether the validation succeeded or not, plus validation type and
+  error information. See [ValidationResult](###Validation Result) for more info.
+
+```typescript
+export type FieldValidationFunctionSync = (
+  fieldValidatorArgs: FieldValidatorArgs
+) => ValidationResult;
+```
+
+##### Validator Asynchronous
+
+Validator asynchronous option:
+
+Arguments:
+
+- **fieldValidatorArgs**: current value, values, customArguments, see FieldValidationArgs definition
+  for more information.
+
+Return value:
+
+- **Promise<ValidationResult\>**: Promise, returns whether the validation succeeded or not, plus validation type and
+  error information. See [ValidationResult](###Validation Result) for more info.
+
+```typescript
+export type FieldValidationFunctionAsync = (
+  fieldValidatorArgs: FieldValidatorArgs
+) => Promise<ValidationResult>;
+```
+
+### Record Validators
+
+##### Arguments
+
+Arguments that can be passed to validatiors:
+
+Properties:
+
+- values: form values (record).
+- message: optional, in this parameter we can override the default message(s) that the validator
+  generates.
+
+```typescript
+export interface RecordValidatorArgs {
+  values: any;
+  message?: string | string[];
+}
+```
+
+##### Validator Synchronous
+
+Arguments:
+
+- **recordValidatorArgs**: form values, messages to override default error message(s), see RecordValidationArgs for more information.
+
+Return value:
+
+- **ValidationResult**: Whether the validation succeeded or not, plus validation type and
+  error information. See [ValidationResult](###Validation Result) for more info.
+
+```typescript
+export type RecordValidationFunctionSync = (
+  recordValidatorArgs: RecordValidatorArgs
+) => ValidationResult;
+```
+
+##### Validator Asynchronous
+
+Arguments:
+
+- **recordValidatorArgs**: form values, messages to override default error message(s), see RecordValidationArgs for more information.
+
+Return value:
+
+- **Promise<ValidationResult/>**: Promise based,whether the validation succeeded or not, plus validation type and
+  error information. See [ValidationResult](###Validation Result) for more info.
+
+```typescript
+export type RecordValidationFunctionAsync = (
+  recordValidatorArgs: RecordValidatorArgs
+) => Promise<ValidationResult>;
+```
