@@ -443,6 +443,11 @@ Accepts a custom paramater to instruct the validator to trim the incoming values
 (if true a value like ' ' would be treated as an empty string).
 
 ```typescript
+export interface RequiredArgs {
+  trim: boolean;
+}
+
+export const validator: FieldValidationFunctionSync = (fieldValidatorArgs) : ValidationResult
 ```
 
 Sample usage:
@@ -463,6 +468,10 @@ Succeeds if a field value is a well formed email, fails if not.
 
 > If the string is empty it won't fail (to cover this case use the _required_ validator).
 
+```typescript
+export const validator: FieldValidationFunctionSync = fieldValidatorArgs => {
+```
+
 ##### pattern
 
 Succeeds if a field matches with a define regex, fails if not.
@@ -472,6 +481,12 @@ Succeeds if a field matches with a define regex, fails if not.
 Is mandatory to pass the regEx expression to be evaluated.
 
 ```typescript
+export interface PatternArgs {
+  pattern: string | RegExp;
+}
+
+export const validator: FieldValidationFunctionSync = fieldValidatorArgs =>
+  ValidationResult;
 ```
 
 Sample usage:
@@ -481,13 +496,18 @@ Sample usage:
 
 ##### min-length
 
-Succeeds if a field matches with a define regex, fails if not.
+Succeeds if a field length is greater than the one informed in the customArgs.length
 
 > If the string is empty it won't fail (to cover this case use the _required_ validator).
 
-Is mandatory to pass the regEx expression to be evaluated.
+Is mandatory to pass the min length value.
 
 ```typescript
+export interface LengthArgs {
+  length: number;
+}
+
+export const validator: FieldValidationFunctionSync = fieldValidatorArgs => {
 ```
 
 Sample usage:
@@ -497,13 +517,18 @@ Sample usage:
 
 ##### max-length
 
-Succeeds if a field matches with a define regex, fails if not.
+Succeeds if a field length is less than the one informed in the customArgs.length
 
 > If the string is empty it won't fail (to cover this case use the _required_ validator).
 
 Is mandatory to pass the regEx expression to be evaluated.
 
 ```typescript
+export interface LengthArgs {
+  length: number;
+}
+
+export const validator: FieldValidationFunctionSync = fieldValidatorArgs => {
 ```
 
 Sample usage:
