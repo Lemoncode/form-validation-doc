@@ -298,16 +298,126 @@ const checkoutForm = {
 Let's define our record validator rule:
 
 ```javascript
-const freeShippingAllowed = values => ({});
+const freeShippingAllowed = values => ({
+  message: "Total must be greater than 30USD to get cost free shippings",
+  type: "RECORD_FREE_SHIPPING",
+  succeeded: value.subtotal - value.discount >= 30
+});
 ```
 
 ```javascript
 const checkoutFormValidationSchema = {
   record: {
-    user: [required, email],
-    password: [required]
+    freeShippingValidtion: [freeShippingAllowed]
   }
 };
 ```
 
-(Amount, discount, free shpping,total)
+## createFormValidation
+
+Factory method creates a new FormValidation. This is the main entry point when creating FormValidations
+
+Arguments:
+
+- **validationSchema**: validations associated to a given form (field and record validations)
+  (ValidationSchema)[##ValidationSchema]
+
+```typescript
+const createFormValidation = (validationSchema: ValidationSchema);
+```
+
+### FormValidation
+
+This is the main class you will interact with when validating forms, allows you to inform the form validation
+schema in the constructor of the class, then exposes methods to fire fieldValidation, RecordValidations and
+FormValidation (fire all field plus record validations).
+
+#### Constructor
+
+In order to instantiate the class we need to inform a [ValidationSchema](TODO Internal link), internally
+the constructor will traverse the validation schema and categorize field and record validations.
+
+Arguments:
+
+- **validatonSchema**: The form [ValidationSchema](###ValidationSchema)
+
+```typescript
+  constructor(validationSchema: ValidationSchema) {
+```
+
+#### validateField
+
+Allows us to fire all the validations associated to given field, this method is async returns a promise with a
+validation result (form-validation). TODO Internal links to each item
+
+How does it works:
+
+- Starts iterating over all the associated fields that have validations defined in the ValidationSchema:
+  - The validation engine will start sequentally firing the list of validations associated to that field in them
+    form valition schema.
+- It will stop iterating through all validations associated to the given field:
+  A. When it finds a validation that fails, in that case it will indicate that the field validation failed, which
+  validation failed, plus the error message associated.
+  B. When all associated fields validations succeed, in that case it will return a validation succeed result.
+
+Arguments:
+
+- **fieldId**: name of the field to be validated (e.g. run all the validation associated to the form password field).
+- **value**: current value of the field.
+- **values**: all form (record) values (e.g. in a login form, values would be username and password fields).
+
+Returns:
+
+- **Promise<ValidationResult>**: Result of firing all the field validation results.
+
+```typescript
+public validateField(fieldId: string, value: any, values?: any): Promise<ValidationResult>
+```
+
+#### ValidateRecord
+
+Allows us to fire all record validations associated to the form, this method is async returns a promise with
+a RecordValidation result.
+
+How does it works:
+
+- We pass as arguments the whole form information (aka. record or values).
+- The validation engine will start sequentally firing the list record validations associated to the form.
+- It will stop iterating through all validations associated to the given field:
+  A. When it finds a validation that fails, in that case it will indicate that the record validation failed, which
+  validation failed, plus the error message associated.
+  B. When all associated record validations succeed, in that case it will return a validation succeed result.
+
+```typescript
+public validateRecord(values?: any): Promise<RecordValidationResult>
+```
+
+#### ValidateForm
+
+Fires all fields and record validations in one go, how does it work:
+
+- Starts iterating over all the associated fields that have validations defined in the ValidationSchema:
+  - The validation engine will start sequentally firing the list of validations associated to that field in them
+    form valition schema.
+  - It will stop iterating through all validations associated to the given field:
+    A. When it finds a validation that fails, in that case it store that the field validation failed, which
+    validation failed, plus the error message associated.
+    B. When all associated fields validations succeed, in that case it will store a validation succeed result for the current field in that iteration.
+- It starts iterating through the record validations:
+  - Execute the current validation, store the result in a collection.
+- Once the engine it's done with field and form validations it returns the whole result, grouped in two areas:
+  - An Object containing two keys:
+    - 'fieldErrors': contains an object fieldId/FieldValidationResult.
+    - 'recordErrors': contains an boejcti with validationType/FieldValidationResult.
+
+```typescript
+validateForm(values: any): Promise<FormValidationResult>
+```
+
+Arguments:
+
+- **values**: all form (record) values (e.g. in a login form, values would be username and password fields).
+
+Returns:
+
+- **Promise<FormValidationResult>**: Result of firing all the record and form validation results.
