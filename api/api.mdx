@@ -137,6 +137,7 @@ Returned Value
 ```
 
 ### RecordValidationArgs
+
 [RecordValidation](/api#recordvalidation-function-type) functions accept as input parameter a _RecordValidationArgs_,
 the form-validation engine will feed the needed properties to the validator when a record
 validation is fired.
@@ -182,8 +183,7 @@ Returned Value
 
 Arguments
 
-- [**RecordValidatorArgs**](/api#recordvalidatorargs): We pass here information like values and message. See [**RecordValidatorArgs**](/api#recordvalidatorargs)
-  for more information.
+- [**RecordValidatorArgs**](/api#recordvalidatorargs): We pass here information like values and message. See [**RecordValidatorArgs**](/api#recordvalidatorargs) for more information.
 
 Returned Value
 
@@ -202,10 +202,10 @@ This allow us to define all validation associated to a given form in a declarati
 Properties:
 
 - **field**: optional entry, here we can define all field validations associated to a given form
-  (see [FieldValidationSchema](/api#fieldvalidationschema) for more info link.
+  (see [FieldValidationSchema](/api#fieldvalidationschema) for more information.)
 
 - **record**: optional entry, here we can define all record validations associated to a given form
-  (see [RecordValidationSchema](/api#recordvalidationschema)
+  (see [RecordValidationSchema](/api#recordvalidationschema) for more information.)
 
 ```typescript
 export interface ValidationSchema {
@@ -231,28 +231,30 @@ We want to validate that both user and password are required field, a validation
 schema to define these validations:
 
 ```javascript
-import { required } from 'form-validation';
+import { Validators } from 'form-validation';
 
 const loginFormValidationSchema = {
   field: {
-    user: [required],
-    password: [required],
+    user: [Validators.required.validator],
+    password: [Validators.required.validator],
   },
 };
+
 ```
 
 Let's follow up completing this form validation, in this case we want to ensure
 that the user field is required and a well formed email address:
 
 ```javascript
-import { required, email } from 'form-validation';
+import { Validators } from 'form-validation';
 
 const loginFormValidationSchema = {
   field: {
-    user: [required, email],
-    password: [required],
+    user: [Validators.required.validator, Validators.email.validator],
+    password: [Validators.required.validator],
   },
 };
+
 ```
 
 Let's add one more step of complexity in this case we want to ensure that
@@ -263,20 +265,21 @@ both function and structure based definition to include validation we will
 use the second option.
 
 ```javascript
-import { required, email, minLength } from 'form-validation';
+import { Validators } from 'form-validation';
 
 const loginFormValidationSchema = {
   field: {
-    user: [required, email],
+    user: [Validators.required.validator, Validators.email.validator],
     password: [
-      required,
+      Validators.required.validator,
       {
-        validator: minLength,
+        validator: Validators.minLength.validator,
         customArgs: { length: 3 },
       },
     ],
   },
 };
+
 ```
 
 TODO: Add codepen for both cases (or codesandbox)
@@ -294,7 +297,6 @@ use case for this type of validation could be: shopping cart checkout, offer fre
 if total amount (including discount) is greater than 30 USD
 
 ```javascript
-import { required, email } from "form-validation";
 const checkoutForm = {
    subtotal,
    discount,
@@ -322,33 +324,41 @@ const checkoutFormValidationSchema = {
 };
 ```
 
+// TODO: Create FieldValidationSchema and RecordValidationSchema schemas
+
 ## createFormValidation
 
-Factory method creates a new FormValidation. This is the main entry point when creating FormValidations
+Factory method creates a new [FormValidation](/api#formvalidation). This is the main entry point when creating FormValidations
 
 Arguments:
 
-- **validationSchema**: validations associated to a given form (field and record validations)
-  (ValidationSchema)[##ValidationSchema]
+- [**ValidationSchema**](/api#validationschema): validations associated to a given form (field and record validations)
+  [ValidationSchema](/api#validationschema)
+
+Returned Value
+
+- [**FormValidation**](/api#formvalidation): a FormValidation instance to fire validations. See [**FormValidation**](/api#formvalidation) for more information.
 
 ```typescript
-const createFormValidation = (validationSchema: ValidationSchema);
+const validationSchema: ValidationSchema = {
+  // Your validation schema
+}
+const formValidation: FormValidation = createFormValidation(validationSchema);
 ```
 
 ### FormValidation
 
-This is the main class you will interact with when validating forms, allows you to inform the form validation
-schema in the constructor of the class, then exposes methods to fire fieldValidation, RecordValidations and
-FormValidation (fire all field plus record validations).
+This is the main class you will interact with when validating forms, it allows you to inform the form validation
+schema in the constructor of the class, then it exposes methods to fire [validateField](/api#validatefield), [validateRecord](/api#validaterecord) and [validateForm](/api#validateform) (fire all field plus record validations).
 
 #### Constructor
 
-In order to instantiate the class we need to inform a [ValidationSchema](TODO Internal link), internally
+In order to instantiate the class we need to inform a [ValidationSchema](/api#validationschema), internally
 the constructor will traverse the validation schema and categorize field and record validations.
 
 Arguments:
 
-- **validatonSchema**: The form [ValidationSchema](###ValidationSchema)
+- **validatonSchema**: The form [ValidationSchema](/api#validationschema)
 
 ```typescript
   constructor(validationSchema: ValidationSchema) {
@@ -356,18 +366,17 @@ Arguments:
 
 #### ValidateField
 
-Allows us to fire all the validations associated to given field, this method is async returns a promise with a
-validation result (form-validation). TODO Internal links to each item
+Allows us to fire all the validations associated to given field, this method is async and it returns a promise with a
+[validation result](/api#validationresult).
 
 How does it works:
 
-- Starts iterating over all the associated fields that have validations defined in the ValidationSchema:
-  - The validation engine will start sequentally firing the list of validations associated to that field in them
-    form valition schema.
+- It starts iterating over all the associated fields that have validations defined in the [ValidationSchema](/api#validationschema):
+  - The validation engine will start sequentially firing the list of validations associated to that field in the form validation schema.
 - It will stop iterating through all validations associated to the given field:
   A. When it finds a validation that fails, in that case it will indicate that the field validation failed, which
   validation failed, plus the error message associated.
-  B. When all associated fields validations succeed, in that case it will return a validation succeed result.
+  B. When all associated fields validations succeeded, in that case it will return a succeeded validation result.
 
 Arguments:
 
