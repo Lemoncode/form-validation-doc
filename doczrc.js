@@ -3,7 +3,7 @@ export default {
     {
       name: "1. General",
       menu: [
-        { name: "form-validation", order: 1 },
+        { name: "Fonk", order: 1 },
         { name: "Getting Started", order: 2 },
         { name: "Validation Schema", order: 3 },
         { name: "Field Validation", order: 4 },
