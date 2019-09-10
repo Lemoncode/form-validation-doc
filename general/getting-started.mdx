@@ -5,6 +5,105 @@ menu: 1. General
 
 # Getting Started
 
-How to get started
+## Installation
 
-**Notes:** Sample here login
+Getting started with **Fonk** is something really easy and quick. First of all you will need to install **Fonk** in your existing project using your
+favorite package manager (we'll assume npm for this example).
+
+```bash
+npm install @lemoncode/fonk --save
+```
+
+> **Fonk** is Typescript friendly, typing definitions are already included in the main package.
+
+## Using
+
+Fonk is framework agnostic, let's start by adding some simple code to define a login validation:
+
+```javascript
+const loginRecord = {
+  user: "",
+  password: ""
+};
+```
+
+Let's define the following validation schema for this form:
+
+- User field is mandatory.
+
+- Password field is mandatory.
+
+Now let's create the validation schema:
+
+```javascript
+```
+
+And let's fire a field validation (usually we will fire this in the *onChange* or *onBlur* event of every HTML field):
+
+```javascript
+```
+
+In this case we get the following result (validation failed):
+
+```bash
+console output here
+```
+
+What happens if we feed the login.user field with data?
+
+```javascript
+loginRecord.user = "John";
+```
+
+And we fire again the field valdation
+
+```javascript
+```
+
+We get the following result (validation succeeded):
+
+```bash
+console output here
+```
+
+If you want to fire all the form validations in one go, you can execute *validateAll*
+
+```javascript
+```
+
+And you will get the result of firing all defined validations in the schema:
+
+```bash
+
+```
+
+## UI Examples
+
+You can play with this sample in the follwing codesandbox link.
+
+If you want to check a full sample including user interface interaction, check the follwing examples:
+
+**TODO add examples**
+
+- No framework example:
+
+- React + React Final Forms (Javascript):
+
+- React + React Final Forms (Typescript):
+
+- Vuejs:
+
+## Next steps
+
+Now you many questions will be arising in your head:
+
+- Can I define more than one field validation per field?
+- Where can I find more validations (we call this _validators_).
+- How can I create my custom _validator_?
+- What about asynchronous validations?
+- And global form validations (we call them record level validations)?
+- Does it integrate well with libraries like React Final Form?
+- What about multilanguage support?
+
+All this cases are covered by the library, let's jump into the next topic
+[Validation Schema](./general-validation-schema)
