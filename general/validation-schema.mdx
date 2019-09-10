@@ -9,16 +9,76 @@ order: 3
 A Validation Schema allows us to define in a declarative way, all the validations that apply
 to each field of a form plus record validations in a single place.
 
-Notes to my self:
+Let's learn how it works by following an example:
 
-Now add a validation schema, product name, discount, price?
+We have the following form record:
 
-Add one more restriction email
+```javascript
+const myFormValues = {
+  product: "shoes",
+  discount: 5,
+  price: 20,
+  isPrime: false,
+  freeshipping: true
+};
+```
 
-Add typescript definition of this 
+And we want to set the following rules:
 
-To learn more, add links
+- Product must be a required field.
+- Discount must be a required field.
+- Price must be a required field.
+- Freeshipping can be true if the total amount (price - discount) is
+  greater than 20 USD, or if the fied _isPrime_ is true. We want to trigger
+  this validation when the user hits on submit.
 
-validating a field
-validatin a record
-validating a form
+## Defining field validations
+
+Let's start by defining a validation schema that includes the field valdiations:
+
+```javascript
+import { createFormValidation, Validators } from "@lemoncode/fonk";
+
+const myValidationSchema = {
+  field: {
+    product: [validators.required.validator],
+    discount: [validators.required.validator],
+    price: [validators.required.validator]
+  }
+};
+
+export const formValidation = createFormValidation(validationSchema);
+```
+
+Disecting the previous code snippet:
+
+- We have just adeed a section into the schema called 'field'.
+- Inside 'field' object we create new keys one per each field that
+  we want to validate (this keys have the same name as the field we want to validate).
+- Each field key will contain an array indicating the validation to be sequeantally
+  executed when triggering a field validation or full form validation.
+- Given that validation schema we create a **FromValidation** object using the
+  **createFormValidation** factory method, this will allow us to call the **Fonk**
+  engine to trigger a field, form or record validation.
+
+TODO: definr the rule for field validation add the link to field validations
+
+## Defining record validations
+
+TODO: Define the rule for the record validation add index to this validators
+
+## Adding additional context information
+
+What happens if we need to add addional context information to the validator
+function, for instance passing a custom error message, we can use a longer
+validator definition:
+
+## Nested fields
+
+What happens if we have a field like
+
+## Next Steps
+
+Now that we have got an idea of how it works let's check the formal definition:
+
+Now it's time to learn how to trigger a field validation, follow this link.
