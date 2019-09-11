@@ -103,7 +103,9 @@ is required only if the _isPartner_ boolean value is true),
 Field validator functions must comply with a given signature, in this case, it accepts
 two signatures, sync and async.
 
-**Sync version**
+#### Field Synchronous Validator
+
+Synchronous validator function.
 
 Arguments
 
@@ -117,10 +119,14 @@ Returned Value
   succeeded or not (in case not, additional information to be provided like id of the validator that failed plus error message).
 
 ```typescript
-(fieldValidatorArgs: FieldValidatorArgs) => ValidationResult;
+export type FieldValidationFunctionSync = (
+  fieldValidatorArgs: FieldValidatorArgs
+) => ValidationResult;
 ```
 
-**Async version**
+#### Field Asynchronous Validator
+
+Asynchronous validator function.
 
 Arguments
 
@@ -133,7 +139,9 @@ Returned Value
 - [**Promise<ValidationResult\>**](/api#validationresult): Async promise. Once promise is resolved, it returns whether if field validations applied to the selected field succeeded or not (in case not, additional information to be provided like id of the validator that failed plus error message).
 
 ```typescript
-(fieldValidatorArgs: FieldValidatorArgs) => Promise<ValidationResult>;
+export type FieldValidationFunctionAsync = (
+  fieldValidatorArgs: FieldValidatorArgs
+) => Promise<ValidationResult>;
 ```
 
 ### RecordValidationArgs
@@ -163,7 +171,9 @@ of your shopping cart is more than 50 USD then you get free shipping, if not war
 Field validator functions must comply with a given signature, in this case, it accepts
 two signatures, sync and async.
 
-**Sync version**
+#### Record Synchronous Validator
+
+Synchronous validator function.
 
 Arguments
 
@@ -176,10 +186,14 @@ Returned Value
   succeeded or not (in case not, additional information to be provided like id of the validator that failed plus error message).
 
 ```typescript
-(recordValidatorArgs: RecordValidatorArgs) => ValidationResult;
+export type RecordValidationFunctionSync = (
+  recordValidatorArgs: RecordValidatorArgs
+) => ValidationResult;
 ```
 
-**Async version**
+#### Record Asynchronous Validator
+
+Asynchronous validator function.
 
 Arguments
 
@@ -190,7 +204,9 @@ Returned Value
 - [**Promise<ValidationResult\>**](/api#validationresult): Async promise. Once promise is resolved, it returns whether if field validations applied to the selected field succeeded or not (in case not, additional information to be provided like id of the validator that failed plus error message).
 
 ```typescript
-(recordValidatorArgs: RecordValidatorArgs) => Promise<ValidationResult>;
+export type RecordValidationFunctionAsync = (
+  recordValidatorArgs: RecordValidatorArgs
+) => Promise<ValidationResult>;
 ```
 
 ### ValidationSchema
@@ -216,20 +232,88 @@ export interface ValidationSchema {
 
 ### FieldValidationSchema
 
-In this structure it can define all the validations associated to a given field.
-
-This allow us to define all validation associated to a given field in a declarative way.
+In this structure it can define all field validations associated to a given form. For each field, it has to add a validator list.
+Each validator could be a [field sync validator](/api#field-synchronous-validator), [field async validator](/api#field-asynchronous-validator) or [full field validation](/api#fullfieldvalidation)
 
 Properties:
 
-- **field name**: Field name which it wants to apply
+- **field name**: Field name which it wants to apply the validator
+
+Values:
+
+- An array of [field sync validator](/api#field-synchronous-validator), [field async validator](/api#field-asynchronous-validator) or [full field validation](/api#fullfieldvalidation)
 
 ```typescript
-export interface ValidationSchema {
-  field?: FieldValidationSchema;
-  record?: RecordValidationSchema;
-}
+const validationSchema: ValidationSchema = {
+  field: {
+    myFieldName: [
+      Validators.required.validator, // This is a sync validator
+      loginValidator, // This is a custom async validator
+      {
+        validator: Validators.required.validator, // This is a sync validator
+        customArgs: { otherField: "other" },
+        message: "Required field"
+      },
+      {
+        validator: loginValidator, // This is a custom async validator
+        customArgs: { otherField: "other" },
+        message: "Invalid login"
+      }
+    ]
+  }
+};
 ```
+
+### FullFieldValidation
+
+Structure to define a field validation:
+
+Properties:
+
+- **validator**: [field async validator](/api#field-asynchronous-validator) or [full field validation](/api#fullfieldvalidation) validation function to apply.
+- **customArgs**: optional, here it can pass any additional configuration, needed to setup the validator (e.g. in a max-length validation the length value, or in a regEx validator the regEx pattern).
+- **message**: optional, in this parameter it can override the default message(s) that the validator generates.
+
+### RecordValidationSchema
+
+In this structure it can define all record validations associated to a given form. For each record, it has to add a validator list.
+Each validator could be a [record sync validator](/api#record-synchronous-validator), [record async validator](/api#record-asynchronous-validator) or [full record validation](/api#fullrecordvalidation)
+
+Properties:
+
+- **record name**: Record name which it wants to apply the validator
+
+Values:
+
+- An array of [record sync validator](/api#record-synchronous-validator), [record async validator](/api#record-asynchronous-validator) or [full record validation](/api#fullrecordvalidation)
+
+```typescript
+const validationSchema: ValidationSchema = {
+  record: {
+    myRecordName: [
+      freeShippingAllowed, // This is a custom sync validator
+      asyncFreeShippingAllowed, // This is a custom async validator
+      {
+        validator: freeShippingAllowed, // This is a sync validator
+        message: "Total must be greater than 30USD"
+      },
+      {
+        validator: asyncFreeShippingAllowed, // This is a custom async validator
+        message: "Total must be greater than 60USD"
+      }
+    ]
+  }
+};
+```
+
+### FullRecordValidation
+
+Structure to define a record validation:
+
+Properties:
+
+- **validator**: [record async validator](/api#record-asynchronous-validator) or [full record validation](/api#fullrecordvalidation) validation function to apply.
+- **message**: optional, in this parameter it can override the default message(s) that the validator generates.
 
 #### Examples:
 
@@ -332,8 +416,6 @@ const checkoutFormValidationSchema = {
   }
 };
 ```
-
-// TODO: Create FieldValidationSchema and RecordValidationSchema schemas
 
 ## createFormValidation
 
@@ -558,125 +640,14 @@ Sample usage:
 
 #### Third party validators:
 
-Prior to create a custom validator, check out if there is already one implemented that covers
-the functionallity you need.
+Prior to create a custom validator, check out if there is already one implemented that covers the functionality you need.
 
-You can find a list of validators in this link.
+You can find a list of validators in [third party validators](/validators/third-party-validators).
 
 #### Custom validators
 
-##### Arguments
+A custom validator is a function used for validate a field or record.
 
-Arguments that can be passed to validatiors:
+It could use [Field Synchronous Validator](/api#field-synchronous-validator) or [Field Asynchronous Validator](/api#field-asynchronous-validator) for fields and [Record Synchronous Validator](/api#record-synchronous-validator) or [Record Asynchronous Validator](/api#record-asynchronous-validator) for records.
 
-Properties:
-
-- value: current field value.
-- values: form values (record).
-- customArgs: optional, here it can pass any additional configuration, needed
-  to setup the validator (e.g. in a max-length validation the length value, or in a regEx
-  validator the regEx pattern).
-- message: optional, in this parameter it can override the default message(s) that the validator
-  generates.
-
-```typescript
-export interface FieldValidatorArgs {
-  value: any;
-  values?: any;
-  customArgs?: any;
-  message?: string | string[];
-}
-```
-
-##### Validator Synchronous
-
-Validator, synchronous option:
-
-Arguments:
-
-- **fieldValidatorArgs**: current value, values, customArguments, see FieldValidationArgs definition
-  for more information.
-
-Returned Value:
-
-- **ValidationResult**: Whether the validation succeeded or not, plus validation type and
-  error information. See [ValidationResult](###Validation Result) for more info.
-
-```typescript
-export type FieldValidationFunctionSync = (
-  fieldValidatorArgs: FieldValidatorArgs
-) => ValidationResult;
-```
-
-##### Validator Asynchronous
-
-Validator asynchronous option:
-
-Arguments:
-
-- **fieldValidatorArgs**: current value, values, customArguments, see FieldValidationArgs definition
-  for more information.
-
-Returned Value:
-
-- **Promise<ValidationResult\>**: Promise, returns whether the validation succeeded or not, plus validation type and
-  error information. See [ValidationResult](###Validation Result) for more info.
-
-```typescript
-export type FieldValidationFunctionAsync = (
-  fieldValidatorArgs: FieldValidatorArgs
-) => Promise<ValidationResult>;
-```
-
-### Record Validators
-
-##### Arguments
-
-Arguments that can be passed to validatiors:
-
-Properties:
-
-- values: form values (record).
-- message: optional, in this parameter it can override the default message(s) that the validator
-  generates.
-
-```typescript
-export interface RecordValidatorArgs {
-  values: any;
-  message?: string | string[];
-}
-```
-
-##### Validator Synchronous
-
-Arguments:
-
-- **recordValidatorArgs**: form values, messages to override default error message(s), see RecordValidationArgs for more information.
-
-Returned Value:
-
-- **ValidationResult**: Whether the validation succeeded or not, plus validation type and
-  error information. See [ValidationResult](###Validation Result) for more info.
-
-```typescript
-export type RecordValidationFunctionSync = (
-  recordValidatorArgs: RecordValidatorArgs
-) => ValidationResult;
-```
-
-##### Validator Asynchronous
-
-Arguments:
-
-- **recordValidatorArgs**: form values, messages to override default error message(s), see RecordValidationArgs for more information.
-
-Returned Value:
-
-- **Promise<ValidationResult/>**: Promise based,whether the validation succeeded or not, plus validation type and
-  error information. See [ValidationResult](###Validation Result) for more info.
-
-```typescript
-export type RecordValidationFunctionAsync = (
-  recordValidatorArgs: RecordValidatorArgs
-) => Promise<ValidationResult>;
-```
+You could see some examples creating custom validators in [fonk examples](https://github.com/Lemoncode/fonk/tree/master/examples/docs/custom-validators).
