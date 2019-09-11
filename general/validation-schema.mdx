@@ -66,7 +66,7 @@ If we want to fire a field validation we can run the following code:
 
 ```javascript
 // We pass here the Id of the field to validate, and the new value for that field
-const result = formValidation.validateField('product', 'my new product name');
+const result = formValidation.validateField("product", "my new product name");
 console.log(result);
 ```
 
@@ -107,22 +107,258 @@ export const formValidation = createFormValidation(validationSchema);
 Now we can fire this record validation using **Fonk** engine _validateRecord_, and this validation
 will be triggered when we fire the **Fonk** engine method _validateForm_
 
+If we want to fire a record validation we can run the following code:
+
+```javascript
+// We pass all the record information
+const result = formValidation.validateRecord(myFormValues);
+console.log(result);
+```
+
+If we want to fire all field and form validations associaged to the form, we can run the following code:
+
+```javascript
+// We pass all the record information
+const result = formValidation.validateForm(myFormValues);
+console.log(result);
+```
+
+More information about Fonk [validateField](./general-validating-field).
+
 More information about Fonk [validateRecord](./general-validating-record) and (validateForm)[./general-validating-form].
 
-TODO: Define the rule for the record validation add index to this validators
+Live demos working example: **TODO: Add demos to codesandbox**
+
+- Plain Vanilla javascript.
+- React + React Final Form.
 
 ## Adding additional context information
 
 What happens if we need to add addional context information to the validator
-function, for instance passing a custom error message, we can use a longer
-validator definition:
+function, for instance passing a custom error message ? The **ValidationSchema**
+supports two signatures whenever we add a validations:
+
+- The short definition: the one we have been using, is just adding the validator function
+  we wan to use.
+
+```javascript
+const myValidationSchema = {
+  field: {
+    product: [validators.required.validator]
+  }
+};
+```
+
+- The long definitions: we can create an object where we can inform the validator function,
+  override the default error message(s), and pass custom arguments.
+
+```javascript
+const myValidationSchema = {
+  field: {
+    product: [
+      {
+        validator: validators.required.validator,
+        message: "My custom error message"
+      }
+    ]
+  }
+};
+```
 
 ## Nested fields
 
-What happens if we have a field like
+In this example we have used a plain object that didn't contain any nested property.
+
+What would happen if we have a richer object? Something like:
+
+```javascript
+const myFormValues = {
+  product: {
+    id: 1245,
+    name: "shoes"
+  },
+  discount: 5,
+  price: 20,
+  isPrime: false,
+  freeshipping: true
+};
+```
+
+How can we add _product.name_ to my validation schema? It's easy just use _product.name_ as a key,
+surrounding it with double quotes:
+
+```diff
+const myValidationSchema = {
+  field: {
++    "product.name": [validators.required.validator],
+-    product: [validators.required.validator],
+    discount: [validators.required.validator],
+    price: [validators.required.validator]
+  }
+};
+```
+
+Check live demo: TODO
+
+## Asynchronous validations
+
+What about Asynchronous validations? Under the hood **fonk** is fully asynchronous, you
+can plug an asynchronous validation directly into the validations array.
+
+Lets create a simple login form, and as validations the user name must be requireds, and a valid
+github account (we will check against github api).
+
+The form values we have:
+
+```javascript
+const myLoginFormValues = {
+  user: "mojombo",
+  password: ""
+};
+```
+
+The field validator (check [Custom validators asynchronous](http://localhost:3000/validators-custom-validators-async)
+for more info).
+
+```javascript
+const userExistsOnGitHubValidator = (value, values?, customArgs?, message?) {
+  const errorMessage = `The username does not exists Github`;
+  const validationResult = {
+    type:  'GITHUB_USER_EXISTS',
+    succeeded: false,
+    message: '',
+  }
+  validationResult.type = 'GITHUB_USER_EXISTS';
+
+  return new Promise(resolve => {
+    fetch(`https://api.github.com/users/${value}`)
+      .then(result => {
+        // Status 200, meaning user exists, so the given user is valid
+        validationResult.succeeded = true;
+        validationResult.message = '';
+        resolve(validationResult);
+      })
+      .catch(error => {
+        if(error.status === 404) {
+          // User does not exists, so the given user is not valid
+          validationResult.succeeded = false;
+          validationResult.message = errorMessage;
+          resolve(validationResult);
+        } else {
+          // Unexpected error
+          reject(error);
+        }
+      });
+  });
+}
+```
+
+How to setup a validation schema that checks if the user field is informed and is a valid
+github account:
+
+```javascript
+import { createFormValidation, Validators } from "@lemoncode/fonk";
+
+const myLoginFormValidationSchema = {
+  field: {
+    product: [validators.required.validator, userExistsOnGitHubValidator]
+  }
+};
+
+export const formValidation = createFormValidation(myLoginFormValidationSchema);
+```
+
+TODO:
+Live example vanilla js.
+Live example React + React Final Forms.
 
 ## Next Steps
 
-Now that we have got an idea of how it works let's check the formal definition:
+Now it's time to learn how to trigger a field validation, follow this [link](./general-validating-field)
+to jump into it.
 
-Now it's time to learn how to trigger a field validation, follow this link.
+## Appendix: Validation Schema Typescript definition
+
+To know the exact api + model exposed, below you will find the typescript definition for
+validation schema:
+
+```typescript
+export interface ValidationSchema {
+  field?: FieldValidationSchema;
+  record?: RecordValidationSchema;
+}
+```
+
+Field Validation Schema:
+
+```typescript
+export interface FieldValidationSchema {
+  [fieldId: string]: FieldValidation[];
+}
+
+export type FieldValidation =
+  | FieldValidationFunctionSyncAsync
+  | FullFieldValidation;
+
+export type FieldValidationFunctionSyncAsync =
+  | FieldValidationFunctionAsync
+  | FieldValidationFunctionSync;
+
+export type FieldValidationFunctionSync = (
+  fieldValidatorArgs: FieldValidatorArgs
+) => ValidationResult;
+
+export type FieldValidationFunctionAsync = (
+  fieldValidatorArgs: FieldValidatorArgs
+) => Promise<ValidationResult>;
+
+export interface FullFieldValidation {
+  validator: FieldValidationFunctionSyncAsync;
+  customArgs?: any;
+  message?: string | string[];
+}
+```
+
+Record:
+
+```typescript
+export interface RecordValidationSchema {
+  [recordId: string]: RecordValidation[];
+}
+
+export type RecordValidation =
+  | RecordValidationFunctionSyncAsync
+  | FullRecordValidation;
+
+export type RecordValidationFunctionSyncAsync =
+  | RecordValidationFunctionSync
+  | RecordValidationFunctionAsync;
+
+export type RecordValidationFunctionSync = (
+  recordValidatorArgs: RecordValidatorArgs
+) => ValidationResult;
+
+export type RecordValidationFunctionAsync = (
+  recordValidatorArgs: RecordValidatorArgs
+) => Promise<ValidationResult>;
+
+export interface RecordValidatorArgs {
+  values: any;
+  message?: string | string[];
+}
+
+export interface FullRecordValidation {
+  validator: RecordValidationFunctionSyncAsync;
+  message?: string | string[];
+}
+```
+
+ValidationResult:
+
+```typescript
+export interface ValidationResult {
+  type: string;
+  succeeded: boolean;
+  message: string;
+}
+```
