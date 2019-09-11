@@ -52,18 +52,62 @@ export const formValidation = createFormValidation(validationSchema);
 
 Disecting the previous code snippet:
 
-- We have just adeed a section into the schema called 'field'.
-- Inside 'field' object we create new keys one per each field that
+- We have just added a section into the schema called 'field'.
+- Inside 'field' object we have created new keys one per each field that
   we want to validate (this keys have the same name as the field we want to validate).
-- Each field key will contain an array indicating the validation to be sequeantally
+- Each field key will contain an array indicating the fields validation to be sequeantally
   executed when triggering a field validation or full form validation.
 - Given that validation schema we create a **FromValidation** object using the
   **createFormValidation** factory method, this will allow us to call the **Fonk**
-  engine to trigger a field, form or record validation.
+  engine to trigger a field, form or record validation associated to the **Validation Schema**
+  we have previously created.
 
-TODO: definr the rule for field validation add the link to field validations
+If we want to fire a field validation we can run the following code:
+
+```javascript
+// We pass here the Id of the field to validate, and the new value for that field
+const result = formValidation.validateField('product', 'my new product name');
+console.log(result);
+```
+
+More information about Fonk [validateField](./general-validating-field).
 
 ## Defining record validations
+
+Record validations are global validations that are not tied up to a given specific field, they
+are just the type of validations you want to trigger once the user hits on the submit button.
+
+Continuing with the case we have define before, we want to define the following record validation rule:
+
+_Free shipping costs can only be true if user is subscribed to prime services or if the total cost
+(price - discount) is greater than 20 USD._
+
+We will define here the record validator (since is custom login we will define it from scratch,
+and attach to the Validation Schema we have created).
+
+```diff
+import { createFormValidation, Validators } from "@lemoncode/fonk";
+
++ // A record validator receives in the args all the record values
++ const freeShippingRecordValidator = (values) =>
++  (values.isPrime || values.price - discount > 20);
+
+const myValidationSchema = {
+  field: {
+    product: [validators.required.validator],
+    discount: [validators.required.validator],
+    price: [validators.required.validator]
+  },
++ record: [freeShippingRecordValidator]
+};
+
+export const formValidation = createFormValidation(validationSchema);
+```
+
+Now we can fire this record validation using **Fonk** engine _validateRecord_, and this validation
+will be triggered when we fire the **Fonk** engine method _validateForm_
+
+More information about Fonk [validateRecord](./general-validating-record) and (validateForm)[./general-validating-form].
 
 TODO: Define the rule for the record validation add index to this validators
 
