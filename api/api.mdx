@@ -8,7 +8,221 @@ route: /api
 
 This section documents the complete [fonk](https://github.com/Lemoncode/fonk) API. Keep in mind that [fonk](https://github.com/Lemoncode/fonk) is only concerned with managing validations in Vanilla JavaScript.
 
-In a real app, you'll also want to use some [integration library](/integrations) like [react-final-form](/react-final-form).
+In a real app, you'll also want to use some integration library like [react-final-form](/react-final-form).
+
+## Validation Schema definition
+
+### ValidationSchema
+
+In this structure it can define all the validations associated to a given form (field and record validations).
+
+This allow us to define all validation associated to a given form in a declarative way.
+
+Properties:
+
+- **field**: optional entry, here it can define all field validations associated to a given form
+  (see [FieldValidationSchema](/api#fieldvalidationschema) for more information.)
+
+- **record**: optional entry, here it can define all record validations associated to a given form
+  (see [RecordValidationSchema](/api#recordvalidationschema) for more information.)
+
+```typescript
+export interface ValidationSchema {
+  field?: FieldValidationSchema;
+  record?: RecordValidationSchema;
+}
+```
+
+### FieldValidationSchema
+
+In this structure it can define all field validations associated to a given form. For each field, it has to add a validator list.
+Each validator could be a [field sync validator](/api#field-synchronous-validator), [field async validator](/api#field-asynchronous-validator) or [full field validation](/api#fullfieldvalidation)
+
+Properties:
+
+- **field name**: Field name which it wants to apply the validator
+
+Values:
+
+- An array of [field sync validator](/api#field-synchronous-validator), [field async validator](/api#field-asynchronous-validator) or [full field validation](/api#fullfieldvalidation)
+
+```typescript
+const validationSchema: ValidationSchema = {
+  field: {
+    myFieldName: [
+      Validators.required.validator, // This is a sync validator
+      loginValidator, // This is a custom async validator
+      {
+        validator: Validators.required.validator, // This is a sync validator
+        customArgs: { otherField: "other" },
+        message: "Required field"
+      },
+      {
+        validator: loginValidator, // This is a custom async validator
+        customArgs: { otherField: "other" },
+        message: "Invalid login"
+      }
+    ]
+  }
+};
+```
+
+#### FullFieldValidation
+
+Structure to define a field validation:
+
+Properties:
+
+- **validator**: [field async validator](/api#field-asynchronous-validator) or [full field validation](/api#fullfieldvalidation) validation function to apply.
+- **customArgs**: optional, here it can pass any additional configuration, needed to setup the validator (e.g. in a max-length validation the length value, or in a regEx validator the regEx pattern).
+- **message**: optional, in this parameter it can override the default message(s) that the validator generates.
+
+#### Examples:
+
+You could see these examples in [fonk examples](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api).
+
+**Schema Field validations**
+
+Let's say it has a login form, and the following record:
+
+```javascript
+const loginModel = {
+  user,
+  password
+};
+```
+
+It wants to validate that both user and password are required field, a validation
+schema to define these validations:
+
+```javascript
+import { Validators } from "@lemoncode/fonk";
+
+const loginFormValidationSchema = {
+  field: {
+    user: [Validators.required.validator],
+    password: [Validators.required.validator]
+  }
+};
+```
+
+Let's follow up completing this form validation, in this case it wants to ensure
+that the user field is required and a well formed email address:
+
+```javascript
+import { Validators } from "@lemoncode/fonk";
+
+const loginFormValidationSchema = {
+  field: {
+    user: [Validators.required.validator, Validators.email.validator],
+    password: [Validators.required.validator]
+  }
+};
+```
+
+Let's add one more step of complexity in this case it wants to ensure that
+the password field name is at least 5 characters length, it can use the
+min-length validator, but it has to feed and additional parameter to
+indicate the minumum length, in this case the validation schema accepts
+both function and structure based definition to include validation it will
+use the second option.
+
+```javascript
+import { Validators } from "@lemoncode/fonk";
+
+const loginFormValidationSchema = {
+  field: {
+    user: [Validators.required.validator, Validators.email.validator],
+    password: [
+      Validators.required.validator,
+      {
+        validator: Validators.minLength.validator,
+        customArgs: { length: 3 }
+      }
+    ]
+  }
+};
+```
+
+### RecordValidationSchema
+
+In this structure it can define all record validations associated to a given form. For each record, it has to add a validator list.
+Each validator could be a [record sync validator](/api#record-synchronous-validator), [record async validator](/api#record-asynchronous-validator) or [full record validation](/api#fullrecordvalidation)
+
+Properties:
+
+- **record name**: Record name which it wants to apply the validator
+
+Values:
+
+- An array of [record sync validator](/api#record-synchronous-validator), [record async validator](/api#record-asynchronous-validator) or [full record validation](/api#fullrecordvalidation)
+
+```typescript
+const validationSchema: ValidationSchema = {
+  record: {
+    myRecordName: [
+      freeShippingAllowed, // This is a custom sync validator
+      asyncFreeShippingAllowed, // This is a custom async validator
+      {
+        validator: freeShippingAllowed, // This is a sync validator
+        message: "Total must be greater than 30USD"
+      },
+      {
+        validator: asyncFreeShippingAllowed, // This is a custom async validator
+        message: "Total must be greater than 60USD"
+      }
+    ]
+  }
+};
+```
+
+#### FullRecordValidation
+
+Structure to define a record validation:
+
+Properties:
+
+- **validator**: [record async validator](/api#record-asynchronous-validator) or [full record validation](/api#fullrecordvalidation) validation function to apply.
+- **message**: optional, in this parameter it can override the default message(s) that the validator generates.
+
+#### Examples:
+
+You could see these examples in [fonk examples](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api).
+
+**Record Field validations**
+
+Sometimes you need to create global validation that is not tied up to a specific field, or
+you want it to be fired once the user has fullfilled all the data in the validation form, a
+use case for this type of validation could be: shopping cart checkout, offer free shipping
+if total amount (including discount) is greater than 30 USD
+
+```javascript
+const checkoutForm = {
+   subtotal,
+   discount,
+   total,
+   freeshipping,
+  }
+};
+```
+
+Let's define our record validator rule:
+
+```javascript
+const freeShippingAllowed = values => ({
+  message: "Total must be greater than 30USD to get cost free shippings",
+  type: "RECORD_FREE_SHIPPING",
+  succeeded: value.subtotal - value.discount >= 30
+});
+```
+
+```javascript
+const checkoutFormValidationSchema = {
+  record: {
+    freeShippingValidtion: [freeShippingAllowed]
+  }
+};
+```
 
 ## Validaton Result structures
 
@@ -209,214 +423,6 @@ export type RecordValidationFunctionAsync = (
 ) => Promise<ValidationResult>;
 ```
 
-### ValidationSchema
-
-In this structure it can define all the validations associated to a given form (field and record validations).
-
-This allow us to define all validation associated to a given form in a declarative way.
-
-Properties:
-
-- **field**: optional entry, here it can define all field validations associated to a given form
-  (see [FieldValidationSchema](/api#fieldvalidationschema) for more information.)
-
-- **record**: optional entry, here it can define all record validations associated to a given form
-  (see [RecordValidationSchema](/api#recordvalidationschema) for more information.)
-
-```typescript
-export interface ValidationSchema {
-  field?: FieldValidationSchema;
-  record?: RecordValidationSchema;
-}
-```
-
-### FieldValidationSchema
-
-In this structure it can define all field validations associated to a given form. For each field, it has to add a validator list.
-Each validator could be a [field sync validator](/api#field-synchronous-validator), [field async validator](/api#field-asynchronous-validator) or [full field validation](/api#fullfieldvalidation)
-
-Properties:
-
-- **field name**: Field name which it wants to apply the validator
-
-Values:
-
-- An array of [field sync validator](/api#field-synchronous-validator), [field async validator](/api#field-asynchronous-validator) or [full field validation](/api#fullfieldvalidation)
-
-```typescript
-const validationSchema: ValidationSchema = {
-  field: {
-    myFieldName: [
-      Validators.required.validator, // This is a sync validator
-      loginValidator, // This is a custom async validator
-      {
-        validator: Validators.required.validator, // This is a sync validator
-        customArgs: { otherField: "other" },
-        message: "Required field"
-      },
-      {
-        validator: loginValidator, // This is a custom async validator
-        customArgs: { otherField: "other" },
-        message: "Invalid login"
-      }
-    ]
-  }
-};
-```
-
-### FullFieldValidation
-
-Structure to define a field validation:
-
-Properties:
-
-- **validator**: [field async validator](/api#field-asynchronous-validator) or [full field validation](/api#fullfieldvalidation) validation function to apply.
-- **customArgs**: optional, here it can pass any additional configuration, needed to setup the validator (e.g. in a max-length validation the length value, or in a regEx validator the regEx pattern).
-- **message**: optional, in this parameter it can override the default message(s) that the validator generates.
-
-### RecordValidationSchema
-
-In this structure it can define all record validations associated to a given form. For each record, it has to add a validator list.
-Each validator could be a [record sync validator](/api#record-synchronous-validator), [record async validator](/api#record-asynchronous-validator) or [full record validation](/api#fullrecordvalidation)
-
-Properties:
-
-- **record name**: Record name which it wants to apply the validator
-
-Values:
-
-- An array of [record sync validator](/api#record-synchronous-validator), [record async validator](/api#record-asynchronous-validator) or [full record validation](/api#fullrecordvalidation)
-
-```typescript
-const validationSchema: ValidationSchema = {
-  record: {
-    myRecordName: [
-      freeShippingAllowed, // This is a custom sync validator
-      asyncFreeShippingAllowed, // This is a custom async validator
-      {
-        validator: freeShippingAllowed, // This is a sync validator
-        message: "Total must be greater than 30USD"
-      },
-      {
-        validator: asyncFreeShippingAllowed, // This is a custom async validator
-        message: "Total must be greater than 60USD"
-      }
-    ]
-  }
-};
-```
-
-### FullRecordValidation
-
-Structure to define a record validation:
-
-Properties:
-
-- **validator**: [record async validator](/api#record-asynchronous-validator) or [full record validation](/api#fullrecordvalidation) validation function to apply.
-- **message**: optional, in this parameter it can override the default message(s) that the validator generates.
-
-#### Examples:
-
-You could see these examples in [fonk examples](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api)
-
-**Schema Field validations**
-
-Let's say it has a login form, and the following record:
-
-```javascript
-const loginModel = {
-  user,
-  password
-};
-```
-
-It wants to validate that both user and password are required field, a validation
-schema to define these validations:
-
-```javascript
-import { Validators } from "@lemoncode/fonk";
-
-const loginFormValidationSchema = {
-  field: {
-    user: [Validators.required.validator],
-    password: [Validators.required.validator]
-  }
-};
-```
-
-Let's follow up completing this form validation, in this case it wants to ensure
-that the user field is required and a well formed email address:
-
-```javascript
-import { Validators } from "@lemoncode/fonk";
-
-const loginFormValidationSchema = {
-  field: {
-    user: [Validators.required.validator, Validators.email.validator],
-    password: [Validators.required.validator]
-  }
-};
-```
-
-Let's add one more step of complexity in this case it wants to ensure that
-the password field name is at least 5 characters length, it can use the
-min-length validator, but it has to feed and additional parameter to
-indicate the minumum length, in this case the validation schema accepts
-both function and structure based definition to include validation it will
-use the second option.
-
-```javascript
-import { Validators } from "@lemoncode/fonk";
-
-const loginFormValidationSchema = {
-  field: {
-    user: [Validators.required.validator, Validators.email.validator],
-    password: [
-      Validators.required.validator,
-      {
-        validator: Validators.minLength.validator,
-        customArgs: { length: 3 }
-      }
-    ]
-  }
-};
-```
-
-**Record Field validations**
-
-Sometimes you need to create global validation that is not tied up to a specific field, or
-you want it to be fired once the user has fullfilled all the data in the validation form, a
-use case for this type of validation could be: shopping cart checkout, offer free shipping
-if total amount (including discount) is greater than 30 USD
-
-```javascript
-const checkoutForm = {
-   subtotal,
-   discount,
-   total,
-   freeshipping,
-  }
-};
-```
-
-Let's define our record validator rule:
-
-```javascript
-const freeShippingAllowed = values => ({
-  message: "Total must be greater than 30USD to get cost free shippings",
-  type: "RECORD_FREE_SHIPPING",
-  succeeded: value.subtotal - value.discount >= 30
-});
-```
-
-```javascript
-const checkoutFormValidationSchema = {
-  record: {
-    freeShippingValidtion: [freeShippingAllowed]
-  }
-};
-```
-
 ## createFormValidation
 
 Factory method creates a new [FormValidation](/api#formvalidation). This is the main entry point when creating FormValidations
@@ -485,16 +491,14 @@ public validateField(fieldId: string, value: any, values?: any): Promise<Validat
 
 #### ValidateRecord
 
-Allows us to fire all record validations associated to the form, this method is async returns a promise with
-a RecordValidation result.
+Allows us to fire all record validations associated to the form, this method is async returns a promise with a RecordValidation result.
 
 How does it works:
 
 - It passes as arguments the whole form information (aka. record or values).
-- The validation engine will start sequentally firing the list record validations associated to the form.
+- The validation engine will start sequentially firing the list record validations associated to the form.
 - It will stop iterating through all validations associated to the given field:
-  A. When it finds a validation that fails, in that case it will indicate that the record validation failed, which
-  validation failed, plus the error message associated.
+  A. When it finds a validation that fails, in that case it will indicate that the record validation failed, which validation failed, plus the error message associated.
   B. When all associated record validations succeed, in that case it will return a validation succeed result.
 
 ```typescript
@@ -506,8 +510,7 @@ public validateRecord(values?: any): Promise<RecordValidationResult>
 Fires all fields and record validations in one go, how does it work:
 
 - Starts iterating over all the associated fields that have validations defined in the ValidationSchema:
-  - The validation engine will start sequentally firing the list of validations associated to that field in them
-    form valition schema.
+  - The validation engine will start sequentially firing the list of validations associated to that field in them form valition schema.
   - It will stop iterating through all validations associated to the given field:
     A. When it finds a validation that fails, in that case it store that the field validation failed, which
     validation failed, plus the error message associated.
@@ -516,8 +519,8 @@ Fires all fields and record validations in one go, how does it work:
   - Execute the current validation, store the result in a collection.
 - Once the engine it's done with field and form validations it returns the whole result, grouped in two areas:
   - An Object containing two keys:
-    - 'fieldErrors': contains an object fieldId/FieldValidationResult.
-    - 'recordErrors': contains an object with validationType/FieldValidationResult.
+    - 'fieldErrors': contains an object fieldId/ValidationResult.
+    - 'recordErrors': contains an object with recordId/ValidationResult.
 
 ```typescript
 validateForm(values: any): Promise<FormValidationResult>
