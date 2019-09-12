@@ -346,7 +346,7 @@ _ValidationResult_
 
 Properties
 
-- **type**: Validator applied (e.g. required, email, min-lenght...).
+- **type**: Validator applied (e.g. required, email, min-length...).
 - **succeeded**: Whether if the validation succeeded (true) or failed (false).
 - **message**: Error message. Empty if all the validations evaluated succeeded.
 
@@ -544,22 +544,42 @@ Accepts a custom paramater to instruct the validator to trim the incoming values
 
 ```typescript
 export interface RequiredArgs {
-  trim: boolean;
+  trim: boolean; // Default value equals true
 }
 
-export const validator: FieldValidationFunctionSync = (fieldValidatorArgs) : ValidationResult
+export const required: FieldValidationFunctionSync<RequiredArgs> = (fieldValidatorArgs) : ValidationResult => {...}
 ```
 
-Sample usage:
+Usage:
 
-Simple
+- Simple, (trim default value equals true):
 
 ```typescript
+import { Validators, ValidationSchema } from "@lemoncode/fonk";
+
+const validationSchema: ValidationSchema = {
+  field: {
+    login: [Validators.required.validator]
+  }
+};
 ```
 
 customArgs
 
 ```typescript
+import { Validators, ValidationSchema } from "@lemoncode/fonk";
+
+const validationSchema: ValidationSchema = {
+  field: {
+    login: [Validators.required.validator],
+    password: [
+      {
+        validator: Validators.required.validator,
+        customArgs: { trim: false }
+      }
+    ]
+  }
+};
 ```
 
 ##### email
@@ -569,12 +589,24 @@ Succeeds if a field value is a well formed email, fails if not.
 > If the string is empty it won't fail (to cover this case use the _required_ validator).
 
 ```typescript
-export const validator: FieldValidationFunctionSync = fieldValidatorArgs => {
+export const email: FieldValidationFunctionSync = (fieldValidatorArgs) : ValidationResult => {...}
+```
+
+Usage:
+
+```typescript
+import { Validators, ValidationSchema } from "@lemoncode/fonk";
+
+const validationSchema: ValidationSchema = {
+  field: {
+    email: [Validators.email.validator]
+  }
+};
 ```
 
 ##### pattern
 
-Succeeds if a field matches with a define regex, fails if not.
+Succeeds if a field matches with a define regex, fails if not. This regular expression can be either a [RegExp](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp) instance or a string.
 
 > If the string is empty it won't fail (to cover this case use the _required_ validator).
 
@@ -585,13 +617,60 @@ export interface PatternArgs {
   pattern: string | RegExp;
 }
 
-export const validator: FieldValidationFunctionSync = fieldValidatorArgs =>
-  ValidationResult;
+export const pattern: FieldValidationFunctionSync<PatternArgs> = (fieldValidatorArgs) : ValidationResult => {...}
 ```
 
-Sample usage:
+Usage:
+
+String:
 
 ```typescript
+import { Validators, ValidationSchema } from "@lemoncode/fonk";
+
+const validationSchema: ValidationSchema = {
+  field: {
+    phone: [
+      {
+        validator: Validators.pattern.validator,
+        customArgs: { pattern: "(7|8|9)d{9}" }
+      }
+    ]
+  }
+};
+```
+
+Regex:
+
+```typescript
+import { Validators, ValidationSchema } from "@lemoncode/fonk";
+
+const validationSchema: ValidationSchema = {
+  field: {
+    phone: [
+      {
+        validator: Validators.pattern.validator,
+        customArgs: { pattern: /(7|8|9)\d{9}/ }
+      }
+    ]
+  }
+};
+```
+
+Regex constructor:
+
+```typescript
+import { Validators, ValidationSchema } from "@lemoncode/fonk";
+
+const validationSchema: ValidationSchema = {
+  field: {
+    phone: [
+      {
+        validator: Validators.pattern.validator,
+        customArgs: { pattern: new Regex(/(7|8|9)\d{9}/) }
+      }
+    ]
+  }
+};
 ```
 
 ##### min-length
@@ -607,12 +686,24 @@ export interface LengthArgs {
   length: number;
 }
 
-export const validator: FieldValidationFunctionSync = fieldValidatorArgs => {
+export const minLength: FieldValidationFunctionSync<LengthArgs> = (fieldValidatorArgs) : ValidationResult => {...}
 ```
 
 Sample usage:
 
 ```typescript
+import { Validators, ValidationSchema } from "@lemoncode/fonk";
+
+const validationSchema: ValidationSchema = {
+  field: {
+    description: [
+      {
+        validator: Validators.minLength.validator,
+        customArgs: { length: 10 } // Valid description for length greater than 10 chars
+      }
+    ]
+  }
+};
 ```
 
 ##### max-length
@@ -621,19 +712,31 @@ Succeeds if a field length is less than the one informed in the customArgs.lengt
 
 > If the string is empty it won't fail (to cover this case use the _required_ validator).
 
-Is mandatory to pass the regEx expression to be evaluated.
+Is mandatory to pass the max length value.
 
 ```typescript
 export interface LengthArgs {
   length: number;
 }
 
-export const validator: FieldValidationFunctionSync = fieldValidatorArgs => {
+export const maxLength: FieldValidationFunctionSync<LengthArgs> = (fieldValidatorArgs) : ValidationResult => {...}
 ```
 
 Sample usage:
 
 ```typescript
+import { Validators, ValidationSchema } from "@lemoncode/fonk";
+
+const validationSchema: ValidationSchema = {
+  field: {
+    description: [
+      {
+        validator: Validators.maxLength.validator,
+        customArgs: { length: 200 } // Valid description for length lower than 200 chars
+      }
+    ]
+  }
+};
 ```
 
 #### Third party validators:
