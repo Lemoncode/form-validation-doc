@@ -14,16 +14,16 @@ In a real app, you'll also want to use some integration library like [react-fina
 
 ### ValidationSchema
 
-In this structure it can define all the validations associated to a given form (field and record validations).
+In this structure you can define all the validations associated to a given form (field and record validations).
 
 This allow us to define all validation associated to a given form in a declarative way.
 
 Properties:
 
-- **field**: optional entry, here it can define all field validations associated to a given form
+- **field**: optional entry, here you can define all field validations associated to a given form
   (see [FieldValidationSchema](/api#fieldvalidationschema) for more information.)
 
-- **record**: optional entry, here it can define all record validations associated to a given form
+- **record**: optional entry, here you can define all record validations associated to a given form
   (see [RecordValidationSchema](/api#recordvalidationschema) for more information.)
 
 ```typescript
@@ -35,7 +35,7 @@ export interface ValidationSchema {
 
 ### FieldValidationSchema
 
-In this structure it can define all field validations associated to a given form. For each field, it has to add a validator list.
+In this structure you can define all field validations associated to a given form. For each field, it has to add a validator list.
 Each validator could be a [field sync validator](/api#field-synchronous-validator), [field async validator](/api#field-asynchronous-validator) or [full field validation](/api#fullfieldvalidation)
 
 Properties:
@@ -74,16 +74,16 @@ Structure to define a field validation:
 Properties:
 
 - **validator**: [field async validator](/api#field-asynchronous-validator) or [full field validation](/api#fullfieldvalidation) validation function to apply.
-- **customArgs**: optional, here it can pass any additional configuration, needed to setup the validator (e.g. in a max-length validation the length value, or in a regEx validator the regEx pattern).
-- **message**: optional, in this parameter it can override the default message(s) that the validator generates.
+- **customArgs**: optional, here you can pass any additional configuration, needed to setup the validator (e.g. in a max-length validation the length value, or in a regEx validator the regEx pattern).
+- **message**: optional, in this parameter you can override the default message(s) that the validator generates.
 
 #### Examples:
 
-You could see these examples in [fonk examples](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api).
+You can find these examples in [fonk examples](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/field-validator).
 
 **Schema Field validations**
 
-Let's say it has a login form, and the following record:
+Let's say we want to build a Login Form, and it contains the following record:
 
 ```javascript
 const loginModel = {
@@ -92,7 +92,7 @@ const loginModel = {
 };
 ```
 
-It wants to validate that both user and password are required field, a validation
+We want to validate that both user and password are required field, a validation
 schema to define these validations:
 
 ```javascript
@@ -146,7 +146,7 @@ const loginFormValidationSchema = {
 
 ### RecordValidationSchema
 
-In this structure it can define all record validations associated to a given form. For each record, it has to add a validator list.
+In this structure you can define all record validations associated to a given form. For each record, it has to add a validator list.
 Each validator could be a [record sync validator](/api#record-synchronous-validator), [record async validator](/api#record-asynchronous-validator) or [full record validation](/api#fullrecordvalidation)
 
 Properties:
@@ -183,11 +183,11 @@ Structure to define a record validation:
 Properties:
 
 - **validator**: [record async validator](/api#record-asynchronous-validator) or [full record validation](/api#fullrecordvalidation) validation function to apply.
-- **message**: optional, in this parameter it can override the default message(s) that the validator generates.
+- **message**: optional, in this parameter you can override the default message(s) that the validator generates.
 
 #### Examples:
 
-You could see these examples in [fonk examples](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api).
+You can find these examples in [fonk examples](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/record-validator).
 
 **Record Field validations**
 
@@ -582,6 +582,10 @@ const validationSchema: ValidationSchema = {
 };
 ```
 
+Example:
+
+You can find this example in [fonk examples](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/required).
+
 ##### email
 
 Succeeds if a field value is a well formed email, fails if not.
@@ -603,6 +607,10 @@ const validationSchema: ValidationSchema = {
   }
 };
 ```
+
+Example:
+
+You can find this example in [fonk examples](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/email).
 
 ##### pattern
 
@@ -673,6 +681,10 @@ const validationSchema: ValidationSchema = {
 };
 ```
 
+Example:
+
+You can find this example in [fonk examples](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/pattern).
+
 ##### min-length
 
 Succeeds if a field length is greater than the one informed in the customArgs.length
@@ -706,6 +718,10 @@ const validationSchema: ValidationSchema = {
 };
 ```
 
+Example:
+
+You can find this example in [fonk examples](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/min-length).
+
 ##### max-length
 
 Succeeds if a field length is less than the one informed in the customArgs.length
@@ -738,6 +754,10 @@ const validationSchema: ValidationSchema = {
   }
 };
 ```
+
+Example:
+
+You can find this example in [fonk examples](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/max-length).
 
 #### Third party validators:
 
