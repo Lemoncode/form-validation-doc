@@ -4,6 +4,119 @@ menu: 1. General
 order: 5
 ---
 
-# Validation Record
+# Record Validations
 
-Start with login
+Field validations are great, but sometimes we need to fire validations once the user has fulfilled all
+the form values (typically just when the user hits the _submit_ button), how can we fire this kind
+of validations? using the **FormValidation** **validateRecord** method.
+
+```typescript
+validateRecord(values: any): Promise<RecordValidationResult>
+```
+
+In this method we pass as arguments:
+
+- All the record values, usually this kind of validation need access to the whole form data.
+
+And it returns
+
+- Wether all the associated record validations passed or failed (in case just one of the validations faield).
+- A list of results including the result of firing all the record validations.
+
+> This behavior is different to ValidateField, in validate field you get success or stops the process
+> as soon as a fieldValidationField (all validations are executed sequentally), in validateRecord
+> all record validations are executed in parallel and results are collected.
+
+> You can find detailed information about this method in the [api definition](TODO link here to validateField api).
+
+Let's get our hand wet:
+
+We want to validate that, the user gets freeshipping if he is subscribed to _prime services_ or
+if the the total amount purchase is greater thanb 30 USD.
+
+Let's start with the following model:
+
+```typescript
+const checkoutForm = {
+   subtotal:  34,
+   discount: 10,
+   isPrime: false,
+   freeshipping: true,
+  }
+};
+```
+
+Let's define a Record Validator:
+
+```javascript
+const freeShippingAllowed = values => ({
+  message: "Total must be greater than 30USD to get cost free shippings",
+  type: "RECORD_FREE_SHIPPING",
+  succeeded: isPrime || value.subtotal - value.discount >= 30
+});
+```
+
+> More information about record validators in this link (TODO).
+
+And let's define our form validation schema:
+
+```javascript
+const checkoutFormValidationSchema = {
+  record: {
+    freeShippingValidtion: [freeShippingAllowed]
+  }
+};
+
+const checkOutFormValidation: FormValidation = createFormValidation(
+  validationSchema
+);
+```
+
+Now if we want fire the form record validation we only need to call:
+
+```javascript
+const result = checkOutFormValidation(checkoutForm);
+console.log(result);
+```
+
+In this case it will return:
+
+```javascript
+TODO;
+```
+
+The record validation field failed, we can show a message to the user asking to subscribe to prime
+servies or adding more items to his basket to get free shipping cost.
+
+If we update the values of the form, e.g. the user has contracted _prime services_ it will return
+a validation succeeded.
+
+```typescript
+checkoutForm.isPrime = true;
+```
+
+And we fire the record validation:
+
+```javascript
+const result = checkOutFormValidation(checkoutForm);
+console.log(result);
+```
+
+It will return:
+
+```javascript
+TODO;
+```
+
+The record validation succeeded.
+
+Examples:
+
+Current code base Examples
+JS plain vanilla including user interface.
+TS including user interface
+
+React final form example.
+
+Now that you know how to fire validate field & record validations 
+let's jump firing all the validation toghether [form validations](TODO Add link)
