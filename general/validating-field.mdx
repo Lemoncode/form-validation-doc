@@ -4,3 +4,96 @@ menu: 1. General
 ---
 
 # Validation Field
+
+Once we have our ValidationSchema defined and we have instantiated the **FormValidation**, it exposes
+a method called **validateField**, this method allows us to validate a given field, the signature of this
+method:
+
+```typescript
+  public validateField(fieldId: string, value: any,values?: any): Promise<ValidationResult> {
+```
+
+In this method we pass as arguments:
+
+- The name of the field we want to validate.
+- The current value of the field (usually we get this value for instance form a _OnChange_ _OnBlur_ input event args).
+- Optionally we can feed the whole record values (in some cases you need to feed the current form values, e.g. there is a _requiredOnField_ value where
+  a given field is required depending on another record field value).
+
+And it returns
+
+- A promise (validateField is async) including the validation result, it can succeed if all validations associated to that field passed, or fail in case any of the associated validations
+  fail (in that case you get back an error message and a validation type).
+
+The validations associated to a field are executed sequentially, starting from the one defined at index 0, the validation process stops as soon as one of the associated
+field validations fail.
+
+> You can find detailed information about this method in the [api definition](TODO link here to validateField api).
+
+Let's get our hand wet:
+
+We want to validate a login form, we have the following model:
+
+```javascript
+const loginValues = {
+  user: "",
+  password: "1234"
+};
+```
+
+Let's define the following validation ValidationSchema
+
+````
+TODO: Add a validation schema where user has two validations required and minLenght
+Call the factory to create the formValidation objet
+```
+
+Let's call **validateField** passing the _user_ field and the empty string value:
+
+```
+Calling the method
+```
+
+The result that we get back:
+
+```
+```
+
+That is: The validation failed, the field is required
+
+Now let's try to validate this field passing as value the string 'a'
+
+```
+
+```
+
+The result that we get back:
+
+```
+```
+
+In this case _required_ validation passed but _minLength_ validation didn't pass.
+
+Finally, let' try to validate this field pass as value the string 'abc'.
+
+```
+```
+
+The result that we get back:
+
+```
+```
+
+In this case all field associated passed and we get as result validation succeeded.
+
+
+Examples:
+
+Current code base Examples
+JS plain vanilla including user interface.
+TS including user interface
+
+React final form example.
+
+Now that you know how to validate a field let's jump into adding [record validations](TODO Add link)
+````
