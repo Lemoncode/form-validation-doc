@@ -19,7 +19,7 @@ const myFormValues = {
   discount: 5,
   price: 20,
   isPrime: false,
-  freeshipping: true
+  freeShipping: true
 };
 ```
 
@@ -28,8 +28,7 @@ And we want to set the following rules:
 - Product must be a required field.
 - Discount must be a required field.
 - Price must be a required field.
-- Freeshipping can be true if the total amount (price - discount) is
-  greater than 20 USD, or if the fied _isPrime_ is true. We want to trigger
+- FreeShipping can be true if the total amount (price - discount) is greater than 20 USD, or if the fied _isPrime_ is true. We want to trigger
   this validation when the user hits on submit.
 
 ## Defining field validations
@@ -39,7 +38,7 @@ Let's start by defining a validation schema that includes the field valdiations:
 ```javascript
 import { createFormValidation, Validators } from "@lemoncode/fonk";
 
-const myValidationSchema = {
+const validationSchema = {
   field: {
     product: [validators.required.validator],
     discount: [validators.required.validator],
@@ -180,7 +179,7 @@ const myFormValues = {
   discount: 5,
   price: 20,
   isPrime: false,
-  freeshipping: true
+  freeShipping: true
 };
 ```
 
