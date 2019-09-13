@@ -1,4 +1,5 @@
 export default {
+  typescript: true,
   menu: [
     {
       name: "1. General",
