@@ -6,8 +6,7 @@ route: /validation-schema
 
 # Validation Schema
 
-A Validation Schema allows us to define in a declarative way, all the validations that apply
-to each field of a form plus record validations in a single place.
+A Validation Schema allows us to define in a declarative way, all the validations that apply to each field of a form plus record validations in a single place.
 
 Let's learn how it works by following an example:
 
@@ -49,27 +48,30 @@ const validationSchema = {
 export const formValidation = createFormValidation(validationSchema);
 ```
 
-Disecting the previous code snippet:
+Dissecting the previous code snippet:
 
 - We have just added a section into the schema called 'field'.
 - Inside 'field' object we have created new keys one per each field that
   we want to validate (this keys have the same name as the field we want to validate).
-- Each field key will contain an array indicating the fields validation to be sequeantally
+- Each field key will contain an array indicating the fields validation to be sequentially
   executed when triggering a field validation or full form validation.
-- Given that validation schema we create a **FromValidation** object using the
-  **createFormValidation** factory method, this will allow us to call the **Fonk**
-  engine to trigger a field, form or record validation associated to the **Validation Schema**
+- Given that validation schema we create a [**FormValidation**](/api#formvalidation) object using the
+  [**createFormValidation**](/api#createformvalidation) factory method, this will allow us to call the [**Fonk**](https://github.com/Lemoncode/fonk)
+  engine to trigger a field, form or record validation associated to the [**Validation Schema**](/api#validationschema)
   we have previously created.
 
 If we want to fire a field validation we can run the following code:
 
 ```javascript
 // We pass here the Id of the field to validate, and the new value for that field
-const result = formValidation.validateField("product", "my new product name");
-console.log(result);
+formValidation
+  .validateField("product", "my new product name")
+  .then(validationResult => {
+    console.log(result);
+  });
 ```
 
-More information about Fonk [validateField](./general-validating-field).
+More information about Fonk [validateField](./validating-field).
 
 ## Defining record validations
 
