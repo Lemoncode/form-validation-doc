@@ -17,6 +17,40 @@ It allows you to:
 - Unit test your form validation without having to mount the ui.
 - Create reusable validation rules that can be easily unit tested.
 
+```javascript
+// The model
+const loginRecord = {
+  user: "",
+  password: ""
+};
+
+// The validation
+import { Validators, createFormValidation } from "@lemoncode/fonk";
+
+const validationSchema = {
+  field: {
+    user: [Validators.required.validator],
+    password: [Validators.required.validator]
+  }
+};
+
+const formValidation = createFormValidation(validationSchema);
+
+// Execute form validation
+formValidation
+  .validateField("user", loginRecord.user)
+  .then(validationResult => {
+    console.log(validationResult);
+  });
+
+// The result
+{
+  succeeded: false,
+  message: "Please fill in this mandatory field.",
+  type: "REQUIRED"
+}
+```
+
 [Try it out](https://github.com/Lemoncode/fonk/tree/master/examples/vanilla/js)
 
 Fonk is framework extension, and can be easily plugged into many libraries / frameworks,
