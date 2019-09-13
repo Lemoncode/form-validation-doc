@@ -38,13 +38,8 @@ export default {
       ]
     },
     {
-      name: "5. api",
-      menu: [
-        { name: "api", order: 1 },
-        { name: "validation-schema", order: 2 },
-        { name: "validation-form", order: 3 },
-        { name: "validators", order: 4 }
-      ]
+      name: "5. API",
+      menu: [{ name: "API", order: 1 }]
     }
   ]
 };
