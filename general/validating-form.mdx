@@ -3,4 +3,115 @@ name: Form Validation
 menu: 1. General
 ---
 
-# Validation Form
+# Form Validation
+
+We have learn so far how to fire single field validations and record validations, but under some
+scenarios we need to execute all associated fields valitadions plus record validations, for instance
+before hitting the _submit_ button you want to ensure everything is ok.
+
+**Fonk** **FormValidation** includes a method just for that, it's called **validateForm**
+
+```typescript
+validateForm(values: any): Promise<FormValidationResult> {
+```
+
+In this method we pass as arguments
+
+- All the record values.
+
+And it returns
+
+- Whether all the validations succeeded or not.
+- An object containing a key per field, each key maps to a [ValidationResult](TODO) object.
+- An object contains a key per record validation, each key maps to a [ValidationResult](TODO) object.
+
+> You can check the validateFrom formal specs in this [api link](TODO).
+
+Let's get our hands wet:
+
+We have the following form model:
+
+```javascript
+const checkoutForm = {
+   subtotal: null,
+   discount: null,
+   isPrime: false,
+   freeshipping: true,
+  }
+};
+```
+
+We want to apply the following validations to the form:
+
+- Fields _subtotal_, _discount_, are required fields
+- _Freeshipping_ can only be true if _isPrime_ is true
+  or if _subtotal - discount_ is greater than 30 USD.
+
+Let's define first the freeshipping record validation:
+
+```javascript
+const freeShippingAllowed = values => ({
+  message: "Total must be greater than 30USD to get cost free shippings",
+  type: "RECORD_FREE_SHIPPING",
+  succeeded: isPrime || value.subtotal - value.discount >= 30
+});
+```
+
+Let's define the form schema validation and instantiate our FormValidation
+object:
+
+```javascript
+import {Validators} from '@lemoncode/fonk';
+
+const checkoutFormValidationSchema = {
+  field: {
+    subtotal: [Validators.required.validator],
+    discount: [Validators.required.validator],
+  }
+  record: {
+    freeShippingValidation: [freeShippingAllowed]
+  }
+};
+
+const checkOutFormValidation: FormValidation = createFormValidation(
+  validationSchema
+);
+```
+
+If we execute the formValidation it will return:
+
+```javascript
+TODO;
+```
+
+If we update the values of the form to the following entries
+
+```diff
+const checkoutForm = {
+-   subtotal: null,
++   subtotal: 25,
+-   discount: null,
++   discount: 5
+-   isPrime: false,
++   isPrime: true,
+   freeshipping: true,
+  }
+};
+```
+
+It will return succeed:
+
+```javascript
+TODO;
+```
+
+Examples
+
+Current code base Example just
+
+Plain Vanilla including user interface (+ ts version)
+
+React final form Example
+
+You have mastered the basics about how to define a validation schema and
+fire validations, it's time to jump into a very interesting topic [Validators](TODO Link).
