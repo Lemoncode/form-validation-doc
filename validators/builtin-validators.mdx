@@ -13,35 +13,245 @@ Fonk already ships a set of basic validators:
 - MaxLength: check if a string field has at least a minimum length.
 - Email: check if a string field is a well formed email address.
 
-# Required
+> If you want to customize the error messages that this validators provide by default, check the [error-message](./messages-error-message) and [internazionalization](./messages-internationalization)
 
-Check if a field is be informed (field is not null, undefined or empty string), this can be applied to fields of type _string_ or _number_
+# Required
+
+Check if a field is be informed (field is not null, undefined or empty string), this can be applied to fields of type *string* or *number*
+
+Accepts a custom paramater to instruct the validator to trim the incoming values
+(if true a value like ' ' would be treated as an empty string).
+
+```typescript
+export interface RequiredArgs {
+  trim: boolean; // Default value equals true
+}
+
+export const required: FieldValidationFunctionSync<RequiredArgs> = (fieldValidatorArgs) : ValidationResult => {...}
+```
+
+Usage:
+
+- Simple, (trim default value equals true):
+
+```typescript
+import { Validators, ValidationSchema } from "@lemoncode/fonk";
+
+const validationSchema: ValidationSchema = {
+  field: {
+    login: [Validators.required.validator]
+  }
+};
+```
+
+customArgs
+
+```typescript
+import { Validators, ValidationSchema } from "@lemoncode/fonk";
+
+const validationSchema: ValidationSchema = {
+  field: {
+    login: [Validators.required.validator],
+    password: [
+      {
+        validator: Validators.required.validator,
+        customArgs: { trim: false }
+      }
+    ]
+  }
+};
+```
+
+Example:
+
+You can find this example in [fonk examples](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/required).
 
 # Pattern
 
-Check if field matches with a given RegEx
+Succeeds if a field matches with a define regex, fails if not. This regular expression can be either a [RegExp](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp) instance or a string.
+
+> If the string is empty it won't fail (to cover this case use the _required_ validator).
+
+Is mandatory to pass the regEx expression to be evaluated.
+
+```typescript
+export interface PatternArgs {
+  pattern: string | RegExp;
+}
+
+export const pattern: FieldValidationFunctionSync<PatternArgs> = (fieldValidatorArgs) : ValidationResult => {...}
+```
+
+Usage:
+
+String:
+
+```typescript
+import { Validators, ValidationSchema } from "@lemoncode/fonk";
+
+const validationSchema: ValidationSchema = {
+  field: {
+    phone: [
+      {
+        validator: Validators.pattern.validator,
+        customArgs: { pattern: "(7|8|9)d{9}" }
+      }
+    ]
+  }
+};
+```
+
+Regex:
+
+```typescript
+import { Validators, ValidationSchema } from "@lemoncode/fonk";
+
+const validationSchema: ValidationSchema = {
+  field: {
+    phone: [
+      {
+        validator: Validators.pattern.validator,
+        customArgs: { pattern: /(7|8|9)\d{9}/ }
+      }
+    ]
+  }
+};
+```
+
+Regex constructor:
+
+```typescript
+import { Validators, ValidationSchema } from "@lemoncode/fonk";
+
+const validationSchema: ValidationSchema = {
+  field: {
+    phone: [
+      {
+        validator: Validators.pattern.validator,
+        customArgs: { pattern: new Regex(/(7|8|9)\d{9}/) }
+      }
+    ]
+  }
+};
+```
+
+Example:
+
+You can find this example in [fonk examples](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/pattern).
 
 # MinLength
 
-Check if a string field has at least a minimum length
+Succeeds if a field length is greater than the one informed in the customArgs.length
 
-# MaxLength
+> If the string is empty it won't fail (to cover this case use the *required* validator).
 
-Check if a string field has at least a minimum length
+Is mandatory to pass the min length value.
 
-# Email
+```typescript
+export interface LengthArgs {
+  length: number;
+}
 
-Check if a string field is a well formed email address
+export const minLength: FieldValidationFunctionSync<LengthArgs> = (fieldValidatorArgs) : ValidationResult => {...}
+```
 
-# More validators
+Sample usage:
 
-**Fonk** only ships this minimal subset of validators to avoid adding extra weight to the library with other validators that you may not use.
+```typescript
+import { Validators, ValidationSchema } from "@lemoncode/fonk";
 
-If you are in the need of using / implementing other validators:
+const validationSchema: ValidationSchema = {
+  field: {
+    description: [
+      {
+        validator: Validators.minLength.validator,
+        customArgs: { length: 10 } // Valid description for length greater than 10 chars
+      }
+    ]
+  }
+};
+```
 
-- You have a available a list microlibraries that implement a wide set of validators, allowing you to cherry pick the validators that you really
-  need avoding extra weight into your application adding validators that you don't need. You can find a list of third partie validators in the
-  following [link](TODO).
+TODO Add subsection here indicating how to set erorr message with parameters.
 
-- You can implement your own custom validator, is quite easy, you can find instructions about how to build your own custom validation in this
-  [link](TODO).
+Example:
+
+You can find this example in [fonk examples](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/min-length).
+
+# MaxLength
+
+Succeeds if a field length is less than the one informed in the customArgs.length
+
+> If the string is empty it won't fail (to cover this case use the *required* validator).
+
+Is mandatory to pass the max length value.
+
+```typescript
+export interface LengthArgs {
+  length: number;
+}
+
+export const maxLength: FieldValidationFunctionSync<LengthArgs> = (fieldValidatorArgs) : ValidationResult => {...}
+```
+
+Sample usage:
+
+```typescript
+import { Validators, ValidationSchema } from "@lemoncode/fonk";
+
+const validationSchema: ValidationSchema = {
+  field: {
+    description: [
+      {
+        validator: Validators.maxLength.validator,
+        customArgs: { length: 200 } // Valid description for length lower than 200 chars
+      }
+    ]
+  }
+};
+```
+
+TODO Add subsection here indicating how to set erorr message with parameters.
+
+Example:
+
+You can find this example in [fonk examples](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/max-length).
+
+# Email
+
+Succeeds if a field value is a well formed email, fails if not.
+
+> If the string is empty it won't fail (to cover this case use the *required* validator).
+
+```typescript
+export const email: FieldValidationFunctionSync = (fieldValidatorArgs) : ValidationResult => {...}
+```
+
+Usage:
+
+```typescript
+import { Validators, ValidationSchema } from "@lemoncode/fonk";
+
+const validationSchema: ValidationSchema = {
+  field: {
+    email: [Validators.email.validator]
+  }
+};
+```
+
+Example:
+
+You can find this example in [fonk examples](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/email).
+
+# More validators
+
+**Fonk** only ships with a minimal subset of validators to avoid adding extra weight to the library with other validators that you may not use.
+
+If you are in the need of using / implementing other validators:
+
+- You have a available a list microlibraries that implement a wide set of validators, allowing you to cherry pick the validators that you really
+  need avoding extra weight into your application adding validators that you don't need. You can find a list of third partie validators in the
+  following [link](TODO).
+
+- You can implement your own custom validator, is quite easy, you can find instructions about how to build your own custom validation in this
+  [link](TODO).
