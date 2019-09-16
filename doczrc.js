@@ -1,5 +1,6 @@
 export default {
   typescript: true,
+  base: "/fonk-doc",
   menu: [
     {
       name: "1. General",
