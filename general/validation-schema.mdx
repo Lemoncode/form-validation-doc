@@ -84,16 +84,16 @@ _Free shipping costs can only be true if user is subscribed to prime services or
 (price - discount) is greater than 20 USD._
 
 We will define here the record validator (since is custom login we will define it from scratch,
-and attach to the Validation Schema we have created).
+and attach it to the Validation Schema we have created before).
 
 ```diff
 import { createFormValidation, Validators } from "@lemoncode/fonk";
 
-+ // A record validator receives in the args all the record values
-+ const freeShippingRecordValidator = (values) =>
++ // A record validator receives in the args an object with all the record values and optionally the custom message
++ const freeShippingRecordValidator = ({values}) =>
 +  (values.isPrime || values.price - discount > 20);
 
-const myValidationSchema = {
+const validationSchema = {
   field: {
     product: [validators.required.validator],
     discount: [validators.required.validator],
@@ -105,56 +105,52 @@ const myValidationSchema = {
 export const formValidation = createFormValidation(validationSchema);
 ```
 
-Now we can fire this record validation using **Fonk** engine _validateRecord_, and this validation
-will be triggered when we fire the **Fonk** engine method _validateForm_
+Now we can fire this record validation using **Fonk** engine [validateRecord](/api#validaterecord), and this validation
+will be triggered when we fire the **Fonk** engine method [validateForm](/api#validateform)
 
 If we want to fire a record validation we can run the following code:
 
 ```javascript
-// We pass all the record information
-const result = formValidation.validateRecord(myFormValues);
-console.log(result);
+// We pass all the values information
+formValidation.validateRecord(myFormValues).then(recordValidationResult => {
+  console.log(result);
+});
 ```
 
 If we want to fire all field and form validations associaged to the form, we can run the following code:
 
 ```javascript
-// We pass all the record information
-const result = formValidation.validateForm(myFormValues);
-console.log(result);
+// We pass all the values information
+formValidation.validateForm(myFormValues).then(formValidationResult => {
+  console.log(result);
+});
 ```
 
-More information about Fonk [validateField](./general-validating-field).
+More information about Fonk [validateRecord](./validating-record) and [validateForm](./validating-form).
 
-More information about Fonk [validateRecord](./general-validating-record) and (validateForm)[./general-validating-form].
+Live demos working example:
 
-Live demos working example: **TODO: Add demos to codesandbox**
-
-- Plain Vanilla javascript.
-- React + React Final Form.
+- [Plain Vanilla JS and TS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/vanilla).
+- [React + React Final Form JS and TS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/react-final-form).
 
 ## Adding additional context information
 
-What happens if we need to add addional context information to the validator
-function, for instance passing a custom error message ? The **ValidationSchema**
-supports two signatures whenever we add a validations:
+What happens if we need to add addional context information to the validator function, for instance passing a custom error message ? The **ValidationSchema** supports two signatures whenever we add a validations:
 
-- The short definition: the one we have been using, is just adding the validator function
-  we wan to use.
+- The short definition: the one we have been using, is just adding the validator function we wan to use.
 
 ```javascript
-const myValidationSchema = {
+const validationSchema = {
   field: {
     product: [validators.required.validator]
   }
 };
 ```
 
-- The long definitions: we can create an object where we can inform the validator function,
-  override the default error message(s), and pass custom arguments.
+- The long definition: we can create an object where we can inform the validator function, override the default error message(s) and pass custom arguments.
 
 ```javascript
-const myValidationSchema = {
+const validationSchema = {
   field: {
     product: [
       {
@@ -185,29 +181,26 @@ const myFormValues = {
 };
 ```
 
-How can we add _product.name_ to my validation schema? It's easy just use _product.name_ as a key,
-surrounding it with double quotes:
+How can we add _product.name_ to my validation schema? It's easy just use _product.name_ as a key, surrounding it with double quotes:
 
 ```diff
-const myValidationSchema = {
+const validationSchema = {
   field: {
-+    "product.name": [validators.required.validator],
 -    product: [validators.required.validator],
++    "product.name": [validators.required.validator],
     discount: [validators.required.validator],
     price: [validators.required.validator]
   }
 };
 ```
 
-Check live demo: TODO
+[Check live demo](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/vanilla/js/nested-field)
 
 ## Asynchronous validations
 
-What about Asynchronous validations? Under the hood **fonk** is fully asynchronous, you
-can plug an asynchronous validation directly into the validations array.
+What about asynchronous validations? Under the hood **fonk** is fully asynchronous, you can plug an asynchronous validation directly into the validations array.
 
-Lets create a simple login form, and as validations the user name must be requireds, and a valid
-github account (we will check against github api).
+Let's create a simple login form, and as validations the user name must be required, and a valid github account (we will check against github api).
 
 The form values we have:
 
@@ -218,40 +211,35 @@ const myLoginFormValues = {
 };
 ```
 
-The field validator (check [Custom validators asynchronous](http://localhost:3000/validators-custom-validators-async)
-for more info).
+The field validator (check [Custom validators asynchronous](./validators/custom-validators-async) for more info).
 
 ```javascript
-const userExistsOnGitHubValidator = (value, values?, customArgs?, message?) {
-  const errorMessage = `The username does not exists Github`;
+const userExistsOnGithubValidator = ({ value }) => {
   const validationResult = {
-    type:  'GITHUB_USER_EXISTS',
+    type: "GITHUB_USER_EXISTS",
     succeeded: false,
-    message: '',
-  }
-  validationResult.type = 'GITHUB_USER_EXISTS';
+    message: ""
+  };
 
-  return new Promise(resolve => {
-    fetch(`https://api.github.com/users/${value}`)
-      .then(result => {
-        // Status 200, meaning user exists, so the given user is valid
-        validationResult.succeeded = true;
-        validationResult.message = '';
-        resolve(validationResult);
-      })
-      .catch(error => {
-        if(error.status === 404) {
-          // User does not exists, so the given user is not valid
-          validationResult.succeeded = false;
-          validationResult.message = errorMessage;
-          resolve(validationResult);
-        } else {
-          // Unexpected error
-          reject(error);
-        }
-      });
-  });
-}
+  return fetch(`https://api.github.com/users/${value}`)
+    .then(result => {
+      // Status 200, meaning user exists, so the given user is valid
+      validationResult.succeeded = true;
+      validationResult.message = "";
+      return validationResult;
+    })
+    .catch(error => {
+      if (error.status === 404) {
+        // User does not exists, so the given user is not valid
+        validationResult.succeeded = false;
+        validationResult.message = "The username does not exists Github";
+        return validationResult;
+      } else {
+        // Unexpected error
+        throw error;
+      }
+    });
+};
 ```
 
 How to setup a validation schema that checks if the user field is informed and is a valid
@@ -260,23 +248,21 @@ github account:
 ```javascript
 import { createFormValidation, Validators } from "@lemoncode/fonk";
 
-const myLoginFormValidationSchema = {
+const validationSchema = {
   field: {
-    product: [validators.required.validator, userExistsOnGitHubValidator]
+    product: [validators.required.validator, userExistsOnGithubValidator]
   }
 };
 
-export const formValidation = createFormValidation(myLoginFormValidationSchema);
+export const formValidation = createFormValidation(validationSchema);
 ```
 
-TODO:
-Live example vanilla js.
-Live example React + React Final Forms.
+- [Plain Vanilla JS and TS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/vanilla).
+- [React + React Final Form JS and TS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/react-final-form).
 
 ## Next Steps
 
-Now it's time to learn how to trigger a field validation, follow this [link](./general-validating-field)
-to jump into it.
+Now it's time to learn how to trigger a field validation, follow this [link](./validating-field) to jump into it.
 
 ## Appendix: Validation Schema Typescript definition
 
