@@ -192,10 +192,7 @@ const myFormValues = {
   product: {
     id: 1245,
     name: "shoes"
-  },
-  discount: 5,
-  price: 20,
-  isPrime: false
+  }
 };
 ```
 
@@ -204,15 +201,18 @@ How can we add _product.name_ to my validation schema? It's easy just use _produ
 ```diff
 const validationSchema = {
   field: {
--    product: [validators.required.validator],
-+    "product.name": [validators.required.validator],
-    discount: [validators.required.validator],
-    price: [validators.required.validator]
+-    product: [Validators.required.validator],
++    "product.name": [Validators.required.validator],
   }
 };
 ```
 
-[Check live demo](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/vanilla/js/nested-field)
+Live demos working example:
+
+- [Plain Vanilla JS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/vanilla/js/nested-field).
+- [Plain Vanilla TS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/vanilla/ts/nested-field).
+- [React + React Final Form JS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/react-final-form/js/nested-field).
+- [React + React Final Form TS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/react-final-form/ts/nested-field).
 
 ## Asynchronous validations
 
@@ -240,7 +240,7 @@ const userExistsOnGithubValidator = ({ value }) => {
   };
 
   return fetch(`https://api.github.com/users/${value}`)
-    .then(result => {
+    .then(() => {
       // Status 200, meaning user exists, so the given user is valid
       validationResult.succeeded = true;
       validationResult.message = "";
@@ -268,7 +268,7 @@ import { createFormValidation, Validators } from "@lemoncode/fonk";
 
 const validationSchema = {
   field: {
-    product: [validators.required.validator, userExistsOnGithubValidator]
+    user: [Validators.required.validator, userExistsOnGithubValidator]
   }
 };
 
