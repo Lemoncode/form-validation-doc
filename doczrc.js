@@ -2,15 +2,15 @@ require("dotenv").config();
 
 export default {
   typescript: true,
+  base: "/fonk-doc/",
   menu: [
     {
       name: "1. General",
       menu: [
-        { name: "Fonk", order: 1, route: "/" },
+        { name: "Fonk", order: 1 },
         {
           name: "Getting Started",
-          order: 2,
-          route: "/fonk-doc/getting-started"
+          order: 2
         },
         { name: "Validation Schema", order: 3 },
         { name: "Field Validation", order: 4 },
