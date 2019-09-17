@@ -3,7 +3,7 @@
   "scripts": {
     "start": "docz dev",
     "build": "docz build",
-    "deploy": "npm run build && gh-pages -d .docz/public -b gh-pages"
+    "deploy": "npm run build && gh-pages -d .docz/dist -b gh-pages"
   },
   "version": "1.0.0",
   "main": "index.js",
@@ -17,6 +17,7 @@
   "devDependencies": {
     "@types/react": "^16.9.2",
     "@types/react-dom": "^16.9.0",
+    "dotenv": "^8.1.0",
     "gh-pages": "^2.1.1",
     "husky": "^3.0.5",
     "prettier": "^1.18.2",
