@@ -1,0 +1,17 @@
+version: 2
+jobs:
+  build:
+    branches:
+      only:
+        - master
+    working_directory: ~/test-ci-code
+    docker:
+      - image: circleci/node:10
+    steps:
+      - checkout
+      - run:
+          name: install
+          command: "npm install"
+      - run:
+          name: deploy
+          command: "npm run deploy"

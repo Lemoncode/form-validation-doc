@@ -2,13 +2,16 @@
   "name": "fonk-doc",
   "scripts": {
     "start": "docz dev",
-    "build": "docz build"
+    "clean": "rimraf .docz",
+    "build": "npm run clean && docz build",
+    "start:local": "docz serve",
+    "deploy": "npm run build && gh-pages -d .docz/dist -b gh-pages"
   },
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "docz": "^2.0.0-rc.40",
+    "docz": "^2.0.0-rc.41",
     "emotion": "^10.0.17",
     "react": "^16.9.0",
     "react-dom": "^16.9.0"
@@ -16,9 +19,12 @@
   "devDependencies": {
     "@types/react": "^16.9.2",
     "@types/react-dom": "^16.9.0",
+    "dotenv": "^8.1.0",
+    "gh-pages": "^2.1.1",
     "husky": "^3.0.5",
     "prettier": "^1.18.2",
-    "pretty-quick": "^1.11.1"
+    "pretty-quick": "^1.11.1",
+    "rimraf": "^3.0.0"
   },
   "husky": {
     "hooks": {
