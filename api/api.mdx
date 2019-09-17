@@ -212,7 +212,7 @@ Let's define our record validator rule:
 const freeShippingAllowed = values => ({
   message: "Total must be greater than 30USD to get cost free shippings",
   type: "RECORD_FREE_SHIPPING",
-  succeeded: value.subtotal - value.discount >= 30
+  succeeded: values.subtotal - values.discount >= 30
 });
 ```
 

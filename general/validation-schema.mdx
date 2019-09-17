@@ -17,8 +17,7 @@ const myFormValues = {
   product: "shoes",
   discount: 5,
   price: 20,
-  isPrime: false,
-  freeShipping: true
+  isPrime: false
 };
 ```
 
@@ -39,9 +38,9 @@ import { createFormValidation, Validators } from "@lemoncode/fonk";
 
 const validationSchema = {
   field: {
-    product: [validators.required.validator],
-    discount: [validators.required.validator],
-    price: [validators.required.validator]
+    product: [Validators.required.validator],
+    discount: [Validators.required.validator],
+    price: [Validators.required.validator]
   }
 };
 
@@ -90,16 +89,27 @@ and attach it to the Validation Schema we have created before).
 import { createFormValidation, Validators } from "@lemoncode/fonk";
 
 + // A record validator receives in the args an object with all the record values and optionally the custom message
-+ const freeShippingRecordValidator = ({values}) =>
-+  (values.isPrime || values.price - discount > 20);
++ const freeShippingRecordValidator = ({ values }) => {
++   const succeeded = values.isPrime || values.price - values.discount > 20;
+
++   return {
++     succeeded,
++     message: succeeded
++       ? ''
++       : 'Subscribe to prime service or total must be greater than 20USD',
++     type: 'RECORD_FREE_SHIPPING',
++   };
++ };
 
 const validationSchema = {
   field: {
-    product: [validators.required.validator],
-    discount: [validators.required.validator],
-    price: [validators.required.validator]
+    product: [Validators.required.validator],
+    discount: [Validators.required.validator],
+    price: [Validators.required.validator]
   },
-+ record: [freeShippingRecordValidator]
++ record: {
++   freeShipping: [freeShippingRecordValidator],
++ },
 };
 
 export const formValidation = createFormValidation(validationSchema);
@@ -130,8 +140,10 @@ More information about Fonk [validateRecord](./validating-record) and [validateF
 
 Live demos working example:
 
-- [Plain Vanilla JS and TS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/vanilla).
-- [React + React Final Form JS and TS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/react-final-form).
+- [Plain Vanilla JS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/vanilla/js/validate-field-record-and-form).
+- [Plain Vanilla TS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/vanilla/ts/validate-field-record-and-form).
+- [React + React Final Form JS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/react-final-form/js/validate-field-record-and-form).
+- [React + React Final Form TS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/react-final-form/ts/validate-field-record-and-form).
 
 ## Adding additional context information
 
@@ -162,6 +174,13 @@ const validationSchema = {
 };
 ```
 
+Live demos working example:
+
+- [Plain Vanilla JS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/vanilla/js/custom-error-message).
+- [Plain Vanilla TS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/vanilla/ts/custom-error-message).
+- [React + React Final Form JS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/react-final-form/js/custom-error-message).
+- [React + React Final Form TS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/react-final-form/ts/custom-error-message).
+
 ## Nested fields
 
 In this example we have used a plain object that didn't contain any nested property.
@@ -176,8 +195,7 @@ const myFormValues = {
   },
   discount: 5,
   price: 20,
-  isPrime: false,
-  freeShipping: true
+  isPrime: false
 };
 ```
 
