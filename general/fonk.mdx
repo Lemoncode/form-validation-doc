@@ -20,12 +20,12 @@ It allows you to:
 ```javascript
 // The model
 const loginRecord = {
-  user: "",
-  password: ""
+  user: '',
+  password: ''
 };
 
 // The validation schema
-import { Validators, createFormValidation } from "@lemoncode/fonk";
+import { Validators, createFormValidation } from '@lemoncode/fonk';
 
 const validationSchema = {
   field: {
@@ -38,7 +38,7 @@ const formValidation = createFormValidation(validationSchema);
 
 // Execute form validation
 formValidation
-  .validateField("user", loginRecord.user)
+  .validateField('user', loginRecord.user)
   .then(validationResult => {
     console.log(validationResult);
   });
@@ -46,12 +46,14 @@ formValidation
 // The result
 {
   succeeded: false,
-  message: "Please fill in this mandatory field.",
-  type: "REQUIRED"
+  message: 'Please fill in this mandatory field.',
+  type: 'REQUIRED'
 }
 ```
 
-[Try it out](https://github.com/Lemoncode/fonk/tree/master/examples/vanilla/js)
+[Try it out in Javascript](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/vanilla/js/validate-field)
+
+[Try it out in Typescript](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/vanilla/ts/validate-field)
 
 Fonk is framework extension, and can be easily plugged into many libraries / frameworks,
 in this documentation you will find integrations with:
