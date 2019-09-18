@@ -236,27 +236,20 @@ const userExistsOnGithubValidator = ({ value }) => {
   const validationResult = {
     type: "GITHUB_USER_EXISTS",
     succeeded: false,
-    message: ""
+    message: "The username exists on Github"
   };
 
-  return fetch(`https://api.github.com/users/${value}`)
-    .then(() => {
-      // Status 200, meaning user exists, so the given user is valid
-      validationResult.succeeded = true;
-      validationResult.message = "";
-      return validationResult;
-    })
-    .catch(error => {
-      if (error.status === 404) {
-        // User does not exists, so the given user is not valid
-        validationResult.succeeded = false;
-        validationResult.message = "The username does not exists Github";
-        return validationResult;
-      } else {
-        // Unexpected error
-        throw error;
-      }
-    });
+  return fetch(`https://api.github.com/users/${value}`).then(response => {
+    // Status 404, User does not exists, so the given user is valid
+    // Status 200, meaning user exists, so the given user is not valid
+    return response.status === 404
+      ? {
+          ...validationResult,
+          succeeded: true,
+          message: ""
+        }
+      : validationResult;
+  });
 };
 ```
 
@@ -275,8 +268,12 @@ const validationSchema = {
 export const formValidation = createFormValidation(validationSchema);
 ```
 
-- [Plain Vanilla JS and TS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/vanilla).
-- [React + React Final Form JS and TS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/react-final-form).
+Live demos working example:
+
+- [Plain Vanilla JS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/vanilla/js/async-validator).
+- [Plain Vanilla TS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/vanilla/ts/async-validator).
+- [React + React Final Form JS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/react-final-form/js/async-validator).
+- [React + React Final Form TS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/react-final-form/ts/async-validator).
 
 ## Next Steps
 
