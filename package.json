@@ -4,7 +4,7 @@
     "start": "docz dev",
     "clean": "rimraf .docz",
     "build": "npm run clean && docz build",
-    "start:local": "docz serve",
+    "start:local": "npm run build && docz serve",
     "deploy": "npm run build && gh-pages -d .docz/dist -b gh-pages"
   },
   "version": "1.0.0",
