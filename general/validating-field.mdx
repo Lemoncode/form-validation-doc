@@ -6,8 +6,8 @@ route: /validating-field
 
 # Field Validation
 
-Once we have our ValidationSchema defined and we have instantiated the **FormValidation**, it exposes
-a method called **validateField**, this method allows us to validate a given field, the signature of this
+Once we have our ValidationSchema defined and we have instantiated the [**FormValidation**](/api#formvalidation), it exposes
+a method called [**validateField**](/api#validatefield), this method allows us to validate a given field, the signature of this
 method:
 
 ```typescript
@@ -21,15 +21,15 @@ In this method we pass as arguments:
 - Optionally we can feed the whole record values (in some cases you need to feed the current form values, e.g. there is a *requiredOnField* value where
   a given field is required depending on another record field value).
 
-And it returns
+And it returns:
 
-- A promise (validateField is async) including the validation result, it can succeed if all validations associated to that field passed, or fail in case any of the associated validations
+- A promise (validateField is async) including the validation result, it can be succeeded if all validations associated to that field passed, or fail in case any of the associated validations
   fail (in that case you get back an error message and a validation type).
 
 The validations associated to a field are executed sequentially, starting from the one defined at index 0, the validation process stops as soon as one of the associated
 field validations fail.
 
-> You can find detailed information about this method in the [api definition](TODO link here to validateField api).
+> You can find detailed information about this method in the [api definition](/api#validatefield).
 
 Let's get our hand wet:
 
@@ -42,23 +42,49 @@ const loginValues = {
 };
 ```
 
-Let's define the following **ValidationSchema**:
+Let's define the following [**Validation Schema**](/api#validationschema):
 
 ```javascript
-TODO: Add a validation schema where user has two validations required and minLenght
-Call the factory to create the formValidation objet
+import { Validators, createFormValidation } from "@lemoncode/fonk";
+
+const validationSchema = {
+  field: {
+    user: [
+      Validators.required.validator,
+      {
+        validator: Validators.minLength.validator,
+        customArgs: { length: 3 }
+      }
+    ]
+  }
+};
+
+const formValidation = createFormValidation(validationSchema);
 ```
 
 Let's call **validateField** passing the *user* field and the empty string value:
 
 ```javascript
-Calling the method
+const loginValues = {
+  user: "",
+  password: "1234"
+};
+
+formValidation
+  .validateField("user", loginValues.user)
+  .then(validationResult => {
+    console.log(validationResult);
+  });
 ```
 
 The result that we get back:
 
 ```javascript
-TODO;
+{
+  "succeeded": false,
+  "message": "Please fill in this mandatory field.",
+  "type": "REQUIRED"
+}
 ```
 
 That is: The validation failed, the field is required
@@ -66,13 +92,26 @@ That is: The validation failed, the field is required
 Now let's try to validate this field passing as value the string 'a'
 
 ```javascript
-TODO;
+const loginValues = {
+  user: "a",
+  password: "1234"
+};
+
+formValidation
+  .validateField("user", loginValues.user)
+  .then(validationResult => {
+    console.log(validationResult);
+  });
 ```
 
 The result that we get back:
 
 ```javascript
-TODO;
+{
+  "succeeded": false,
+  "message": "The value provided does not fulfill min length",
+  "type": "MIN_LENGTH"
+}
 ```
 
 In this case *required* validation passed but *minLength* validation didn't pass.
@@ -80,23 +119,33 @@ In this case *required* validation passed but *minLength* validation di
 Finally, let' try to validate this field pass as value the string 'abc'.
 
 ```javascript
-TODO;
+const loginValues = {
+  user: "abc",
+  password: "1234"
+};
+
+formValidation
+  .validateField("user", loginValues.user)
+  .then(validationResult => {
+    console.log(validationResult);
+  });
 ```
 
 The result that we get back:
 
 ```javascript
-TODO;
+{
+  "succeeded": true,
+  "message": "",
+  "type": "MIN_LENGTH"
+}
 ```
 
 In this case all field associated passed and we get as result validation succeeded.
 
 Examples:
 
-Current code base Examples
-JS plain vanilla including user interface.
-TS including user interface
+- [Plain Vanilla JS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/docs/general/js/validating-field).
+- [Plain Vanilla TS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/docs/general/ts/validating-field).
 
-React final form example.
-
-Now that you know how to validate a field let's jump into adding [record validations](TODO Add link)
+Now that you know how to validate a field let's jump into adding [record validations](/validating-record)
