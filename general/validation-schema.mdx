@@ -88,7 +88,8 @@ and attach it to the Validation Schema we have created before).
 ```diff
 import { createFormValidation, Validators } from "@lemoncode/fonk";
 
-+ // A record validator receives in the args an object with all the record values and optionally the custom message
++ // A record validator receives in the args an object with
++ // all the record values and optionally the custom message
 + const freeShippingRecordValidator = ({ values }) => {
 +   const succeeded = values.isPrime || values.price - values.discount > 20;
 
