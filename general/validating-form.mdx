@@ -10,23 +10,23 @@ We have learn so far how to fire single field validations and record validations
 scenarios we need to execute all associated fields valitadions plus record validations, for instance
 before hitting the _submit_ button you want to ensure everything is ok.
 
-**Fonk** **FormValidation** includes a method just for that, it's called **validateForm**
+[**Fonk**](https://github.com/Lemoncode/fonk) [**FormValidation**](/api#formvalidation) includes a method just for that, it's called [**validateForm**](/api#validateform)
 
 ```typescript
-validateForm(values: any): Promise<FormValidationResult> {
+validateForm(values: any): Promise<FormValidationResult>
 ```
 
 In this method we pass as arguments
 
-- All the record values.
+- All the form values.
 
 And it returns
 
 - Whether all the validations succeeded or not.
-- An object containing a key per field, each key maps to a [ValidationResult](TODO) object.
-- An object contains a key per record validation, each key maps to a [ValidationResult](TODO) object.
+- An object containing a key per field, each key maps to a [ValidationResult](/api#validationresult) object.
+- An object contains a key per record validation, each key maps to a [ValidationResult](/api#validationresult) object.
 
-> You can check the validateFrom formal specs in this [api link](TODO).
+> You can check the validateForm formal specs in this [api link](/api#validateform).
 
 Let's get our hands wet:
 
@@ -34,85 +34,147 @@ We have the following form model:
 
 ```javascript
 const checkoutForm = {
-   subtotal: null,
-   discount: null,
-   isPrime: false,
-   freeshipping: true,
-  }
+  product: "",
+  discount: null,
+  price: null,
+  isPrime: false
 };
 ```
 
 We want to apply the following validations to the form:
 
-- Fields _subtotal_, _discount_, are required fields
-- _Freeshipping_ can only be true if _isPrime_ is true
-  or if _subtotal - discount_ is greater than 30 USD.
+- Fields _product_, _price_, _discount_, are required fields
+- We get _Freeshipping_ if _isPrime_ is true
+  or if _price - discount_ is greater than 20 USD.
 
 Let's define first the freeshipping record validation:
 
 ```javascript
-const freeShippingAllowed = values => ({
-  message: "Total must be greater than 30USD to get cost free shippings",
-  type: "RECORD_FREE_SHIPPING",
-  succeeded: isPrime || value.subtotal - value.discount >= 30
-});
+const freeShippingRecordValidator = ({ values }) => {
+  const succeeded = values.isPrime || values.price - values.discount > 20;
+
+  return {
+    succeeded,
+    message: succeeded
+      ? ""
+      : "Subscribe to prime service or total must be greater than 20USD",
+    type: "RECORD_FREE_SHIPPING"
+  };
+};
 ```
 
-Let's define the form schema validation and instantiate our FormValidation
-object:
+Let's define the form schema validation and instantiate our FormValidation object:
 
 ```javascript
-import {Validators} from '@lemoncode/fonk';
+import { createFormValidation, Validators } from "@lemoncode/fonk";
 
-const checkoutFormValidationSchema = {
+const validationSchema = {
   field: {
-    subtotal: [Validators.required.validator],
+    product: [Validators.required.validator],
     discount: [Validators.required.validator],
-  }
+    price: [Validators.required.validator]
+  },
   record: {
-    freeShippingValidation: [freeShippingAllowed]
+    freeShipping: [freeShippingRecordValidator]
   }
 };
 
-const checkOutFormValidation: FormValidation = createFormValidation(
-  validationSchema
-);
+const formValidation = createFormValidation(validationSchema);
 ```
 
 If we execute the formValidation it will return:
 
 ```javascript
-TODO;
+formValidation.validateForm(checkoutForm).then(formValidationResult => {
+  console.log(formValidationResult);
+});
+
+// Result
+{
+  "succeeded": false,
+  "fieldErrors": {
+    "product": {
+      "succeeded": false,
+      "message": "Please fill in this mandatory field.",
+      "type": "REQUIRED"
+    },
+    "discount": {
+      "succeeded": true,
+      "message": "",
+      "type": "REQUIRED"
+    },
+    "price": {
+      "succeeded": true,
+      "message": "",
+      "type": "REQUIRED"
+    }
+  },
+  "recordErrors": {
+    "freeShipping": {
+      "succeeded": false,
+      "message": "Subscribe to prime service or total must be greater than 20USD",
+      "type": "RECORD_FREE_SHIPPING"
+    }
+  }
+}
 ```
 
 If we update the values of the form to the following entries
 
 ```diff
 const checkoutForm = {
--   subtotal: null,
-+   subtotal: 25,
--   discount: null,
-+   discount: 5
--   isPrime: false,
-+   isPrime: true,
-   freeshipping: true,
-  }
+- product: '',
++ product: 'a',
+- discount: null,
++ discount: 5,
+- price: null,
++ price: 20,
+- isPrime: false,
++ isPrime: true,
 };
 ```
 
 It will return succeed:
 
 ```javascript
-TODO;
+{
+  "succeeded": true,
+  "fieldErrors": {
+    "product": {
+      "succeeded": true,
+      "message": "",
+      "type": "REQUIRED"
+    },
+    "discount": {
+      "succeeded": true,
+      "message": "",
+      "type": "REQUIRED"
+    },
+    "price": {
+      "succeeded": true,
+      "message": "",
+      "type": "REQUIRED"
+    }
+  },
+  "recordErrors": {
+    "freeShipping": {
+      "succeeded": true,
+      "message": "",
+      "type": "RECORD_FREE_SHIPPING"
+    }
+  }
+}
 ```
 
-Examples
+Examples:
 
-Current code base Example just
+- [Plain Vanilla JS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/docs/general/js/validate-field-record-and-form).
+- [Plain Vanilla TS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/docs/general/ts/validate-field-record-and-form).
 
-Plain Vanilla including user interface (+ ts version)
+React final form examples:
 
-React final form Example
+- [React + React Final Form JS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/react-final-form/js/validate-field-record-and-form).
+- [React + React Final Form TS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/react-final-form/ts/validate-field-record-and-form).
 
 You have mastered the basics about how to define a validation schema and
-fire validations, it's time to jump into a very interesting topic [Validators](TODO Link).
+fire validations, it's time to jump into a very interesting topic [Validators](/validators/builtin-validators).
