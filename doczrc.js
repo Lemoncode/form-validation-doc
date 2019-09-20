@@ -1,10 +1,17 @@
+require("dotenv").config();
+
 export default {
+  typescript: true,
+  base: "/fonk-doc/",
   menu: [
     {
       name: "1. General",
       menu: [
-        { name: "form-validation", order: 1 },
-        { name: "Getting Started", order: 2 },
+        { name: "Fonk", order: 1 },
+        {
+          name: "Getting Started",
+          order: 2
+        },
         { name: "Validation Schema", order: 3 },
         { name: "Field Validation", order: 4 },
         { name: "Record Validation", order: 5 },
