@@ -1,24 +1,21 @@
 ---
 name: Validators
 menu: 2. Validators
+route: /validators
 ---
 
 # Validators
 
 **Fonk** isolated field and record validation into **Validators**
 
-A validator is function, that given an input (for instance, field name,
+A validator is a function, that given an input (for instance, field name,
 fieldvalue), check for a give business rule (e.g. is field a valid
 email, or has been field informed), and depending on the success or not
 of that validation it returns a succeed output, or a fail one (including
 additional context information like the error message or validation
 type applied).
 
-For instance let's create a validator that check if a field contains no
-blank spaces:
-
-TODO: Check if this validator is properly build
-and works :)
+For instance let's create a validator that check if a field contains no blank spaces:
 
 ```javascript
 const VALIDATOR_TYPE = 'NO_SPACES';
@@ -79,11 +76,11 @@ Validators can be defined:
 
 You can find:
 
-- A set of built-in validators in the core **Fonky** library (required, minLenght, maxLenght, pattern, email).
+- A set of built-in validators in the core **Fonk** library (required, minLenght, maxLenght, pattern, email).
 - A list of microlibraries avaiable with a range set of validators already implemented (just
   install the ones that you need, like a buffet style).
 - If any of the built-in validators match you needs, you can build your own custom validator, and
   even publish it as a microlibrary to spread the OSS love around the world.
 
-Enough theory, let's get started learning how to use the validators that already ships **Fonky**
+Enough theory, let's get started learning how to use the validators that already ships **Fonk**
 library, click on this [link](validators-builtin-validators) to get started.
