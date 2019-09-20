@@ -20,23 +20,19 @@ For instance let's create a validator that check if a field contains no blank sp
 ```javascript
 const VALIDATOR_TYPE = 'NO_SPACES';
 
-// Let's
 let defaultMessage = 'String cannot contain white spaces';
-export const setErrorMessage(message) =>
-  defaultMessage = message;
+export const setErrorMessage = message => (defaultMessage = message);
 
 export const validator = (fieldValidatorArgs) => {
   const {
       value,
       // Just if we want to override the default error message
       message = defaultMessage,
-      // In this case we don't need custom args
-      customArgs = defaultCustomArgs,
     } = fieldValidatorArgs;
 
-    // If the field is not informed, just return succeed, this
+    // If the field is not informed, just return succeeded, this
     // case should be handle before by the required validator
-    const succeeded = !value || !(/^ *$/.test(value));
+    const succeeded = !value || (typeof value === 'string' && value === value.trim());
 
    // Return ValidationResultStructure
    // ValidationSucceeded: true / false
@@ -46,7 +42,7 @@ export const validator = (fieldValidatorArgs) => {
    // we can return promises as well (async validator)
   return {
     succeeded,
-    message: (succeeded ? '' : message || defaultMessage) as string,
+    message: succeeded ? '' : (message as string),
     type: VALIDATOR_TYPE,
   };
 }
@@ -76,11 +72,10 @@ Validators can be defined:
 
 You can find:
 
-- A set of built-in validators in the core **Fonk** library (required, minLenght, maxLenght, pattern, email).
-- A list of microlibraries avaiable with a range set of validators already implemented (just
-  install the ones that you need, like a buffet style).
-- If any of the built-in validators match you needs, you can build your own custom validator, and
+- A set of built-in validators in the core [**Fonk**](https://github.com/Lemoncode/fonk) library (required, minLength, maxLength, pattern, email).
+- A list of microlibraries available with a range set of validators already implemented (just install the ones that you need, like a buffet style).
+- If any of the built-in validators doesn't match your needs, you can build your own custom validator, and
   even publish it as a microlibrary to spread the OSS love around the world.
 
 Enough theory, let's get started learning how to use the validators that already ships **Fonk**
-library, click on this [link](validators-builtin-validators) to get started.
+library, click on this [link](/validators/builtin-validators) to get started.
