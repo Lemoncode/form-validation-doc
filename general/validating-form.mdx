@@ -4,4 +4,177 @@ menu: 1. General
 route: /validating-form
 ---
 
-# Validation Form
+# Form Validation
+
+We have learn so far how to fire single field validations and record validations, but under some
+scenarios we need to execute all associated fields valitadions plus record validations, for instance
+before hitting the _submit_ button you want to ensure everything is ok.
+
+[**Fonk**](https://github.com/Lemoncode/fonk) [**FormValidation**](/api#formvalidation) includes a method just for that, it's called [**validateForm**](/api#validateform)
+
+```typescript
+validateForm(values: any): Promise<FormValidationResult>
+```
+
+In this method we pass as arguments
+
+- All the form values.
+
+And it returns
+
+- Whether all the validations succeeded or not.
+- An object containing a key per field, each key maps to a [ValidationResult](/api#validationresult) object.
+- An object contains a key per record validation, each key maps to a [ValidationResult](/api#validationresult) object.
+
+> You can check the validateForm formal specs in this [api link](/api#validateform).
+
+Let's get our hands wet:
+
+We have the following form model:
+
+```javascript
+const checkoutForm = {
+  product: "",
+  discount: null,
+  price: null,
+  isPrime: false
+};
+```
+
+We want to apply the following validations to the form:
+
+- Fields _product_, _price_, _discount_, are required fields
+- We get _Freeshipping_ if _isPrime_ is true
+  or if _price - discount_ is greater than 20 USD.
+
+Let's define first the freeshipping record validation:
+
+```javascript
+const freeShippingRecordValidator = ({ values }) => {
+  const succeeded = values.isPrime || values.price - values.discount > 20;
+
+  return {
+    succeeded,
+    message: succeeded
+      ? ""
+      : "Subscribe to prime service or total must be greater than 20USD",
+    type: "RECORD_FREE_SHIPPING"
+  };
+};
+```
+
+Let's define the form schema validation and instantiate our FormValidation object:
+
+```javascript
+import { createFormValidation, Validators } from "@lemoncode/fonk";
+
+const validationSchema = {
+  field: {
+    product: [Validators.required.validator],
+    discount: [Validators.required.validator],
+    price: [Validators.required.validator]
+  },
+  record: {
+    freeShipping: [freeShippingRecordValidator]
+  }
+};
+
+const formValidation = createFormValidation(validationSchema);
+```
+
+If we execute the formValidation it will return:
+
+```javascript
+formValidation.validateForm(checkoutForm).then(formValidationResult => {
+  console.log(formValidationResult);
+});
+
+// Result
+{
+  "succeeded": false,
+  "fieldErrors": {
+    "product": {
+      "succeeded": false,
+      "message": "Please fill in this mandatory field.",
+      "type": "REQUIRED"
+    },
+    "discount": {
+      "succeeded": true,
+      "message": "",
+      "type": "REQUIRED"
+    },
+    "price": {
+      "succeeded": true,
+      "message": "",
+      "type": "REQUIRED"
+    }
+  },
+  "recordErrors": {
+    "freeShipping": {
+      "succeeded": false,
+      "message": "Subscribe to prime service or total must be greater than 20USD",
+      "type": "RECORD_FREE_SHIPPING"
+    }
+  }
+}
+```
+
+If we update the values of the form to the following entries
+
+```diff
+const checkoutForm = {
+- product: '',
++ product: 'a',
+- discount: null,
++ discount: 5,
+- price: null,
++ price: 20,
+- isPrime: false,
++ isPrime: true,
+};
+```
+
+It will return succeed:
+
+```javascript
+{
+  "succeeded": true,
+  "fieldErrors": {
+    "product": {
+      "succeeded": true,
+      "message": "",
+      "type": "REQUIRED"
+    },
+    "discount": {
+      "succeeded": true,
+      "message": "",
+      "type": "REQUIRED"
+    },
+    "price": {
+      "succeeded": true,
+      "message": "",
+      "type": "REQUIRED"
+    }
+  },
+  "recordErrors": {
+    "freeShipping": {
+      "succeeded": true,
+      "message": "",
+      "type": "RECORD_FREE_SHIPPING"
+    }
+  }
+}
+```
+
+Examples:
+
+- [Plain Vanilla JS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/vanilla/js/validate-field-record-and-form).
+- [Plain Vanilla TS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/vanilla/ts/validate-field-record-and-form).
+
+React final form examples:
+
+- [React + React Final Form JS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/react-final-form/js/validate-field-record-and-form).
+- [React + React Final Form TS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/react-final-form/ts/validate-field-record-and-form).
+
+You have mastered the basics about how to define a validation schema and
+fire validations, it's time to jump into a very interesting topic [Validators](/validators/builtin-validators).

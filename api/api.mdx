@@ -298,7 +298,7 @@ How does it works:
 
 - It passes as arguments the whole form information (aka. record or values).
 - The validation engine will start sequentially firing the list record validations associated to the form.
-- It will stop iterating through all validations associated to the given field:
+- For each record, it will fire related validations and stop it:
   A. When it finds a validation that fails, in that case it will indicate that the record validation failed, which validation failed, plus the error message associated.
   B. When all associated record validations succeed, in that case it will return a validation succeed result.
 
