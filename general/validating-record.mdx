@@ -4,6 +4,142 @@ menu: 1. General
 route: /validating-record
 ---
 
-# Validation Record
+# Record Validations
 
-Start with login
+Field validations are great, but sometimes we need to fire validations once the user has fulfilled all
+the form values (typically just when the user hits the _submit_ button), how can we fire this kind
+of validations? using the [**FormValidation**](/api#formvalidation) [**validateRecord**](/api#validaterecord) method.
+
+```typescript
+validateRecord(values: any): Promise<RecordValidationResult>
+```
+
+In this method we pass as arguments:
+
+- All the record values, usually this kind of validation need access to the whole form data.
+
+And it returns
+
+- Whether all the associated record validations passed or failed (in case just one of the validations failed).
+- A list of results including the result of firing all the record validations.
+
+> This behavior is different to [ValidateField](/api#validatefield), because validate field is ove one field, validateRecord is over a list of records. you get success or stops the process
+> For each record has same behaviour like validateField.
+
+> You can find detailed information about this method in the [api definition](/api#validaterecord)).
+
+Let's get our hand wet:
+
+We want to validate that, the user gets freeshipping if he is subscribed to _prime services_ or
+if the the total amount purchase is greater than 30 USD.
+
+Let's start with the following model:
+
+```typescript
+const checkoutForm = {
+  product: "shoes",
+  price: 20,
+  discount: 5,
+  isPrime: false
+};
+```
+
+Let's define a Record Validator:
+
+```javascript
+const freeShippingRecordValidator = ({ values }) => {
+  const succeeded = values.isPrime || values.price - values.discount > 20;
+
+  return {
+    succeeded,
+    message: succeeded
+      ? ""
+      : "Subscribe to prime service or total must be greater than 20USD",
+    type: "RECORD_FREE_SHIPPING"
+  };
+};
+```
+
+> More information about record validators in this [link](/api#recordvalidation-function-type).
+
+And let's define our form validation schema:
+
+```javascript
+const validationSchema = {
+  record: {
+    freeShipping: [freeShippingRecordValidator]
+  }
+};
+
+const formValidation: FormValidation = createFormValidation(validationSchema);
+```
+
+Now if we want fire the form record validation we only need to call:
+
+```javascript
+formValidation.validateRecord(checkoutForm).then(recordValidationResult => {
+  console.log(recordValidationResult);
+});
+```
+
+In this case it will return:
+
+```javascript
+{
+  "succeeded": false,
+  "recordErrors": {
+    "freeShipping": {
+      "succeeded": false,
+      "message": "Subscribe to prime service or total must be greater than 20USD",
+      "type": "RECORD_FREE_SHIPPING"
+    }
+  }
+}
+```
+
+The record validation failed, we can show a message to the user asking to subscribe to prime services or adding more items to his basket to get free shipping cost.
+
+If we update the values of the form, e.g. the user has contracted _prime services_ it will return
+a validation succeeded.
+
+```typescript
+checkoutForm.isPrime = true;
+```
+
+And we fire the record validation:
+
+```javascript
+formValidation.validateRecord(checkoutForm).then(recordValidationResult => {
+  console.log(recordValidationResult);
+});
+```
+
+It will return:
+
+```javascript
+{
+  "succeeded": true,
+  "recordErrors": {
+    "freeShipping": {
+      "succeeded": true,
+      "message": "",
+      "type": "RECORD_FREE_SHIPPING"
+    }
+  }
+}
+```
+
+The record validation succeeded.
+
+Examples:
+
+- [Plain Vanilla JS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/vanilla/js/validate-record).
+- [Plain Vanilla TS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/vanilla/ts/validate-record).
+
+React final form examples:
+
+- [React + React Final Form JS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/react-final-form/js/validate-record).
+- [React + React Final Form TS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/react-final-form/ts/validate-record).
+
+Now that you know how to fire validate field & record validations 
+let's jump firing all the validation toghether [form validations](/validating-form)
