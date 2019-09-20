@@ -4,6 +4,58 @@ menu: 2. Validators
 route: /validators/custom-validators-sync
 ---
 
-# Custom validators
+# Custom validators synchronous
 
-How to get started
+Once you have checked that a given field or record validation is not available in the base or
+third parties list of validators, is time to create your own validator.
+
+## Field Validator
+
+A field synchronous validator is just a function that expected three arguments (two of them optionals), and return
+a validation result.
+
+> What do we mean by syncrhonous? That is any validation that executes some code and returns an straightforward result,
+> if your validation needs to make a request to a server, it cannot provide and straightdforward result and probably
+> you will have to manage it using promises, that is an asynchronous validation and it's covered in the following
+> [link](TODO).
+
+Usually a Field Validator can be a perfect piece of code to be reused across the application and even as a library.
+
+### Disecting a validator
+
+Signature what is every stuff
+
+### Learning by example
+
+Validation IBAN prefix country only spain (ES), harcoded error message.
+
+Let's go one step further we want to be able to customize the message, two flavours
+
+Next step why not going more generic prefix per country, why not informed from
+the app level. We can use for this customArgs
+
+Next step error message, now we want to indicate the exact prefix that is
+needed, ES6 interpolation won't work in this, fonk provides a definition to add params to the error message.
+
+Final step, Let's step back, let's move to the point where the validator was ES, now the viewmodel has a
+field that indicates you wether the wire transfer is local (assume Spain) or international, in this
+case we depend on another field in the form values to enable o disable this validation, let's solve this
+step by step
+
+----> the form model
+
+--> Sample data
+
+--> The starting point (validator)
+
+--> Indicating in a custom param the Id of the field in the form data (values) to compare with
+
+--> Accesing the form values in the validation
+
+--> How would that look in a validationSchema?
+
+## Record Validator
+
+### Disecting a validator
+
+### Learning by example
