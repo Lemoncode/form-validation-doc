@@ -9,18 +9,18 @@ route: /validators/builtin-validators
 Fonk already ships a set of basic validators:
 
 - Required: check if a field is be informed (field is not null, undefined or empty string), this can be applied to fields of type _string_ or _number_.
-- Pattern: check if field matches with a given RegEx.
-- MinLength: check if a string field has at least a minimum length.
-- MaxLength: check if a string field has at least a minimum length.
+- Pattern: check if field matches with a given RegExp.
+- MinLength: check if a string field has a minimum length.
+- MaxLength: check if a string field has a maximum length.
 - Email: check if a string field is a well formed email address.
 
-> If you want to customize the error messages that this validators provide by default, check the [error-message](./messages-error-message) and [internazionalization](./messages-internationalization)
+> If you want to customize the error messages that this validators provide by default, check the [error-message](/messages/error-message) and [internazionalization](/messages/internationalization)
 
 # Required
 
 Check if a field is be informed (field is not null, undefined or empty string), this can be applied to fields of type *string* or *number*
 
-Accepts a custom paramater to instruct the validator to trim the incoming values
+It accepts a custom parameter to instruct the validator to trim the incoming values
 (if true a value like ' ' would be treated as an empty string).
 
 ```typescript
@@ -33,22 +33,22 @@ export const required: FieldValidationFunctionSync<RequiredArgs> = (fieldVa
 
 Usage:
 
-- Simple, (trim default value equals true):
+- Simple, (trim default value equals true):
 
 ```typescript
-import { Validators, ValidationSchema } from "@lemoncode/fonk";
+import { Validators, ValidationSchema } from '@lemoncode/fonk';
 
 const validationSchema: ValidationSchema = {
   field: {
-    login: [Validators.required.validator]
-  }
+    login: [Validators.required.validator],
+  },
 };
 ```
 
-customArgs
+- With customArgs
 
 ```typescript
-import { Validators, ValidationSchema } from "@lemoncode/fonk";
+import { Validators, ValidationSchema } from '@lemoncode/fonk';
 
 const validationSchema: ValidationSchema = {
   field: {
@@ -56,24 +56,24 @@ const validationSchema: ValidationSchema = {
     password: [
       {
         validator: Validators.required.validator,
-        customArgs: { trim: false }
-      }
-    ]
-  }
+        customArgs: { trim: false },
+      },
+    ],
+  },
 };
 ```
 
 Example:
 
-You can find this example in [fonk examples](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/required).
+You can find this example in [Javascript](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/js/required) and [Typescript](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/ts/required).
 
 # Pattern
 
-Succeeds if a field matches with a define regex, fails if not. This regular expression can be either a [RegExp](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp) instance or a string.
+Succeeds if a field matches with a defined **RegExp**, fails if not. This regular expression can be either a [RegExp](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp) instance or a string.
 
 > If the string is empty it won't fail (to cover this case use the _required_ validator).
 
-Is mandatory to pass the regEx expression to be evaluated.
+Is mandatory to pass the RegExp expression to be evaluated.
 
 ```typescript
 export interface PatternArgs {
@@ -85,60 +85,60 @@ export const pattern: FieldValidationFunctionSync<PatternArgs> = (fieldValidator
 
 Usage:
 
-String:
+- String:
 
 ```typescript
-import { Validators, ValidationSchema } from "@lemoncode/fonk";
+import { Validators, ValidationSchema } from '@lemoncode/fonk';
 
 const validationSchema: ValidationSchema = {
   field: {
     phone: [
       {
         validator: Validators.pattern.validator,
-        customArgs: { pattern: "(7|8|9)d{9}" }
-      }
-    ]
-  }
+        customArgs: { pattern: '^(7|8|9)\\d{9}$' },
+      },
+    ],
+  },
 };
 ```
 
-Regex:
+- RegExp:
 
 ```typescript
-import { Validators, ValidationSchema } from "@lemoncode/fonk";
+import { Validators, ValidationSchema } from '@lemoncode/fonk';
 
 const validationSchema: ValidationSchema = {
   field: {
     phone: [
       {
         validator: Validators.pattern.validator,
-        customArgs: { pattern: /(7|8|9)\d{9}/ }
-      }
-    ]
-  }
+        customArgs: { pattern: /^(7|8|9)\d{9}$/ },
+      },
+    ],
+  },
 };
 ```
 
-Regex constructor:
+- RegExp constructor:
 
 ```typescript
-import { Validators, ValidationSchema } from "@lemoncode/fonk";
+import { Validators, ValidationSchema } from '@lemoncode/fonk';
 
 const validationSchema: ValidationSchema = {
   field: {
     phone: [
       {
         validator: Validators.pattern.validator,
-        customArgs: { pattern: new Regex(/(7|8|9)\d{9}/) }
-      }
-    ]
-  }
+        customArgs: { pattern: new RegExp(/^(7|8|9)\d{9}$/) },
+      },
+    ],
+  },
 };
 ```
 
 Example:
 
-You can find this example in [fonk examples](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/pattern).
+You can find this example in [Javascript](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/js/pattern) and [Typescript](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/ts/pattern).
 
 # MinLength
 
@@ -156,20 +156,20 @@ export interface LengthArgs {
 export const minLength: FieldValidationFunctionSync<LengthArgs> = (fieldValidatorArgs) : ValidationResult => {...}
 ```
 
-Sample usage:
+Usage:
 
 ```typescript
-import { Validators, ValidationSchema } from "@lemoncode/fonk";
+import { Validators, ValidationSchema } from '@lemoncode/fonk';
 
 const validationSchema: ValidationSchema = {
   field: {
     description: [
       {
         validator: Validators.minLength.validator,
-        customArgs: { length: 10 } // Valid description for length greater than 10 chars
-      }
-    ]
-  }
+        customArgs: { length: 10 }, // Valid description for length greater than 10 chars
+      },
+    ],
+  },
 };
 ```
 
@@ -177,11 +177,11 @@ TODO Add subsection here indicating how to set erorr message with parameters.
 
 Example:
 
-You can find this example in [fonk examples](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/min-length).
+You can find this example in [Javascript](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/js/min-length) and [Typescript](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/ts/min-length).
 
 # MaxLength
 
-Succeeds if a field length is less than the one informed in the customArgs.length
+Succeeds if a field length is lower than the one informed in the customArgs.length
 
 > If the string is empty it won't fail (to cover this case use the *required* validator).
 
@@ -195,20 +195,20 @@ export interface LengthArgs {
 export const maxLength: FieldValidationFunctionSync<LengthArgs> = (fieldValidatorArgs) : ValidationResult => {...}
 ```
 
-Sample usage:
+Usage:
 
 ```typescript
-import { Validators, ValidationSchema } from "@lemoncode/fonk";
+import { Validators, ValidationSchema } from '@lemoncode/fonk';
 
 const validationSchema: ValidationSchema = {
   field: {
     description: [
       {
         validator: Validators.maxLength.validator,
-        customArgs: { length: 200 } // Valid description for length lower than 200 chars
-      }
-    ]
-  }
+        customArgs: { length: 20 }, // Valid description for length lower than 20 chars
+      },
+    ],
+  },
 };
 ```
 
@@ -216,7 +216,7 @@ TODO Add subsection here indicating how to set erorr message with parameters.
 
 Example:
 
-You can find this example in [fonk examples](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/max-length).
+You can find this example in [Javascript](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/js/max-length) and [Typescript](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/ts/max-length).
 
 # Email
 
@@ -231,18 +231,18 @@ export const email: FieldValidationFunctionSync = (fieldValidatorArgs) : 
 Usage:
 
 ```typescript
-import { Validators, ValidationSchema } from "@lemoncode/fonk";
+import { Validators, ValidationSchema } from '@lemoncode/fonk';
 
 const validationSchema: ValidationSchema = {
   field: {
-    email: [Validators.email.validator]
-  }
+    email: [Validators.email.validator],
+  },
 };
 ```
 
 Example:
 
-You can find this example in [fonk examples](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/email).
+You can find this example in [Javascript](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/js/email) and [Typescript](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/ts/email).
 
 # More validators
 
@@ -250,9 +250,6 @@ You can find this example in [fonk examples](https://github.com/Lemoncode
 
 If you are in the need of using / implementing other validators:
 
-- You have a available a list microlibraries that implement a wide set of validators, allowing you to cherry pick the validators that you really
-  need avoding extra weight into your application adding validators that you don't need. You can find a list of third partie validators in the
-  following [link](TODO).
+- You have an available list of microlibraries that implement a wide set of validators, allowing you to cherry pick the validators that you really need avoding extra weight into your application adding validators that you don't need. You can find a list of third party validators in the following [link](/validators/third-party-validators).
 
-- You can implement your own custom validator, is quite easy, you can find instructions about how to build your own custom validation in this
-  [link](TODO).
+- You can implement your own custom validator, is quite easy, you can find instructions about how to build your own custom validation in these links: [sync custom validators](/validators/custom-validators-sync) and [async custom validators](/validators/custom-validators-async).
