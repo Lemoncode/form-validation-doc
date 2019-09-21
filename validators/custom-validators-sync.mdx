@@ -230,32 +230,157 @@ export const myValidator = (fieldValidatorArgs) {
 }
 ```
 
+That was great, but there's something going wrong, the validation error message still says:
+
+_'IBAN does not belong to Spain'_
+
+We could just go the easy way and change the validation message to:
+
+_'IBAN country code not valid'_
+
+But we want to use a more elegant solution, why not building a message like:
+
+_IBAN country code prefix must be {{customArgs.countryCode}}_
+
+Let's implement this:
+
+```diff
+const validatorType = 'MY_IBAN_VALIDATOR';
+
+- let defaultMessage = 'IBAN does not belong to Spain';
++ let defaultMessage = 'IBAN does not belong to {{customArgs.countryCode}}';
+ export const setErrorMessage = message => (defaultMessage = message);
+
+export const myValidator = (fieldValidatorArgs) {
+  const {value, customArgs, message = defaultMessage} = fieldValidatorArgs
+
+  // Depending in your case you may feed default values to customArgs or throw
+  // an exception or a console.log error
+  if(!customArgs.countryCode || customArgs.countryCode.length !== 2) {
+    throw(`${validatorType}: error you should inform customArgs countryCode prefix (2 characters length)`)
+  }
+
+  const validationResult = {
+    succeeded: false,
+    type: validatorType,
+    message,
+  };
+
+  if (value && customArgs.countryCode[0] === 'E' && customArgs.countryCode[1] === 'S') {
+    validationResult.succeeded = true;
+    validationResult.message = '';
+  }
+
+  return validationResult;
+}
+```
+
+_Wow ! That was awesome ! but how can I customize this message if I need internazionalization?_ You can
+override the message and just use the same interpolation sequence _{{customArgs.CountryCode}}_ where applies.
+
 > Note down: you have to document this in your validator so consumers of your validator are aware of this params.
 
----
+Check here:
+Full example vanilla js
+Full eample vanilla ts
+Full example react final form js
+Full example react final form ts
 
-Next step why not going more generic prefix per country, why not informed from
-the app level. We can use for this customArgs
+_So far so good, but what happens if I need another form field value to execute my field validator?_ Let's say for
+instance I got a signUp form where the user has to enter his password, then reenter it in a different field
+to avoid him introducing any typo by mistake. That's a great use case, let's dig into that:
 
-Next step error message, now we want to indicate the exact prefix that is
-needed, ES6 interpolation won't work in this, fonk provides a definition to add params to the error message.
+> This validator is already available as a third party plugin, you can find it in the following [link](TODO).
 
-Final step, Let's step back, let's move to the point where the validator was ES, now the viewmodel has a
-field that indicates you wether the wire transfer is local (assume Spain) or international, in this
-case we depend on another field in the form values to enable o disable this validation, let's solve this
-step by step
+We've got the following form:
 
-----> the form model
+```javascript
+const mySignupFormData = {
+  email: 'john.doe@mydomain.com'
+  password : '123',
+  repeatPassword: '124',
+}
+```
 
---> Sample data
+First we will implement a validator specific for that form, we will access _customArgs.values_ field to get other form field value:
 
---> The starting point (validator)
+```javascript
+const validatorType = 'FIELDS_MATCH_VALIDATOR';
 
---> Indicating in a custom param the Id of the field in the form data (values) to compare with
+ let defaultMessage = 'Fields does not match';
+ export const setErrorMessage = message => (defaultMessage = message);
 
---> Accesing the form values in the validation
+export const fieldMatchValidator = (fieldValidatorArgs) {
+  // All form/record data is passed in the fielValidatorArgs.values field
+  const {value, values, message = defaultMessage} = fieldValidatorArgs
+  const validationResult = {
+    succeeded: false,
+    type: validatorType,
+    message,
+  };
 
---> How would that look in a validationSchema?
+  // Now we can acces the 'password' field from the values field
+  if (value === values.password) {
+    validationResult.succeeded = true;
+    validationResult.message = '';
+  }
+
+  return validationResult;
+}
+```
+
+_Fine, we managed to build to the validator, but is too tied up to the form, couldn't it be possible to create a reusable validator?_
+the answer is yes if we combine togheter _fieldValidationArgs.values_ and _fieldValidationArgs.customArgs_ (in customArgs we will
+pass the name of the field to compare with).
+
+- **customArgs**: here we will pass the id of the field to check (in this case the _password_ field).
+
+- **values**: here we get all the form/record values, we can use the following approach to access
+  the _password_ field: \_\_
+
+Let's see how to combine this both together:
+
+```diff
+const validatorType = 'FIELDS_MATCH_VALIDATOR';
+
+ let defaultMessage = 'Fields does not match';
+ export const setErrorMessage = message => (defaultMessage = message);
+
+export const fieldMatchValidator = (fieldValidatorArgs) {
+  // All form/record data is passed in the fielValidatorArgs.values field
++ // We will make use of customArgs
+-  const {value, values, message = defaultMessage} = fieldValidatorArgs
++   const {value, values, customArgs, message = defaultMessage} = fieldValidatorArgs
+  const validationResult = {
+    succeeded: false,
+    type: validatorType,
+    message,
+  };
+
++  // Depending in your case you may feed default values to customArgs or throw
++  // an exception or a console.log error
++  if(!customArgs.fieldToCompareName) {
++    throw(`${validatorType}: you need to inform the fieldToCompareName`)
++  }
+
+-  // Now we can acces the 'password' field from the values field
++  We just grab the value of the field using the bracke accesor
++  more info: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Property_Accessors
+-  if (value === values.password) {
++  if(value === value[customArgs.fieldToCompareName])
+    validationResult.succeeded = true;
+    validationResult.message = '';
+  }
+
+  return validationResult;
+}
+```
+
+Check here:
+Full example vanilla js
+Full eample vanilla ts
+Full example react final form js
+Full example react final form ts
 
 ## Record Validator
 
