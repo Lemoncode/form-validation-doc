@@ -1,0 +1,143 @@
+---
+name: React Final Form
+menu: 4. Form Libraries
+route: /react-final-form
+---
+
+# Integrating Fonk with React Final Form
+
+[React Final Form](https://github.com/final-form/react-final-form) is a great library to manage forms.
+
+Adding Fonk to **React Final Form** allows you to seamlessly add validation capabilities to **React Final Form**.
+
+In this page you will find a set of examples showing wide range of use cases:
+
+## Validate Field
+
+How to apply field level validations. This exampe applies **required** and **isNumber** validator
+
+**Javascript**
+
+- [CodeSandbox](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/react-final-form/js/validate-field)
+- [SourceCode](https://github.com/Lemoncode/fonk/tree/master/examples/react-final-form/js/validate-field)
+
+**Typescript**
+
+- [CodeSandbox](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/react-final-form/ts/validate-field)
+- [SourceCode](https://github.com/Lemoncode/fonk/tree/master/examples/react-final-form/ts/validate-field)
+
+## Validate Record
+
+How to fire record validations on React Final Form.
+
+**Javascript**
+
+- [CodeSandbox](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/react-final-form/js/validate-record)
+- [SourceCode](https://github.com/Lemoncode/fonk/tree/master/examples/react-final-form/js/validate-record)
+
+**Typescript:**
+
+- [CodeSandbox](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/react-final-form/ts/validate-record)
+- [SourceCode](https://github.com/Lemoncode/fonk/tree/master/examples/react-final-form/ts/validate-record)
+
+## Validate Form
+
+How to fire all form field validations when pressing submit.
+
+**Javascript**
+
+- [CodeSandbox](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/react-final-form/js/validate-form)
+- [SourceCode](https://github.com/Lemoncode/fonk/tree/master/examples/react-final-form/js/validate-form)
+
+**Typescript:**
+
+- [CodeSandbox](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/react-final-form/ts/validate-form)
+- [SourceCode](https://github.com/Lemoncode/fonk/tree/master/examples/react-final-form/ts/validate-form)
+
+## Validate Field Record and Form
+
+This example covers three validation scenarios:
+
+- How to validate a single field.
+- How to fire a record validation.
+- How to fire both field + record validations when hitting submit.
+
+**Javascript**
+
+- [CodeSandbox](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/react-final-form/js/validate-field-record-and-form)
+- [SourceCode](https://github.com/Lemoncode/fonk/tree/master/examples/react-final-form/js/validate-field-record-and-form)
+
+**Typescript:**
+
+- [CodeSandbox](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/react-final-form/ts/validate-field-record-and-form)
+- [SourceCode](https://github.com/Lemoncode/fonk/tree/master/examples/react-final-form/ts/validate-field-record-and-form)
+
+## Integrating custom validators
+
+Creating a custom validator (is-number, min-number) and integrating it with **Fonk** + **React Final Form**
+
+> You can find this validators already implemented as pluggable micro-libraries, check the following [section](TODO).
+
+**Javascript**
+
+- [CodeSandbox](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/react-final-form/js/custom-validators)
+- [SourceCode](https://github.com/Lemoncode/fonk/tree/master/examples/react-final-form/js/custom-validators)
+
+Typescript:
+
+- [CodeSandbox](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/react-final-form/ts/custom-validators)
+- [SourceCode](https://github.com/Lemoncode/fonk/tree/master/examples/react-final-form/ts/custom-validators)
+
+## Async Validators
+
+How to create a custom validator (users exists on Github, hitting Github rest-api) + React Final Form integration.
+
+**Javascript**
+
+- [CodeSandbox](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/react-final-form/js/async-validator)
+- [SourceCode](https://github.com/Lemoncode/fonk/tree/master/examples/react-final-form/js/async-validator)
+
+**Typescript:**
+
+- [CodeSandbox](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/react-final-form/ts/async-validator)
+- [SourceCode](https://github.com/Lemoncode/fonk/tree/master/examples/react-final-form/js/async-validator)
+
+## Customizing error messages
+
+Overriding validators default message.
+
+**Javascript**
+
+- [CodeSandbox](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/react-final-form/js/custom-error-message)
+- [SourceCode](https://github.com/Lemoncode/fonk/tree/master/examples/react-final-form/js/custom-error-message)
+
+**Typescript:**
+
+- [CodeSandbox](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/react-final-form/ts/custom-error-message)
+- [SourceCode](https://github.com/Lemoncode/fonk/tree/master/examples/react-final-form/js/custom-error-message)
+
+## Nested fields
+
+Right now we have covered just plain form models, what if we have a more complex structure? some thing like:
+
+```javascript
+{
+  id: 1,
+  name: 'Foo',
+  product: {
+    name: 'bar'
+  }
+}
+```
+
+We can define the validation for the _product.name_ nested property by using the string dot notation: 'product.name'.
+
+**Javascript**
+
+- [CodeSandbox](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/react-final-form/js/nested-field)
+- [SourceCode](https://github.com/Lemoncode/fonk/tree/master/examples/react-final-form/js/nested-field)
+
+**Typescript:**
+
+- [CodeSandbox](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/react-final-form/ts/nested-field)
+- [SourceCode](https://github.com/Lemoncode/fonk/tree/master/examples/react-final-form/js/nested-field)

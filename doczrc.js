@@ -36,14 +36,8 @@ export default {
       ],
     },
     {
-      name: '4. React Final form',
-      menu: [
-        { name: 'React Final Form', order: 1 },
-        { name: 'Synchrounous Validations', order: 2 },
-        { name: 'Async Validations', order: 3 },
-        { name: 'Record Validations', order: 4 },
-        { name: 'Form Validations', order: 5 },
-      ],
+      name: '4. Form Libraries',
+      menu: [{ name: 'React Final Form', order: 1 }],
     },
     {
       name: '5. API',
