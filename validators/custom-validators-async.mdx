@@ -168,22 +168,85 @@ export const myValidator = (fieldValidatorArgs) {
 }
 ```
 
+Check here:
+Full example vanilla js
+Full eample vanilla ts
+Full example react final form js
+Full example react final form ts
+
 ## Asynchronous Record Validator
+
+An asynchronous record validator is a validation that is not tied up to an specific field, is usually something that we trigger
+when the user hits submit, and previous to send the information to the server.
+
+Record validations usually are not highly reusable functions, they are tied up to the domain of the form to be evaluated.
 
 ### Disecting a record validator
 
+The definition of an asynchronous record validation:
+
+- **RecordValidationArgs**: This is passed as a single argument in th validator
+  - **values**: form / record values (all fields).
+  - **message**: you can override here the error message that the validator returns in case of failure. You can inject
+    in a message _parameters_ to be interpolated by the validator (e.g. 'string must be at least {{values[minlength]}}'),
+    in some validators there may be more than one error message defined, in that case we can pass an array of strings.
+- **Promise<ValidationResult>**: once the validator has been executed it returns a _Promise<ValidationResult_>,
+  once the promise gets resolved:
+  - If the validation succeeds, you get as return value a _ValidationResult_ where it's field _succeeded_ is true.
+  - If the validation fails, you get as return value a _ValidationResult\_\_ where it's field \_succeeded_ is false,
+    a _message_ where you get the error message (user friendly) and a _type_ field that indicates the validator that
+    failed.
+
+```typescript
+export interface RecordValidatorArgs {
+  values: any;
+  message?: string | string[];
+}
+
+export interface ValidationResult {
+  type: string;
+  succeeded: boolean;
+  message: string;
+}
+
+export type RecordValidationFunctionAsync = (
+  recordValidatorArgs: RecordValidatorArgs
+) => Promise<ValidationResult>;
+```
+
 ### Learning by Example
+
+We have the following scenario: a third party rest-api where we can submit requests: this request will be queued up and the could take minutes to hours to get resolved
+(prior to process data this api's will check against a local database in real time in order to check if the information submitted is correct).
+
+This could impact in a severe wat to the usability of the application, our backend developers have decided to implement system that will hit a cache, and provide
+a real time response that in 90% of the case will be accurate (or at least will trap 90% of the user form errors).
+
+The model of the form that we want to manage is:
+
+```javascript
+```
+
+The server validation call will have the following signature (we will emulate it in our example).
+
+```javascript
+```
+
+The validator that we will implement:
+
+```javascript
+```
+
+Check here:
+Full example vanilla js
+Full eample vanilla ts
+Full example react final form js
+Full example react final form ts
 
 ### Next steps
 
-\*\*\*\* TODO
+You have successfully completed the custom validators module.
 
-Same structure as validators synch (check branch).
+You can choose wether to jump into [React Final Forms Integration](TODO).
 
-Field
-
-Example github fetch signup (extract from lc-form)
-
-Only cover standard case note down for customArgs etc check synch
-
-Record Validation check if everything is ok before adding to queue a petition.
+Or [internazionalization](TODO)
