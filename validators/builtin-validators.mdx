@@ -16,7 +16,7 @@ Fonk already ships a set of basic validators:
 
 > If you want to customize the error messages that this validators provide by default, check the [error-message](/messages/error-message) and [internazionalization](/messages/internationalization)
 
-# Required
+## Required
 
 Check if a field is be informed (field is not null, undefined or empty string), this can be applied to fields of type *string* or *number*
 
@@ -67,7 +67,7 @@ Example:
 
 You can find this example in [Javascript](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/js/required) and [Typescript](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/ts/required).
 
-# Pattern
+## Pattern
 
 Succeeds if a field matches with a defined **RegExp**, fails if not. This regular expression can be either a [RegExp](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp) instance or a string.
 
@@ -140,7 +140,7 @@ Example:
 
 You can find this example in [Javascript](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/js/pattern) and [Typescript](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/ts/pattern).
 
-# MinLength
+## MinLength
 
 Succeeds if a field length is greater than the one informed in the customArgs.length
 
@@ -173,13 +173,29 @@ const validationSchema: ValidationSchema = {
 };
 ```
 
-TODO Add subsection here indicating how to set erorr message with parameters.
+Custom message with interpolated `customArgs`:
+
+```typescript
+import { Validators, ValidationSchema } from '@lemoncode/fonk';
+
+const validationSchema: ValidationSchema = {
+  field: {
+    description: [
+      {
+        validator: Validators.minLength.validator,
+        customArgs: { length: 10 }, // Valid description for length greater than 10 chars
+        message: 'The min length is {{length}}',
+      },
+    ],
+  },
+};
+```
 
 Example:
 
 You can find this example in [Javascript](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/js/min-length) and [Typescript](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/ts/min-length).
 
-# MaxLength
+## MaxLength
 
 Succeeds if a field length is lower than the one informed in the customArgs.length
 
@@ -212,13 +228,29 @@ const validationSchema: ValidationSchema = {
 };
 ```
 
-TODO Add subsection here indicating how to set erorr message with parameters.
+Custom message with interpolated `customArgs`:
+
+```typescript
+import { Validators, ValidationSchema } from '@lemoncode/fonk';
+
+const validationSchema: ValidationSchema = {
+  field: {
+    description: [
+      {
+        validator: Validators.maxLength.validator,
+        customArgs: { length: 20 }, // Valid description for length lower than 20 chars
+        message: 'The max length is {{length}}',
+      },
+    ],
+  },
+};
+```
 
 Example:
 
 You can find this example in [Javascript](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/js/max-length) and [Typescript](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/ts/max-length).
 
-# Email
+## Email
 
 Succeeds if a field value is a well formed email, fails if not.
 
@@ -244,7 +276,7 @@ Example:
 
 You can find this example in [Javascript](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/js/email) and [Typescript](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/ts/email).
 
-# More validators
+## More validators
 
 **Fonk** only ships with a minimal subset of validators to avoid adding extra weight to the library with other validators that you may not use.
 
