@@ -6,7 +6,175 @@ route: /validators/custom-validators-async
 
 # Custom validators asynchronous
 
-How to get started
+In some scenarios you need to implement async validations, that's it a validation that won't return the result straight forward, for instance
+a validation that need to make a request to a rest-api and cannot provide the result until it gets the response from server.
+
+> Prior to learn about async validations, take your time and learn how to deal with [synchronous validations]() there are various topics
+> common to both validators that are explained in the previous topic section.
+
+## Async Field Validator
+
+An async field validator is just a funcion that expects on argument (this argument is an object that contains several fields),
+and return a promise that will contain a validation result once resolved.
+
+Depending on the use case (e.g. is hitting a global rest api or a given domain specific rest api), it could be reusable or not.
+
+### Disecting an async validators
+
+The definition of an asynchronous field validator:
+
+- **FielValidationArgs**: This is passed as a single argument in th validator
+  - **value**: current field value.
+  - **values**: form / record values (all fields).
+  - **customArgs**: we can pass custom arguments to our validator, this allow us to create flexible and configurable
+    validators (e.g. in a min-lenght validator we can pass as customArgument a number indicating the minlenght allowed,
+    or if we have a password / repeat password validator we can pass the id of the password field to the repeat password
+    field).
+  - **message**: you can override here the error message that the validator returns in case of failure. You can inject
+    in a message _parameters_ to be interpolated by the validator (e.g. 'string must be at least {{values[minlength]}}'),
+    in some validators there may be more than one error message defined, in that case we can pass an array of strings.
+  - **Promise<ValidationResult>**: once the validator has been executed it returns a _Promise<ValidationResult_>,
+    once the promise gets resolved:
+    - If the validation succeeds, you get as return value a _ValidationResult_ where it's field _succeeded_ is true.
+    - If the validation fails, you get as return value a _ValidationResult\_\_ where it's field \_succeeded_ is false,
+      a _message_ where you get the error message (user friendly) and a _type_ field that indicates the validator that
+      failed.
+
+```typescript
+export interface FieldValidatorArgs {
+  value: any;
+  values?: any;
+  customArgs?: any;
+  message?: string | string[];
+}
+
+export interface ValidationResult {
+  type: string;
+  succeeded: boolean;
+  message: string;
+}
+
+export type FieldValidationFunctionAsync = (
+  fieldValidatorArgs: FieldValidatorArgs
+) => Promise<ValidationResult>;
+```
+
+### Learning by Example
+
+The best way to learn how to implementing an async validator is just by doing it so.
+
+Let's get started , we have a signup field and we ask the user to enter a new user id,
+this user Id has to be new, it cannot exists in our system (in this case we will
+check that the userId does not exists in github using the Github rest api).
+
+We will start simple, in order to check we only need use the _value_ we
+don't need the rest of optional params: _values_, _customArgs_, _message_, we will follow a TDD like approach
+we will create the validator always faling (returning a failed validation result).
+
+```javascript
+const validatorType = 'GITHUB_ID_VALIDATOR';
+
+export const myValidator = (fieldValidatorArgs) {
+  const validationResult = {
+    succeeded: false,
+    type: validatorType,
+    message: 'User already exists',
+  };
+
+  return new Promise(resolve => {
+    resolve(validationResult);
+  });
+}
+```
+
+Cool, we got a validator that always fails, now is time to inject our logic; we just want
+to validate that the login Id doesn't exists on Github.
+
+```diff
+const validatorType = 'GITHUB_ID_VALIDATOR';
+
+export const myValidator = (fieldValidatorArgs) {
++  const {value} = fieldValidatorArgs;
+
+  const validationResult = {
+    succeeded: false,
+    type: validatorType,
+    message: 'User already exists',
+  };
+
+  return new Promise(resolve => {
+-    resolve(validationResult);
++      fetch(`https://api.github.com/users/${value}`)
++       .then(result => {
++         // Status 200, meaning user exists, so the given user is not valid
++         validationResult.succeeded = false;
++         resolve(validationResult);
++      })
++      .catch(error => {
++        if(error.status === 404) {
++          // User does not exists, so the given user is valid
++          validationResult.succeeded = true;
++          validationResult.errorMessage = '';
++          resolve(validationResult);
++        } else {
++          // Unexpected error
++          reject(error);
++        }
++      });
+  });
+}
+```
+
+Let's add some additional changes to allow the error message to be customized (you can check an step by step guided solution
+in the [suynchronous validation section](TODO)).
+
+```diff
+const validatorType = 'GITHUB_ID_VALIDATOR';
+
++ let defaultMessage = 'User already exists';
++ export const setErrorMessage = message => (defaultMessage = message);
+
+export const myValidator = (fieldValidatorArgs) {
+-  const {value} = fieldValidatorArgs;
++  const {value, message = defaultMessage} = fieldValidatorArgs;
+
+
+  const validationResult = {
+    succeeded: false,
+    type: validatorType,
+-    message: 'User already exists',
++    message: 'User already exists',
+  };
+
+  return new Promise(resolve => {
+      fetch(`https://api.github.com/users/${value}`)
+       .then(result => {
+         // Status 200, meaning user exists, so the given user is not valid
+         validationResult.succeeded = false;
+         resolve(validationResult);
+      })
+      .catch(error => {
+        if(error.status === 404) {
+          // User does not exists, so the given user is valid
+          validationResult.succeeded = true;
+          validationResult.errorMessage = '';
+          resolve(validationResult);
+        } else {
+          // Unexpected error
+          reject(error);
+        }
+      });
+  });
+}
+```
+
+## Asynchronous Record Validator
+
+### Disecting a record validator
+
+### Learning by Example
+
+### Next steps
 
 \*\*\*\* TODO
 
