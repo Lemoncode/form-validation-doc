@@ -7,17 +7,17 @@ route: /validators/custom-validators-sync
 # Custom validators synchronous
 
 Once you have checked that a given field or record validation is not available in the base or
-third parties list of validators, is time to create your own validator.
+third parties list of validators, it's time to create your own validator.
 
 ## Field Validator
 
 A field synchronous validator is just a function that expected one argument (this arugment is an object that contains
-severla fields), and return a validation result.
+several fields), and return a validation result.
 
-> What do we mean by syncrhonous? That is any validation that executes some code and returns an straightforward result,
-> if your validation needs to make a request to a server, it cannot provide and straightdforward result and probably
+> What do we mean by synchronous? That is any validation that executes some code and returns a straightforward result,
+> if your validation needs to make a request to a server, it cannot provide a straightdforward result and probably
 > you will have to manage it using promises, that is an asynchronous validation and it's covered in the following
-> [link](TODO).
+> [link](/validators/custom-validators-async).
 
 Usually a Field Validator can be a perfect piece of code to be reused across the application and even as a library.
 
@@ -33,7 +33,7 @@ The definition of a synchronous field validator:
     or if we have a password / repeat password validator we can pass the id of the password field to the repeat password
     field).
   - **message**: you can override here the error message that the validator returns in case of failure. You can inject
-    in a message _parameters_ to be interpolated by the validator (e.g. 'string must be at least {{values[minlength]}}'),
+    in a message _parameters_ to be interpolated by the validator (e.g. 'string must be at least {{values.minlength}}'),
     in some validators there may be more than one error message defined, in that case we can pass an array of strings.
 - **ValidationResult**: once the validator has been executed it returns a _ValidationResult_:
   - If the validation succeeds, you get as return value a _ValidationResult_ where it's field _succeeded_ is true.
@@ -74,7 +74,7 @@ we will create the validator always faling (returning a failed validation result
 ```javascript
 const validatorType = 'MY_IBAN_VALIDATOR';
 
-export const myValidator = (fieldValidatorArgs) {
+export const myValidator = fieldValidatorArgs => {
   const validationResult = {
     succeeded: false,
     type: validatorType,
@@ -82,7 +82,7 @@ export const myValidator = (fieldValidatorArgs) {
   };
 
   return validationResult;
-}
+};
 ```
 
 Cool, we got a validator that always fails, now is time to inject our logic; we just want to validate
@@ -91,18 +91,18 @@ that the IBAN belongs to spain (first two characters must be _ES_).
 ```diff
 const validatorType = 'MY_IBAN_VALIDATOR';
 
-export const myValidator = (fieldValidatorArgs) {
-+  const {value} = fieldValidatorArgs
+export const myValidator = fieldValidatorArgs => {
++ const { value } = fieldValidatorArgs;
   const validationResult = {
     succeeded: false,
     type: validatorType,
     message: 'IBAN does not belong to Spain',
   };
 
-+  if (value && value[0] === 'E' && value[1] === 'S') {
-+    validationResult.succeeded = true;
-+    validationResult.message = '';
-+  }
++ if (value && value[0] === 'E' && value[1] === 'S') {
++   validationResult.succeeded = true;
++   validationResult.message = '';
++ }
 
   return validationResult;
 }
@@ -112,7 +112,7 @@ No we got our simple validator working, if you enter an IBAN that belongs to spa
 the validation if not if will fail.
 
 _Watch out... what if we pass a null/undefined/empty string?_ Validation will succeed in this case, _but is
-not a valid IBAN isn't it?_ Usually is a good practice to delegate this validation to a prior validaro like
+not a valid IBAN isn't it?_ Usually is a good practice to delegate this validation to a prior validator like
 the built-in **required** validator, why: maybe the field you want to validate is optional hence the
 IBAN validator should not fail, by doing that we are following the single responsibility principle.
 
@@ -124,8 +124,8 @@ message(s) validators in two ways:
   just change from english to french language and you want that _MyValidator_ shows the error message
   in french in all the application forms where it's being used).
 
-- You can override the validation message just for a given ValidationSchema (for instnance if you use
-  the _pattern_ (regex) validator you may want for a specific field in a validaion schema to return
+- You can override the validation message just for a given ValidationSchema (for instance if you use
+  the _pattern_ (regex) validator you may want for a specific field in a validation schema to return
   _invalid credit card_ and for other cases _invalid shield number_).
 
 Let's start by preparing our validator to change the message for all the instances:
@@ -136,13 +136,14 @@ const validatorType = 'MY_IBAN_VALIDATOR';
 + let defaultMessage = 'IBAN does not belong to Spain';
 + export const setErrorMessage = message => (defaultMessage = message);
 
-export const myValidator = (fieldValidatorArgs) {
-  const {value} = fieldValidatorArgs
+export const myValidator = fieldValidatorArgs => {
+  const { value } = fieldValidatorArgs;
+
   const validationResult = {
     succeeded: false,
     type: validatorType,
--    message: 'IBAN does not belong to Spain',
-+    message: defaultMessage,
+-   message: 'IBAN does not belong to Spain',
++   message: defaultMessage,
   };
 
   if (value && value[0] === 'E' && value[1] === 'S') {
@@ -151,7 +152,7 @@ export const myValidator = (fieldValidatorArgs) {
   }
 
   return validationResult;
-}
+};
 ```
 
 Now let's go for the specific override:
@@ -159,17 +160,18 @@ Now let's go for the specific override:
 ```diff
 const validatorType = 'MY_IBAN_VALIDATOR';
 
- let defaultMessage = 'IBAN does not belong to Spain';
- export const setErrorMessage = message => (defaultMessage = message);
+let defaultMessage = 'IBAN does not belong to Spain';
+export const setErrorMessage = message => (defaultMessage = message);
 
-export const myValidator = (fieldValidatorArgs) {
--  const {value} = fieldValidatorArgs
-+  const {value, message = defaultMessage} = fieldValidatorArgs
+export const myValidator = fieldValidatorArgs => {
+- const { value } = fieldValidatorArgs;
++ const { value, message = defaultMessage } = fieldValidatorArgs;
+
   const validationResult = {
     succeeded: false,
     type: validatorType,
--    message: defaultMessage,
-+    message,
+-   message: defaultMessage,
++   message,
   };
 
   if (value && value[0] === 'E' && value[1] === 'S') {
@@ -178,11 +180,12 @@ export const myValidator = (fieldValidatorArgs) {
   }
 
   return validationResult;
-}
+};
+
 ```
 
 > If you want to learn more about how to customize error message + internazionalization you can jump
-> to the following [section](TODO).
+> to the following [section](/messages/error-message).
 
 _That was awesome, but I need to implement this same validator for countries like france, germany, and others, is there a way to make this validator more generic?_
 Yes, we can make use of _customArgs_ and pass the _country_ prefix to validate (in a real case you could opt in to implement this inside the validator using a switch
@@ -201,18 +204,23 @@ Let's further enhance the validator:
 ```diff
 const validatorType = 'MY_IBAN_VALIDATOR';
 
- let defaultMessage = 'IBAN does not belong to Spain';
- export const setErrorMessage = message => (defaultMessage = message);
+let defaultMessage = 'IBAN does not belong to Spain';
+export const setErrorMessage = message => (defaultMessage = message);
 
-export const myValidator = (fieldValidatorArgs) {
--  const {value, message = defaultMessage} = fieldValidatorArgs
-+  const {value, customArgs, message = defaultMessage} = fieldValidatorArgs
++ const hasValidCountryCode = (value, customArgs) =>
++   value &&
++   value[0] === customArgs.countryCode[0] &&
++   value[1] === customArgs.countryCode[1];
 
-+  // Depending in your case you may feed default values to customArgs or throw
-+  // an exception or a console.log error
-+  if(!customArgs.countryCode || customArgs.countryCode.length !== 2) {
-+    throw(`${validatorType}: error you should inform customArgs countryCode prefix (2 characters length)`)
-+  }
+export const myValidator = fieldValidatorArgs => {
+- const { value, message = defaultMessage } = fieldValidatorArgs;
++ const { value, customArgs, message = defaultMessage } = fieldValidatorArgs;
+
++ // Depending in your case you may feed default values to customArgs or throw
++ // an exception or a console.log error
++ if (!customArgs.countryCode || customArgs.countryCode.length !== 2) {
++   throw `${validatorType}: error you should inform customArgs countryCode prefix (2 characters length)`;
++ }
 
   const validationResult = {
     succeeded: false,
@@ -220,14 +228,15 @@ export const myValidator = (fieldValidatorArgs) {
     message,
   };
 
--  if (value && value[0] === 'E' && value[1] === 'S') {
-+  if (value && customArgs.countryCode[0] === 'E' && customArgs.countryCode[1] === 'S') {
+- if (value && value[0] === 'E' && value[1] === 'S') {
++ if (hasValidCountryCode(value, customArgs)) {
     validationResult.succeeded = true;
     validationResult.message = '';
   }
 
   return validationResult;
-}
+};
+
 ```
 
 That was great, but there's something going wrong, the validation error message still says:
@@ -240,43 +249,30 @@ _'IBAN country code not valid'_
 
 But we want to use a more elegant solution, why not building a message like:
 
-_IBAN country code prefix must be {{customArgs.countryCode}}_
+_IBAN country code prefix must be {{countryCode}}_
 
 Let's implement this:
 
 ```diff
++ import { parseMessageWithCustomArgs } from '@lemoncode/fonk';
 const validatorType = 'MY_IBAN_VALIDATOR';
 
 - let defaultMessage = 'IBAN does not belong to Spain';
-+ let defaultMessage = 'IBAN does not belong to {{customArgs.countryCode}}';
- export const setErrorMessage = message => (defaultMessage = message);
-
-export const myValidator = (fieldValidatorArgs) {
-  const {value, customArgs, message = defaultMessage} = fieldValidatorArgs
-
-  // Depending in your case you may feed default values to customArgs or throw
-  // an exception or a console.log error
-  if(!customArgs.countryCode || customArgs.countryCode.length !== 2) {
-    throw(`${validatorType}: error you should inform customArgs countryCode prefix (2 characters length)`)
-  }
++ let defaultMessage = 'IBAN does not belong to {{countryCode}}';
+export const setErrorMessage = message => (defaultMessage = message);
+...
 
   const validationResult = {
     succeeded: false,
     type: validatorType,
-    message,
+-   message,
++   message: parseMessageWithCustomArgs(message, customArgs),
   };
 
-  if (value && customArgs.countryCode[0] === 'E' && customArgs.countryCode[1] === 'S') {
-    validationResult.succeeded = true;
-    validationResult.message = '';
-  }
-
-  return validationResult;
-}
 ```
 
 _Wow ! That was awesome ! but how can I customize this message if I need internazionalization?_ You can
-override the message and just use the same interpolation sequence _{{customArgs.CountryCode}}_ where applies.
+override the message and just use the same interpolation sequence _{{countryCode}}_ where applies.
 
 > Note down: you have to document this in your validator so consumers of your validator are aware of this params.
 
@@ -427,10 +423,10 @@ We got a form that displays the total of a given shopping order:
 
 ```javascript
 const myFormValues = {
-  product: "shoes",
+  product: 'shoes',
   discount: 5,
   price: 20,
-  isPrime: false
+  isPrime: false,
 };
 ```
 
@@ -453,9 +449,9 @@ const freeShippingRecordValidator = ({ values }) => {
   return {
     succeeded,
     message: succeeded
-      ? ""
-      : "Subscribe to prime service or total must be greater than 20USD",
-    type: "RECORD_FREE_SHIPPING"
+      ? ''
+      : 'Subscribe to prime service or total must be greater than 20USD',
+    type: 'RECORD_FREE_SHIPPING',
   };
 };
 ```
@@ -471,4 +467,4 @@ Full example react final form ts
 
 # Next section
 
-Now that you have learn how to build syncrhonous custom validators is time to learn how to implement [asynchronous custom validators](TODO).
+Now that you have learn how to build synchronous custom validators is time to learn how to implement [asynchronous ustom valators](TODO).
