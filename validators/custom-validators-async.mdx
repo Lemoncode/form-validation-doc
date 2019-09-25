@@ -9,7 +9,7 @@ route: /validators/custom-validators-async
 In some scenarios you need to implement async validations, that's it a validation that won't return the result straight forward, for instance
 a validation that need to make a request to a rest-api and cannot provide the result until it gets the response from server.
 
-> Prior to learn about async validations, take your time and learn how to deal with [synchronous validations]() there are various topics
+> Prior to learn about async validations, take your time and learn how to deal with [synchronous validations](/validators/custom-validators-sync) there are various topics
 > common to both validators that are explained in the previous topic section.
 
 ## Async Field Validator
@@ -31,7 +31,7 @@ The definition of an asynchronous field validator:
     or if we have a password / repeat password validator we can pass the id of the password field to the repeat password
     field).
   - **message**: you can override here the error message that the validator returns in case of failure. You can inject
-    in a message _parameters_ to be interpolated by the validator (e.g. 'string must be at least {{values[minlength]}}'),
+    in a message _parameters_ to be interpolated by the validator (e.g. 'string must be at least {{minlength}}'),
     in some validators there may be more than one error message defined, in that case we can pass an array of strings.
   - **Promise<ValidationResult>**: once the validator has been executed it returns a _Promise<ValidationResult_>,
     once the promise gets resolved:
@@ -72,107 +72,90 @@ don't need the rest of optional params: _values_, _customArgs_, _message_, we wi
 we will create the validator always faling (returning a failed validation result).
 
 ```javascript
-const validatorType = 'GITHUB_ID_VALIDATOR';
+const validatorType = 'GITHUB_USER_EXISTS';
 
-export const myValidator = (fieldValidatorArgs) {
+export const myValidator = fieldValidatorArgs => {
   const validationResult = {
     succeeded: false,
     type: validatorType,
-    message: 'User already exists',
+    message: 'The username exists on Github',
   };
 
-  return new Promise(resolve => {
-    resolve(validationResult);
-  });
-}
+  return Promise.resolve(validationResult);
+};
 ```
 
 Cool, we got a validator that always fails, now is time to inject our logic; we just want
 to validate that the login Id doesn't exists on Github.
 
 ```diff
-const validatorType = 'GITHUB_ID_VALIDATOR';
+const validatorType = 'GITHUB_USER_EXISTS';
 
-export const myValidator = (fieldValidatorArgs) {
-+  const {value} = fieldValidatorArgs;
-
+export const myValidator = fieldValidatorArgs => {
++ const { value } = fieldValidatorArgs;
   const validationResult = {
     succeeded: false,
     type: validatorType,
-    message: 'User already exists',
+    message: 'The username exists on Github',
   };
 
-  return new Promise(resolve => {
--    resolve(validationResult);
-+      fetch(`https://api.github.com/users/${value}`)
-+       .then(result => {
-+         // Status 200, meaning user exists, so the given user is not valid
-+         validationResult.succeeded = false;
-+         resolve(validationResult);
-+      })
-+      .catch(error => {
-+        if(error.status === 404) {
-+          // User does not exists, so the given user is valid
-+          validationResult.succeeded = true;
-+          validationResult.errorMessage = '';
-+          resolve(validationResult);
-+        } else {
-+          // Unexpected error
-+          reject(error);
-+        }
-+      });
-  });
-}
+- return Promise.resolve(validationResult);
++ return fetch(`https://api.github.com/users/${value}`).then(response => {
++   // Status 404, User does not exists, so the given user is valid
++   // Status 200, meaning user exists, so the given user is not valid
++   return response.status === 404
++     ? {
++         ...validationResult,
++         succeeded: true,
++         message: '',
++       }
++     : validationResult;
++ });
+};
+
 ```
 
 Let's add some additional changes to allow the error message to be customized (you can check an step by step guided solution
-in the [suynchronous validation section](TODO)).
+in the [synchronous validation section](/validators/custom-validators-sync)).
 
 ```diff
-const validatorType = 'GITHUB_ID_VALIDATOR';
+const validatorType = 'GITHUB_USER_EXISTS';
 
-+ let defaultMessage = 'User already exists';
++ let defaultMessage = 'The username exists on Github';
 + export const setErrorMessage = message => (defaultMessage = message);
 
-export const myValidator = (fieldValidatorArgs) {
--  const {value} = fieldValidatorArgs;
-+  const {value, message = defaultMessage} = fieldValidatorArgs;
-
+export const myValidator = fieldValidatorArgs => {
+- const { value } = fieldValidatorArgs;
++ const { value, message = defaultMessage } = fieldValidatorArgs;
 
   const validationResult = {
     succeeded: false,
     type: validatorType,
--    message: 'User already exists',
-+    message: 'User already exists',
+-   message: 'The username exists on Github',
++   message,
   };
 
-  return new Promise(resolve => {
-      fetch(`https://api.github.com/users/${value}`)
-       .then(result => {
-         // Status 200, meaning user exists, so the given user is not valid
-         validationResult.succeeded = false;
-         resolve(validationResult);
-      })
-      .catch(error => {
-        if(error.status === 404) {
-          // User does not exists, so the given user is valid
-          validationResult.succeeded = true;
-          validationResult.errorMessage = '';
-          resolve(validationResult);
-        } else {
-          // Unexpected error
-          reject(error);
+  return fetch(`https://api.github.com/users/${value}`).then(response => {
+    // Status 404, User does not exists, so the given user is valid
+    // Status 200, meaning user exists, so the given user is not valid
+    return response.status === 404
+      ? {
+          ...validationResult,
+          succeeded: true,
+          message: '',
         }
-      });
+      : validationResult;
   });
-}
+};
+
 ```
 
 Check here:
-Full example vanilla js
-Full eample vanilla ts
-Full example react final form js
-Full example react final form ts
+
+- [Plain Vanilla JS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/vanilla/js/async-validator).
+- [Plain Vanilla TS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/vanilla/ts/async-validator).
+- [React + React Final Form JS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/react-final-form/js/async-validator).
+- [React + React Final Form TS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/react-final-form/ts/async-validator).
 
 ## Asynchronous Record Validator
 
@@ -188,7 +171,7 @@ The definition of an asynchronous record validation:
 - **RecordValidationArgs**: This is passed as a single argument in th validator
   - **values**: form / record values (all fields).
   - **message**: you can override here the error message that the validator returns in case of failure. You can inject
-    in a message _parameters_ to be interpolated by the validator (e.g. 'string must be at least {{values[minlength]}}'),
+    in a message _parameters_ to be interpolated by the validator (e.g. 'string must be at least {{minlength}}'),
     in some validators there may be more than one error message defined, in that case we can pass an array of strings.
 - **Promise<ValidationResult>**: once the validator has been executed it returns a _Promise<ValidationResult_>,
   once the promise gets resolved:
@@ -219,7 +202,7 @@ export type RecordValidationFunctionAsync = (
 We have the following scenario: a third party rest-api where we can submit requests: this request will be queued up and the could take minutes to hours to get resolved
 (prior to process data this api's will check against a local database in real time in order to check if the information submitted is correct).
 
-This could impact in a severe wat to the usability of the application, our backend developers have decided to implement system that will hit a cache, and provide
+This could impact in a severe way to the usability of the application, our backend developers have decided to implement system that will hit a cache, and provide
 a real time response that in 90% of the case will be accurate (or at least will trap 90% of the user form errors).
 
 The model of the form that we want to manage is:
