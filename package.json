@@ -1,5 +1,6 @@
 {
   "name": "fonk-doc",
+  "description": "Documentation page for fonk: https://github.com/Lemoncode/fonk",
   "scripts": {
     "start": "docz dev",
     "clean": "rimraf .docz",
