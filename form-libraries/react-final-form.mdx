@@ -10,7 +10,59 @@ route: /react-final-form
 
 Adding **Fonk** to **React Final Form** allows you to seamlessly add validation capabilities to **React Final Form**.
 
-In this page you will find a set of examples showing wide range of use cases:
+In order to use **Fonk** with **React Final Form** you will have to install **fonk-final-form** adaptor:
+
+```bash
+npm install @lemoncode/fonk @lemoncode/fonk-final-form --save
+```
+
+The only difference when using **fonk-final-form** is: isntead of invoking the _createFomValidation_ method
+to create a validation schema, you will need to invoke _createFinalFormValidation_, example:
+
+```diff
+import { isNumber } from '@lemoncode/fonk-is-number-validator';
+import { minNumberValidator } from './custom-validators';
+- import { createFormValidation, Validators } from '@lemoncode/fonk';
++ import { createFormValidation, Validators } from '@lemoncode/fonk';
++ import { createFinalFormValidation } from '@lemoncode/fonk-final-form';
+
+
+const validationSchema = {
+  field: {
+    firstName: [
+      {
+        validator: Validators.required.validator,
+        message: 'Required',
+      },
+    ],
+    lastName: [
+      {
+        validator: Validators.required.validator,
+        message: 'Required',
+      },
+    ],
+    age: [
+      {
+        validator: Validators.required.validator,
+        message: 'Required',
+      },
+      isNumber.validator,
+      {
+        validator: minNumberValidator,
+        customArgs: { min: 18 },
+      },
+    ],
+  },
+};
+
+- export const formValidation = createFormValidation(validationSchema);
++ export const formValidation = createFinalFormValidation(validationSchema);
+```
+
+Under the hood, what the adaptar does is just return _null_ when a validation succeeds (that's the result
+**React Final Form**)
+
+In this page you will find a set of examples showing wide range of use cases.
 
 ## Validate Field
 
