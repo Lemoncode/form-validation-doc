@@ -16,16 +16,15 @@ In order to use **Fonk** with **React Final Form** you will have to install **fo
 npm install @lemoncode/fonk @lemoncode/fonk-final-form --save
 ```
 
-The only difference when using **fonk-final-form** is: isntead of invoking the _createFomValidation_ method
+The only difference when using **fonk-final-form** is: instead of invoking the _createFomValidation_ method
 to create a validation schema, you will need to invoke _createFinalFormValidation_, example:
 
 ```diff
+- import { createFormValidation, Validators } from '@lemoncode/fonk';
++ import { Validators } from '@lemoncode/fonk';
++ import { createFinalFormValidation } from '@lemoncode/fonk-final-form';
 import { isNumber } from '@lemoncode/fonk-is-number-validator';
 import { minNumberValidator } from './custom-validators';
-- import { createFormValidation, Validators } from '@lemoncode/fonk';
-+ import { createFormValidation, Validators } from '@lemoncode/fonk';
-+ import { createFinalFormValidation } from '@lemoncode/fonk-final-form';
-
 
 const validationSchema = {
   field: {
