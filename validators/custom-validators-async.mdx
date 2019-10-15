@@ -33,7 +33,7 @@ The definition of an asynchronous field validator:
   - **message**: you can override here the error message that the validator returns in case of failure. You can inject
     in a message _parameters_ to be interpolated by the validator (e.g. 'string must be at least {{minlength}}'),
     in some validators there may be more than one error message defined, in that case we can pass an array of strings.
-  - **Promise<ValidationResult>**: once the validator has been executed it returns a _Promise<ValidationResult_>,
+  - **Promise<ValidationResult\>**: once the validator has been executed it returns a _Promise<ValidationResult\>_,
     once the promise gets resolved:
     - If the validation succeeds, you get as return value a _ValidationResult_ where it's field _succeeded_ is true.
     - If the validation fails, you get as return value a _ValidationResult\_\_ where it's field \_succeeded_ is false,
@@ -173,7 +173,7 @@ The definition of an asynchronous record validation:
   - **message**: you can override here the error message that the validator returns in case of failure. You can inject
     in a message _parameters_ to be interpolated by the validator (e.g. 'string must be at least {{minlength}}'),
     in some validators there may be more than one error message defined, in that case we can pass an array of strings.
-- **Promise<ValidationResult>**: once the validator has been executed it returns a _Promise<ValidationResult_>,
+- **Promise<ValidationResult\>**: once the validator has been executed it returns a _Promise<ValidationResult\>_,
   once the promise gets resolved:
   - If the validation succeeds, you get as return value a _ValidationResult_ where it's field _succeeded_ is true.
   - If the validation fails, you get as return value a _ValidationResult\_\_ where it's field \_succeeded_ is false,
@@ -199,7 +199,7 @@ export type RecordValidationFunctionAsync = (
 
 ### Learning by Example
 
-We have the following scenario: a third party rest-api where we can submit requests: this request will be queued up and the could take minutes to hours to get resolved
+We have the following scenario: a third party rest-api where we can submit requests: this request will be queued up and it could take minutes or hours to get resolved
 (prior to process data this api's will check against a local database in real time in order to check if the information submitted is correct).
 
 This could impact in a severe way to the usability of the application, our backend developers have decided to implement system that will hit a cache, and provide
@@ -208,23 +208,45 @@ a real time response that in 90% of the case will be accurate (or at least will 
 The model of the form that we want to manage is:
 
 ```javascript
+interface Process {
+  name: string;
+  cachedResult: string;
+}
 ```
 
 The server validation call will have the following signature (we will emulate it in our example).
 
 ```javascript
+const resolveProcess = (): Promise<string> => {
+  const time = Math.random() * 1000;
+  return time <= 900 ? '✅' : '❌';
+};
 ```
 
 The validator that we will implement:
 
 ```javascript
+import { resolveProcessFromBackend } from './api';
+
+export const processValidator = ({ values }) =>
+  resolveProcessFromBackend().then(data => {
+    const succeeded = values.cachedResult === data;
+    return {
+      succeeded,
+      message: succeeded
+        ? ''
+        : `Please, review the process. The real result was ${data}`,
+      type: 'RECORD_PROCESS',
+    };
+  });
 ```
 
 Check here:
-Full example vanilla js
-Full eample vanilla ts
-Full example react final form js
-Full example react final form ts
+
+- [Plain Vanilla JS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/docs/validators/js/vanilla/async-record-validator).
+- [Plain Vanilla TS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/docs/validators/ts/vanilla/async-record-validator).
+- [React + React Final Form JS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/docs/validators/js/react-final-form/async-record-validator).
+- [React + React Final Form TS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/docs/validators/ts/react-final-form/async-record-validator).
 
 ### Next steps
 
