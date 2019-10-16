@@ -10,22 +10,22 @@ When a given validation fails, a Fonk validator returns a default error message,
 in two ways:
 
 - You can customize the error message(s) returned by a single validator in a global way (any validation
-  schema using this validator will just use this new error messages).
+  schema using this validator will just use this new error message).
 
 - You can customize the error message for a single field or record validation in a given validation schema.
 
 > Additionally _Validators_ return the TYPE of validator executed (TYPE is a unique identifier) and whether it succeed or not.
 
-In which scenarios you will choose wether to globally or locally?
+In which scenarios you will choose whether to globally or locally?
 
-- Globally cusotmizing a validator error message can be quite useful to provide multilanguage support, e.g.: a
+- Globally customizing a validator error message can be quite useful to provide multilanguage support, e.g.: a
   given user changes the language from English to Spanish, then you want RequiredFieldValidator error message
   to be updated from "This Field is required" to "Debe informar el campo", this should be applied to all
-  validationSchemas field entries that are using this validaror.
+  validationSchemas field entries that are using this validator.
 
 - Setting up a field level validation can be useful for wide validators like _Pattern_ validators: this validator
   validates the entered text against a regular expression, let's say you use this validator to validate an
-  IBAN number, and in another field you just validate a BIC number, you want don't want to display a generic
+  IBAN number, and in another field you just validate a BIC number, you don't want to display a generic
   'Pattern is not valid' message, you want to display a message like "Invalid IBAN number" and "Invalid BIC number"
   for each of the fields.
 
@@ -35,9 +35,42 @@ We will take as example _required validator_, at the entry point of our applicat
 code:
 
 ```javascript
+import { Validators, createFormValidation } from '@lemoncode/fonk';
+
+const validationSchema = {
+  field: {
+    // The default error message is:
+    // "Please fill in this mandatory field."
+    user: [Validators.required.validator],
+  },
+};
+
+const formValidation = createFormValidation(validationSchema);
 ```
 
-TODO: Add full examples github
+- Update error message using globally way
+
+```diff
+import { Validators, createFormValidation } from '@lemoncode/fonk';
+
++ // Spanish message
++ Validators.required.setErrorMessage("Debe informar el campo");
+
+const validationSchema = {
+  field: {
+    // The default error message is:
+    // "Please fill in this mandatory field."
+    user: [Validators.required.validator],
+  },
+};
+
+const formValidation = createFormValidation(validationSchema);
+```
+
+- [Plain Vanilla JS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/docs/messages/js/vanilla/global-error-message).
+- [Plain Vanilla TS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/docs/messages/ts/vanilla/global-error-message).
+- [React + React Final Form JS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/docs/messages/js/react-final-form/global-error-message).
+- [React + React Final Form TS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/docs/messages/ts/react-final-form/global-error-message).
 
 # ValidationSchema field validation customization
 
