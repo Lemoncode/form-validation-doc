@@ -48,7 +48,7 @@ const validationSchema = {
 const formValidation = createFormValidation(validationSchema);
 ```
 
-- Update error message using globally way
+- Update error message using globally way:
 
 ```diff
 import { Validators, createFormValidation } from '@lemoncode/fonk';
@@ -78,9 +78,59 @@ We will take as example _pattern validator_, we will setup a validation schema a
 message for the _IBAN_ field and the _BIC_ field
 
 ```javascript
+import { Validators, createFormValidation } from '@lemoncode/fonk';
+
+const validationSchema = {
+  field: {
+    ibanAccount: [
+      {
+        validator: Validators.pattern.validator,
+        customArgs: { pattern: /^ES\d*$/ },
+      },
+    ],
+    bicAccount: [
+      {
+        validator: Validators.pattern.validator,
+        customArgs: { pattern: /^BIC\d*$/ },
+      },
+    ],
+  },
+};
+
+const formValidation = createFormValidation(validationSchema);
 ```
 
-TODO: Add full examples github
+- Update error message using locally way:
+
+```diff
+import { Validators, createFormValidation } from '@lemoncode/fonk';
+
+const validationSchema = {
+  field: {
+    ibanAccount: [
+      {
+        validator: Validators.pattern.validator,
+        customArgs: { pattern: /^ES\d*$/ },
++       message: 'Invalid IBAN number',
+      },
+    ],
+    bicAccount: [
+      {
+        validator: Validators.pattern.validator,
+        customArgs: { pattern: /^BIC\d*$/ },
++       message: 'Invalid BIC number',
+      },
+    ],
+  },
+};
+
+const formValidation = createFormValidation(validationSchema);
+```
+
+- [Plain Vanilla JS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/docs/messages/js/vanilla/local-error-message).
+- [Plain Vanilla TS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/docs/messages/ts/vanilla/local-error-message).
+- [React + React Final Form JS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/docs/messages/js/react-final-form/local-error-message).
+- [React + React Final Form TS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/docs/messages/ts/react-final-form/local-error-message).
 
 # Building a custom validator that support error messages customization.
 
