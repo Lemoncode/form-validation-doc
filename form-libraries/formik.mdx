@@ -1,0 +1,51 @@
+---
+name: Formik
+menu: 4. Form Libraries
+route: /formik
+---
+
+# Integrating Fonk with React Formik
+
+[Formik](https://github.com/jaredpalmer/formik) is a great library to manage forms state.
+
+Adding **Fonk** to **Formik** allows you to seamlessly add validation capabilities to **React Final Form**.
+
+In order to use **Fonk** with **Formik** you will have to install **fonk-formik** adaptor:
+
+```bash
+npm install @lemoncode/fonk @lemoncode/fonk-formik--save
+```
+
+The main change to apply when using a **fonk-formik** comes when you want to instantiate 
+**Fonk** engine with your form validatin schema, instead of calling _createFormValidation_
+, just replace that entry with _createFonkValidation_
+
+```diff
+- import { createFormValidation, Validators } from '@lemoncode/fonk';
++ import { Validators } from '@lemoncode/fonk';
++ import { createFonkValidation } from '@lemoncode/fonk-formik';
+import { isNumber } from '@lemoncode/fonk-is-number-validator';
+import { minNumberValidator } from './custom-validators';
+
+const validationSchema = {
+  field: {
+    email: [Validators.required.validator],
+    password: [Validators.required.validator]
+  }
+};
+
+- export const formValidation = createFormValidation(validationSchema);
++ export const formValidation = createFonkValidation(validationSchema);
+```
+
+Now you can hook to Formik form validation (example):
+
+```diff
+```
+
+And if you want to hook to Formik field validations (example):
+
+```diff
+```
+
+
