@@ -16,7 +16,7 @@ In order to use **Fonk** with **Formik** you will have to install **fonk-formik*
 npm install @lemoncode/fonk @lemoncode/fonk-formik--save
 ```
 
-The main change to apply when using a **fonk-formik** comes when you want to instantiate 
+The main change to apply when using a **fonk-formik** comes when you want to instantiate
 **Fonk** engine with your form validatin schema, instead of calling _createFormValidation_
 , just replace that entry with _createFonkValidation_
 
@@ -41,11 +41,33 @@ const validationSchema = {
 Now you can hook to Formik form validation (example):
 
 ```diff
+    <Formik
+      initialValues={{ email: "", password: "" }}
++       validate={formValidation.validateForm}
+      onSubmit={(values, { setSubmitting }) => {
+        setTimeout(() => {
+          alert(JSON.stringify(values, null, 2));
+          setSubmitting(false);
+        }, 400);
+      }}
+    >
 ```
 
 And if you want to hook to Formik field validations (example):
 
 ```diff
+    <Field name="email" validate={validateField("email")} />
++    {errors &&
++      errors.email &&
++      errors.email.message &&
++       touched.email &&
++       <div>{errors.email.message}</div>}
 ```
 
+Examples:
 
+[Fonk + Formik form validation]()
+
+[Fonk + Formik field validation]()
+
+[Fonk + Formik form validation - showing record validation examples]()
