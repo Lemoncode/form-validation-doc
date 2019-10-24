@@ -59,15 +59,26 @@ And if you want to hook to Formik field validations (example):
     <Field name="email" validate={validateField("email")} />
 +    {errors &&
 +      errors.email &&
-+      errors.email.message &&
 +       touched.email &&
-+       <div>{errors.email.message}</div>}
++       <div>{errors.email}</div>}
 ```
 
-Examples:
+# Examples:
 
-[Fonk + Formik form validation]()
+[Basic example](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/formik/js/basic)
 
-[Fonk + Formik field validation]()
+[Using formik Field](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/react-final-form/js/formik-component)
 
-[Fonk + Formik form validation - showing record validation examples]()
+[Firing validatins at field level](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/formik/js/field-level-validation)
+
+[Asynchronous validation](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/formik/js/async-validator)
+
+[Customizing validator's error messages globaly](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/formik/js/custom-error-message-global)
+
+[Customizing validator's error messages just for a given form](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/formik/js/custom-error-message-local)
+
+[Creating custom validators](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/formik/js/custom-validators)
+
+[Validating nested fields](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/formik/js/nested-field)
+
+[Defining record validations](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/formik/js/record-validation)
