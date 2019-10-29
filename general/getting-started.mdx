@@ -18,31 +18,33 @@ npm install @lemoncode/fonk --save
 
 ## Using
 
-Fonk is framework agnostic, let's start by adding some simple code to define a login validation:
+Fonk is framework agnostic, it just works out of the box (no dependencies).
+
+We are gong to start by adding some lines of code to define a login validation record:
 
 ```javascript
 const loginRecord = {
-  user: "",
-  password: ""
+  user: '',
+  password: '',
 };
 ```
 
-Let's define the following validation schema for this form:
+Now we are going to define the following validation schema for this form:
 
-- User field is mandatory.
+- **User field** is a required field.
 
-- Password field is mandatory.
+- **Password** field is a required field.
 
-Now let's create the validation schema:
+Let's get started with Fonk: is time to create the validation schema:
 
 ```javascript
-import { Validators, createFormValidation } from "@lemoncode/fonk";
+import { Validators, createFormValidation } from '@lemoncode/fonk';
 
 const validationSchema = {
   field: {
     user: [Validators.required.validator],
-    password: [Validators.required.validator]
-  }
+    password: [Validators.required.validator],
+  },
 };
 
 const formValidation = createFormValidation(validationSchema);
@@ -52,13 +54,13 @@ And let's fire a field validation (usually we will fire this in the�
 
 ```javascript
 formValidation
-  .validateField("user", loginRecord.user)
+  .validateField('user', loginRecord.user)
   .then(validationResult => {
     console.log(validationResult);
   });
 ```
 
-In this case we get the following result (validation failed):
+Since the record fields user is empty, we will get the following output from the _console.log(validationResult)_:
 
 ```bash
 {
@@ -71,14 +73,14 @@ In this case we get the following result (validation failed):
 What happens if we feed the login.user field with data?
 
 ```javascript
-loginRecord.user = "John";
+loginRecord.user = 'John';
 ```
 
 And we fire again the field valdation
 
 ```javascript
 formValidation
-  .validateField("user", loginRecord.user)
+  .validateField('user', loginRecord.user)
   .then(validationResult => {
     console.log(validationResult);
   });
@@ -102,7 +104,8 @@ formValidation.validateForm(loginRecord).then(validationResult => {
 });
 ```
 
-And you will get the result of firing all defined validations in the schema:
+And you will get the result of firing all defined validations in the schema (in this case _user_ has been
+already informaed and _passowrd_ field is empty):
 
 ```bash
 {
@@ -125,25 +128,27 @@ And you will get the result of firing all defined validations in the schema:
 
 ## UI Examples
 
-You can play with this example in the following [validate-field js](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/vanilla/js/validate-field) and [validate-form js](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/vanilla/js/validate-form).
+You can play with this example in the following sandbox [validate-field js](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/vanilla/js/validate-field) and [validate-form js](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/vanilla/js/validate-form).
 
-The Typescript version: [validate-field ts](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/vanilla/ts/validate-field) and [validate-form ts](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/vanilla/ts/validate-form)
+Typescript version: [validate-field ts](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/vanilla/ts/validate-field) and [validate-form ts](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/vanilla/ts/validate-form)
 
-If you want to check a full example including user interface interaction, check the following examples:
+If you want to check a full example including user interface interaction, check the following sandboxes:
 
-- No framework example: [Examples in Javascript and Typescript](https://github.com/Lemoncode/fonk/tree/master/examples/vanilla)
+- Plain vanilla js example: https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/vanilla/js/validate-field
 
-- React + React Final Forms: [Examples in Javascript and Typescript](https://github.com/Lemoncode/fonk/tree/master/examples/react-final-form)
+- React + React Final Form: https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/react-final-form/js/validate-field
+
+- React + Formik: https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/formik/js/basic
 
 ## Next steps
 
 Now you many questions will be arising in your head:
 
 - Can I define more than one field validation per field?
-- Where can I find more validations (we call this _validators_).
+- Where can I find more validations already implemented? (we call this _validators_).
 - How can I create my custom _validator_?
 - What about asynchronous validations?
-- And global form validations (we call them record level validations)?
+- And global form validations?(we call them record level validations).
 - Does it integrate well with libraries like React Final Form?
 - What about multilanguage support?
 
