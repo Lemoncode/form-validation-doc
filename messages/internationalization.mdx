@@ -159,7 +159,7 @@ export const LanguageProvider = props => {
 
 ## Global error message translation
 
-As we learned in previous section, we can customize error message globally using the `setErrorMessage` method provided by validators. So, we only need to provide the translated message when language changes:
+As we learned in previous section, we can customize error message globally using the `setErrorMessage` method provided by validators. We only need to provide the translated message when language changes:
 
 ```javascript
 import { Validators } from '@lemoncode/fonk';
@@ -191,9 +191,9 @@ Check these `i18next React Final Form` examples:
 - [React React Final Form JS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/docs/messages/js/react-final-form/i18n-global-message).
 - [React React Final Form TS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/docs/messages/ts/react-final-form/i18n-global-message).
 
-## Local error message translation
+## Custom Validation Schema error messages translation
 
-This time, we will use `message` property available in `validationSchema`. Each time language is updated, we will provide the translated message to this property, that is, we need to refresh the form validation instance:
+This time, we will use `message` property available in `validationSchema`. Each time language selection is changed, we need to update value assigned to the message property in order to assign the new literal, we need to refresh the Form Validation instance:
 
 ```javascript
 // form-validation.js
@@ -262,7 +262,7 @@ Check these `i18next React Final Form` examples:
 - [React React Final Form JS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/docs/messages/js/react-final-form/i18n-local-message).
 - [React React Final Form TS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/docs/messages/ts/react-final-form/i18n-local-message).
 
-## Using all together
+## Full implementation (global + local validation schema messages)
 
 We can mix both approaches:
 
