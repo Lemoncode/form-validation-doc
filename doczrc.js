@@ -32,7 +32,7 @@ export default {
       name: '3. Messages',
       menu: [
         { name: 'messages', order: 1 },
-        { name: 'Internazionalization', order: 2 },
+        { name: 'Internationalization', order: 2 },
       ],
     },
     {
