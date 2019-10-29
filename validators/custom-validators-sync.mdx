@@ -26,7 +26,7 @@ in a common library.
 
 The definition of a synchronous field validator:
 
-- **FielValidationArgs**: This is passed as a single argument in th validator
+- **FieldValidationArgs**: This is passed as a single argument in th validator
   - **value**: current field value.
   - **values**: form / record values (all fields).
   - **customArgs**: we can pass custom arguments to our validator, this allow us to create flexible and configurable
@@ -185,7 +185,7 @@ export const myValidator = fieldValidatorArgs => {
 };
 ```
 
-> If you want to learn more about how to customize error message + internazionalization you can jump
+> If you want to learn more about how to customize error message + internationalization you can jump
 > to the following [section](/messages/error-message).
 
 _That was awesome, but I need to implement the same validation for country entries like france (FR), germany (DE), and others, is there a way to make this validator more generic?_
@@ -273,7 +273,7 @@ export const setErrorMessage = message => (defaultMessage = message);
 
 ```
 
-_Wow ! That was awesome ! but how can I customize this message if I need internazionalization?_ You can
+_Wow ! That was awesome ! but how can I customize this message if I need internationalization?_ You can
 override the message and just use the same interpolation sequence _{{countryCode}}_ where applies.
 
 > Note down: you have to document this in your validator so consumers of your validator are aware of this params.
@@ -309,7 +309,7 @@ const validatorType = 'FIELDS_MATCH_VALIDATOR';
  export const setErrorMessage = message => (defaultMessage = message);
 
 export const fieldMatchValidator = (fieldValidatorArgs) {
-  // All form/record data is passed in the fielValidatorArgs.values field
+  // All form/record data is passed in the fieldValidatorArgs.values field
   const {value, values, message = defaultMessage} = fieldValidatorArgs
   const validationResult = {
     succeeded: false,
@@ -345,7 +345,7 @@ const validatorType = 'FIELDS_MATCH_VALIDATOR';
  export const setErrorMessage = message => (defaultMessage = message);
 
 export const fieldMatchValidator = (fieldValidatorArgs) {
-  // All form/record data is passed in the fielValidatorArgs.values field
+  // All form/record data is passed in the fieldValidatorArgs.values field
 + // We will make use of customArgs
 -  const {value, values, message = defaultMessage} = fieldValidatorArgs
 +   const {value, values, customArgs, message = defaultMessage} = fieldValidatorArgs
@@ -454,7 +454,7 @@ const freeShippingRecordValidator = ({ values }) => {
 };
 ```
 
-> If you need to implement internazionalization or customize messages you can follow the same approach
+> If you need to implement internationalization or customize messages you can follow the same approach
 > as the described for the field record validations.
 
 Full example implemented:
