@@ -384,9 +384,9 @@ Check here:
 ## Record Validator
 
 A record validator is a validation that is not tied up to an specific field, is usually something that we trigger
-when the user hits submit, and previous to send the information to the server.
+when the user hits submit, and before sending the information to the server.
 
-Record validations usually are not highly reusable functions, they are tied up to the domain of the form to be evaluated.
+Record validations usually are not highly reusable functions, they are tied up to the domain of the form to be validated.
 
 ### Disecting a record validator
 
@@ -395,13 +395,13 @@ The definition of a synchronous field validator:
 - **RecordValidationArgs**: This is passed as a single argument in the validator
   - **values**: form / record values (all fields).
   - **message**: you can override here the error message that the validator returns in case of failure. You can inject
-    in a message _parameters_ to be interpolated by the validator (e.g. 'string must be at least {{minlength}}'),
+    in a message _parameter_ to be interpolated by the validator (e.g. 'string must be at least {{minlength}}'),
     in some validators there may be more than one error message defined, in that case we can pass an array of strings.
 - **ValidationResult**: once the validator has been executed it returns a _ValidationResult_:
   - If the validation succeeds, you get as return value a _ValidationResult_ where it's field _succeeded_ is true.
   - If the validation fails, you get as return value a _ValidationResult\_\_ where it's field \_succeeded_ is false,
-    a _message_ where you get the error message (user friendly) and a _type_ field that indicates the validator that
-    failed.
+    and a _message_ where you get a user friendly error message and a _type_ field that indicates the validator id that
+    generated the error.
 
 ```typescript
 export interface RecordValidatorArgs {
@@ -422,7 +422,7 @@ export type RecordValidationFunctionSync = (
 
 ### Learning by example
 
-We got a form that displays the total of a given shopping order:
+We got a form that displays the total monetary amount of a given shopping order:
 
 ```javascript
 const myFormValues = {
@@ -433,13 +433,8 @@ const myFormValues = {
 };
 ```
 
-Once the user hits on submit order and before sending the request to the server we want to check the following rule:
-
-- FreeShipping can be true if the total amount (price - discount) is greater than 20 USD, or if the fied _isPrime_ is true. We want to trigger
-  this validation when the user hits on submit.
-
-We only want to trigger this once the user has finished picking up the product he wants to buy (we don't want to annoy him meanwhile he is in the
-shopping cart process).
+Once the user hits on submit order and before sending the request to the server we want to check the following rule: FreeShipping
+can be true if the total amount (price - discount) is greater than 20 USD, or if the fied _isPrime_ is true.
 
 A validator to implement this:
 
@@ -462,7 +457,7 @@ const freeShippingRecordValidator = ({ values }) => {
 > If you need to implement internazionalization or customize messages you can follow the same approach
 > as the described for the field record validations.
 
-Check here:
+Full example implemented:
 
 - [Plain Vanilla JS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/vanilla/js/validate-record).
 - [Plain Vanilla TS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/vanilla/ts/validate-record).
