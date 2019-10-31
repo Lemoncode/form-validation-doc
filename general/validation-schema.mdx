@@ -6,7 +6,10 @@ route: /validation-schema
 
 # Validation Schema
 
-A Validation Schema allows us to define in a declarative way, all the validations that apply to each field of a form plus record validations in a single place.
+A Validation Schema allows us to define in a declarative way:
+
+- All the validations that apply to each field of a form.
+- All the record validations that apply to a given form.
 
 Let's learn how it works by following an example:
 
@@ -14,10 +17,10 @@ We have the following form record:
 
 ```javascript
 const myFormValues = {
-  product: "shoes",
+  product: 'shoes',
   discount: 5,
   price: 20,
-  isPrime: false
+  isPrime: false,
 };
 ```
 
@@ -26,22 +29,22 @@ And we want to set the following rules:
 - Product must be a required field.
 - Discount must be a required field.
 - Price must be a required field.
-- FreeShipping can be true if the total amount (price - discount) is greater than 20 USD, or if the fied _isPrime_ is true. We want to trigger
-  this validation when the user hits on submit.
+- FreeShipping can be true if the total amount (_price - discount_) is greater than 20 USD, or if the field _isPrime_ is true. We want to trigger
+  this validation when the user hits on submit button.
 
 ## Defining field validations
 
 Let's start by defining a validation schema that includes the field valdiations:
 
 ```javascript
-import { createFormValidation, Validators } from "@lemoncode/fonk";
+import { createFormValidation, Validators } from '@lemoncode/fonk';
 
 const validationSchema = {
   field: {
     product: [Validators.required.validator],
     discount: [Validators.required.validator],
-    price: [Validators.required.validator]
-  }
+    price: [Validators.required.validator],
+  },
 };
 
 export const formValidation = createFormValidation(validationSchema);
@@ -50,12 +53,9 @@ export const formValidation = createFormValidation(validationSchema);
 Dissecting the previous code snippet:
 
 - We have just added a section into the schema called 'field'.
-- Inside 'field' object we have created new keys one per each field that
-  we want to validate (this keys have the same name as the field we want to validate).
-- Each field key will contain an array indicating the fields validation to be sequentially
-  executed when triggering a field validation or full form validation.
-- Given that validation schema we create a [**FormValidation**](/api#formvalidation) object using the
-  [**createFormValidation**](/api#createformvalidation) factory method, this will allow us to call the [**Fonk**](https://github.com/Lemoncode/fonk)
+- Inside 'field' object we have created new keys one per each form field that we want to validate (this keys have the same name as the field we want to validate).
+- Each field key will contain an array indicating the fields validation to be sequentially executed when triggering a field validation or full form validation.
+- Given that validation schema we create a [**FormValidation**](/api#formvalidation) object using the [**createFormValidation**](/api#createformvalidation) factory method, this will allow us to call the [**Fonk**](https://github.com/Lemoncode/fonk)
   engine to trigger a field, form or record validation associated to the [**Validation Schema**](/api#validationschema)
   we have previously created.
 
@@ -64,7 +64,7 @@ If we want to fire a field validation we can run the following code:
 ```javascript
 // We pass here the Id of the field to validate, and the new value for that field
 formValidation
-  .validateField("product", "my new product name")
+  .validateField('product', 'my new product name')
   .then(validationResult => {
     console.log(result);
   });
@@ -77,12 +77,12 @@ More information about Fonk [validateField](/validating-field).
 Record validations are global validations that are not tied up to a given specific field, they
 are just the type of validations you want to trigger once the user hits on the submit button.
 
-Continuing with the case we have define before, we want to define the following record validation rule:
+Continuing with the case we have define previously, we want to define the following record validation rule:
 
 _Free shipping costs can only be true if user is subscribed to prime services or if the total cost
 (price - discount) is greater than 20 USD._
 
-We will define here the record validator (since is custom login we will define it from scratch,
+Let's will define the record validator (since is custom login we will define it from scratch,
 and attach it to the Validation Schema we have created before).
 
 ```diff
@@ -148,15 +148,15 @@ Live demos working example:
 
 ## Adding additional context information
 
-What happens if we need to add addional context information to the validator function, for instance passing a custom error message ? The **ValidationSchema** supports two signatures whenever we add a validations:
+What happens if we need to add addional context information to the validator function, for instance passing a custom error message ? The **ValidationSchema** supports two signatures whenever we want to add a validation:
 
-- The short definition: the one we have been using, is just adding the validator function we wan to use.
+- The short definition: the one we have been using, is just adding the validator function we need.
 
 ```javascript
 const validationSchema = {
   field: {
-    product: [validators.required.validator]
-  }
+    product: [validators.required.validator],
+  },
 };
 ```
 
@@ -168,10 +168,10 @@ const validationSchema = {
     product: [
       {
         validator: validators.required.validator,
-        message: "My custom error message"
-      }
-    ]
-  }
+        message: 'My custom error message',
+      },
+    ],
+  },
 };
 ```
 
@@ -192,8 +192,8 @@ What would happen if we have a richer object? Something like:
 const myFormValues = {
   product: {
     id: 1245,
-    name: "shoes"
-  }
+    name: 'shoes',
+  },
 };
 ```
 
@@ -219,14 +219,15 @@ Live demos working example:
 
 What about asynchronous validations? Under the hood **fonk** is fully asynchronous, you can plug an asynchronous validation directly into the validations array.
 
-Let's create a simple login form, and as validations the user name must be required, and a valid github account (we will check against github api).
+Let's create a simple login form, and define a new validation set: the user name must be required, and account name must not exist as a github account
+(we will check against github api).
 
 The form values we have:
 
 ```javascript
 const myLoginFormValues = {
-  user: "mojombo",
-  password: ""
+  user: 'mojombo',
+  password: '',
 };
 ```
 
@@ -235,19 +236,19 @@ The field validator (check [Custom validators asynchronous](/validators/custom-v
 ```javascript
 const userExistsOnGithubValidator = ({ value }) => {
   const validationResult = {
-    type: "GITHUB_USER_EXISTS",
+    type: 'GITHUB_USER_EXISTS',
     succeeded: false,
-    message: "The username exists on Github"
+    message: 'The username exists on Github',
   };
 
   return fetch(`https://api.github.com/users/${value}`).then(response => {
-    // Status 404, User does not exists, so the given user is valid
-    // Status 200, meaning user exists, so the given user is not valid
+    // Status 404, User does not exists, the given user is valid
+    // Status 200, meaning user exists, the given user is not valid
     return response.status === 404
       ? {
           ...validationResult,
           succeeded: true,
-          message: ""
+          message: '',
         }
       : validationResult;
   });
@@ -258,12 +259,12 @@ How to setup a validation schema that checks if the user field is informed and i
 github account:
 
 ```javascript
-import { createFormValidation, Validators } from "@lemoncode/fonk";
+import { createFormValidation, Validators } from '@lemoncode/fonk';
 
 const validationSchema = {
   field: {
-    user: [Validators.required.validator, userExistsOnGithubValidator]
-  }
+    user: [Validators.required.validator, userExistsOnGithubValidator],
+  },
 };
 
 export const formValidation = createFormValidation(validationSchema);
