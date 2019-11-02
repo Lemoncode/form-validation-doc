@@ -14,8 +14,8 @@ a validation that need to make a request to a rest-api and cannot provide the re
 
 ## Async Field Validator
 
-An async field validator is just a funcion that expects on argument (this argument is an object that contains several fields),
-and return a promise that will contain a validation result once resolved.
+An async field validator is just a funcion that expects an argument (this argument is an object that contains several fields),
+and returns a promise that will contain a validation result once resolved.
 
 Depending on the use case (e.g. is hitting a global rest api or a given domain specific rest api), it could be reusable or not.
 
@@ -23,7 +23,7 @@ Depending on the use case (e.g. is hitting a global rest api or a given domain s
 
 The definition of an asynchronous field validator:
 
-- **FielValidationArgs**: This is passed as a single argument in th validator
+- **FieldValidationArgs**: This is passed as a single argument in the validator
   - **value**: current field value.
   - **values**: form / record values (all fields).
   - **customArgs**: we can pass custom arguments to our validator, this allow us to create flexible and configurable
@@ -36,7 +36,7 @@ The definition of an asynchronous field validator:
   - **Promise<ValidationResult\>**: once the validator has been executed it returns a _Promise<ValidationResult\>_,
     once the promise gets resolved:
     - If the validation succeeds, you get as return value a _ValidationResult_ where it's field _succeeded_ is true.
-    - If the validation fails, you get as return value a _ValidationResult\_\_ where it's field \_succeeded_ is false,
+    - If the validation fails, you get as return value a _ValidationResult_ where it's field _succeeded_ is false,
       a _message_ where you get the error message (user friendly) and a _type_ field that indicates the validator that
       failed.
 
@@ -69,7 +69,7 @@ check that the userId does not exists in github using the Github rest api).
 
 We will start simple, in order to check we only need use the _value_ we
 don't need the rest of optional params: _values_, _customArgs_, _message_, we will follow a TDD like approach
-we will create the validator always faling (returning a failed validation result).
+we will create the validator always failing (returning a failed validation result).
 
 ```javascript
 const validatorType = 'GITHUB_USER_EXISTS';
@@ -168,7 +168,7 @@ Record validations usually are not highly reusable functions, they are tied up t
 
 The definition of an asynchronous record validation:
 
-- **RecordValidationArgs**: This is passed as a single argument in th validator
+- **RecordValidationArgs**: This is passed as a single argument in the validator.
   - **values**: form / record values (all fields).
   - **message**: you can override here the error message that the validator returns in case of failure. You can inject
     in a message _parameters_ to be interpolated by the validator (e.g. 'string must be at least {{minlength}}'),
@@ -176,7 +176,7 @@ The definition of an asynchronous record validation:
 - **Promise<ValidationResult\>**: once the validator has been executed it returns a _Promise<ValidationResult\>_,
   once the promise gets resolved:
   - If the validation succeeds, you get as return value a _ValidationResult_ where it's field _succeeded_ is true.
-  - If the validation fails, you get as return value a _ValidationResult\_\_ where it's field \_succeeded_ is false,
+  - If the validation fails, you get as return value a _ValidationResult_ where it's field _succeeded_ is false,
     a _message_ where you get the error message (user friendly) and a _type_ field that indicates the validator that
     failed.
 

@@ -35,7 +35,7 @@ Now we are going to define the following validation schema for this form:
 
 - **Password** field is a required field.
 
-Let's get started with Fonk: is time to create the validation schema:
+Let's get started with Fonk, it is time to create the validation schema:
 
 ```javascript
 import { Validators, createFormValidation } from '@lemoncode/fonk';
@@ -60,7 +60,7 @@ formValidation
   });
 ```
 
-Since the record fields user is empty, we will get the following output from the _console.log(validationResult)_:
+Since the record field user is empty, we will get the following output from the _console.log(validationResult)_:
 
 ```bash
 {
@@ -76,7 +76,7 @@ What happens if we feed the login.user field with data?
 loginRecord.user = 'John';
 ```
 
-And we fire again the field valdation
+And we fire again the field validation:
 
 ```javascript
 formValidation
@@ -105,7 +105,7 @@ formValidation.validateForm(loginRecord).then(validationResult => {
 ```
 
 And you will get the result of firing all defined validations in the schema (in this case _user_ has been
-already informaed and _passowrd_ field is empty):
+already informed and _password_ field is empty):
 
 ```bash
 {
