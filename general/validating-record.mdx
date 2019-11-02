@@ -16,22 +16,22 @@ validateRecord(values: any): Promise<RecordValidationResult>
 
 In this method we pass as arguments:
 
-- All the record values, usually this kind of validation need access to the whole form data.
+- All the record values, usually this kind of validation needs access to the whole form data.
 
 And it returns
 
 - Whether all the associated record validations passed or failed (in case just one of the validations failed).
 - A list of results including the result of firing all the record validations.
 
-> This behavior is different to [ValidateField](/api#validatefield), because validate field is ove one field, validateRecord is over a list of records. you get success or stops the process
+> This behavior is different to [ValidateField](/api#validatefield), because validate field is over one field, validateRecord is over a list of records. You get success or stops the process
 > For each record has same behaviour like validateField.
 
-> You can find detailed information about this method in the [api definition](/api#validaterecord)).
+> You can find detailed information about this method in the [api definition](/api#validaterecord).
 
-Let's get our hand wet:
+Let's get our hands wet:
 
 We want to validate that, the user gets freeshipping if he is subscribed to _prime services_ or
-if the the total amount purchase is greater than 30 USD.
+if the total amount purchase is greater than 30 USD.
 
 Let's start with the following model:
 
@@ -142,4 +142,4 @@ React final form examples:
 - [React + React Final Form TS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/react-final-form/ts/validate-record).
 
 Now that you know how to fire validate field & record validations 
-let's jump firing all the validation toghether [form validations](/validating-form)
+let's jump firing all the validation together [form validations](/validating-form)

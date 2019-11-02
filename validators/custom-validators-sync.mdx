@@ -109,8 +109,8 @@ export const myValidator = fieldValidatorArgs => {
 }
 ```
 
-No we got our simple validator working, if you enter an IBAN that belongs to spain it will pass
-the validation if not if will fail.
+Now we got our simple validator working, if you enter an IBAN that belongs to spain it will pass
+the validation if not it will fail.
 
 _Watch out... what if we pass a null/undefined/empty string?_ Validation will succeed in this case, _but is
 not a valid IBAN isn't it?_ Usually is a good practice to delegate this validation to a prior validator like
@@ -328,7 +328,7 @@ pass the name of the field to compare with).
 - **customArgs**: here we will pass the id of the field to check (in this case the _password_ field).
 
 - **values**: here we get all the form/record values, we can use the following approach to access
-  the _password_ field: \_\_
+  the _password_ field: 
 
 Let's see how to combine this both together:
 
@@ -393,7 +393,7 @@ The definition of a synchronous field validator:
     in some validators there may be more than one error message defined, in that case we can pass an array of strings.
 - **ValidationResult**: once the validator has been executed it returns a _ValidationResult_:
   - If the validation succeeds, you get as return value a _ValidationResult_ where it's field _succeeded_ is true.
-  - If the validation fails, you get as return value a _ValidationResult\_\_ where it's field \_succeeded_ is false,
+  - If the validation fails, you get as return value a _ValidationResult_ where it's field _succeeded_ is false,
     and a _message_ where you get a user friendly error message and a _type_ field that indicates the validator id that
     generated the error.
 
@@ -428,7 +428,7 @@ const myFormValues = {
 ```
 
 Once the user hits on submit order and before sending the request to the server we want to check the following rule: FreeShipping
-can be true if the total amount (price - discount) is greater than 20 USD, or if the fied _isPrime_ is true.
+can be true if the total amount (price - discount) is greater than 20 USD, or if the field _isPrime_ is true.
 
 A validator to implement this:
 

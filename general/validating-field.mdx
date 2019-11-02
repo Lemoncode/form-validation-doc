@@ -17,21 +17,21 @@ method:
 In this method we pass as arguments:
 
 - The name of the field we want to validate.
-- The current value of the field (usually we get this value for instance form a *OnChange* *OnBlur* input event args).
-- Optionally we can feed the whole record values (in some cases you need to feed the current form values, e.g. there is a *requiredOnField* value where
-  a given field is required depending on another record field value).
+- The current value of the field (usually we get this value for instance from a *OnChange* *OnBlur* input event args).
+- Optionally we can feed the whole record values (in some cases you need to feed the current form values, 
+  e.g. there is a *requiredOnField* value where a given field is required depending on another record field value).
 
 And it returns:
 
 - A promise (validateField is async) including the validation result, it can be succeeded if all validations associated to that field passed, or fail in case any of the associated validations
   fail (in that case you get back an error message and a validation type).
 
-The validations associated to a field are executed sequentially, starting from the one defined at index 0, the validation process stops as soon as one of the associated
+The validations associated to a field are executed sequentially, starting from the one defined at index 0, the validation process stops as soon as one of the associated 
 field validations fail.
 
 > You can find detailed information about this method in the [api definition](/api#validatefield).
 
-Let's get our hand wet:
+Let's get our hands wet:
 
 We want to validate a login form, we have the following model:
 

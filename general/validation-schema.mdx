@@ -34,7 +34,7 @@ And we want to set the following rules:
 
 ## Defining field validations
 
-Let's start by defining a validation schema that includes the field valdiations:
+Let's start by defining a validation schema that includes the field validations:
 
 ```javascript
 import { createFormValidation, Validators } from '@lemoncode/fonk';
@@ -82,7 +82,7 @@ Continuing with the case we have define previously, we want to define the follow
 _Free shipping costs can only be true if user is subscribed to prime services or if the total cost
 (price - discount) is greater than 20 USD._
 
-Let's will define the record validator (since is custom login we will define it from scratch,
+Let's define the record validator (since is custom login we will define it from scratch,
 and attach it to the Validation Schema we have created before).
 
 ```diff
