@@ -278,6 +278,8 @@ override the message and just use the same interpolation sequence _{{countryCode
 
 > Note down: you have to document this in your validator so consumers of your validator are aware of this params.
 
+![iban-custom-sync-validator](../gifs/iban-custom-sync-validator.gif)
+
 _So far so good, but what happens if I need another form field value to execute my field validator?_ Let's say for
 instance I got a signUp form where the user has to enter his password, then reenter it in a different field
 to avoid him introducing any typo by mistake. That's a great use case, let's dig into that:
@@ -328,7 +330,7 @@ pass the name of the field to compare with).
 - **customArgs**: here we will pass the id of the field to check (in this case the _password_ field).
 
 - **values**: here we get all the form/record values, we can use the following approach to access
-  the _password_ field: 
+  the _password_ field:
 
 Let's see how to combine this both together:
 
@@ -356,8 +358,9 @@ export const fieldMatchValidator = (fieldValidatorArgs) {
 +  }
 
 -  // Now we can acces the 'password' field from the values field
-+  We just grab the value of the field using the bracke accesor
-+  more info: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Property_Accessors
++  We just grab the value of the field using the bracket accesor
++  more info:
++  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Property_Accessors
 -  if (value === values.password) {
 +  if(value === value[customArgs.fieldToCompareName])
     validationResult.succeeded = true;
@@ -450,6 +453,8 @@ const freeShippingRecordValidator = ({ values }) => {
 
 > If you need to implement internationalization or customize messages you can follow the same approach
 > as the described for the field record validations.
+
+![validate-record](../gifs/validate-record.gif)
 
 Full example implemented:
 
