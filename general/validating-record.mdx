@@ -37,10 +37,10 @@ Let's start with the following model:
 
 ```typescript
 const checkoutForm = {
-  product: "shoes",
+  product: 'shoes',
   price: 20,
   discount: 5,
-  isPrime: false
+  isPrime: false,
 };
 ```
 
@@ -53,9 +53,9 @@ const freeShippingRecordValidator = ({ values }) => {
   return {
     succeeded,
     message: succeeded
-      ? ""
-      : "Subscribe to prime service or total must be greater than 20USD",
-    type: "RECORD_FREE_SHIPPING"
+      ? ''
+      : 'Subscribe to prime service or total must be greater than 20USD',
+    type: 'RECORD_FREE_SHIPPING',
   };
 };
 ```
@@ -67,8 +67,8 @@ And let's define our form validation schema:
 ```javascript
 const validationSchema = {
   record: {
-    freeShipping: [freeShippingRecordValidator]
-  }
+    freeShipping: [freeShippingRecordValidator],
+  },
 };
 
 const formValidation: FormValidation = createFormValidation(validationSchema);
@@ -130,6 +130,8 @@ It will return:
 ```
 
 The record validation succeeded.
+
+![validate-record](./gifs/validate-record.gif)
 
 Examples:
 

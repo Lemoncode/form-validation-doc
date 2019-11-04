@@ -19,14 +19,14 @@ In this method we pass as arguments:
 - The name of the field we want to validate.
 - The current value of the field (usually we get this value for instance from a *OnChange* *OnBlur* input event args).
 - Optionally we can feed the whole record values (in some cases you need to feed the current form values, 
-  e.g. there is a *requiredOnField* value where a given field is required depending on another record field value).
+e.g. there is a *requiredOnField* value where a given field is required depending on another record field value).
 
 And it returns:
 
 - A promise (validateField is async) including the validation result, it can be succeeded if all validations associated to that field passed, or fail in case any of the associated validations
   fail (in that case you get back an error message and a validation type).
 
-The validations associated to a field are executed sequentially, starting from the one defined at index 0, the validation process stops as soon as one of the associated 
+The validations associated to a field are executed sequentially, starting from the one defined at index 0, the validation process stops as soon as one of the associated
 field validations fail.
 
 > You can find detailed information about this method in the [api definition](/api#validatefield).
@@ -37,15 +37,15 @@ We want to validate a login form, we have the following model:
 
 ```javascript
 const loginValues = {
-  user: "",
-  password: "1234"
+  user: '',
+  password: '1234',
 };
 ```
 
 Let's define the following [**Validation Schema**](/api#validationschema):
 
 ```javascript
-import { Validators, createFormValidation } from "@lemoncode/fonk";
+import { Validators, createFormValidation } from '@lemoncode/fonk';
 
 const validationSchema = {
   field: {
@@ -53,10 +53,10 @@ const validationSchema = {
       Validators.required.validator,
       {
         validator: Validators.minLength.validator,
-        customArgs: { length: 3 }
-      }
-    ]
-  }
+        customArgs: { length: 3 },
+      },
+    ],
+  },
 };
 
 const formValidation = createFormValidation(validationSchema);
@@ -66,12 +66,12 @@ Let's call **validateField** passing the *user* field and the empty st
 
 ```javascript
 const loginValues = {
-  user: "",
-  password: "1234"
+  user: '',
+  password: '1234',
 };
 
 formValidation
-  .validateField("user", loginValues.user)
+  .validateField('user', loginValues.user)
   .then(validationResult => {
     console.log(validationResult);
   });
@@ -93,12 +93,12 @@ Now let's try to validate this field passing as value the string 'a'
 
 ```javascript
 const loginValues = {
-  user: "a",
-  password: "1234"
+  user: 'a',
+  password: '1234',
 };
 
 formValidation
-  .validateField("user", loginValues.user)
+  .validateField('user', loginValues.user)
   .then(validationResult => {
     console.log(validationResult);
   });
@@ -120,12 +120,12 @@ Finally, let' try to validate this field pass as value the string 'a
 
 ```javascript
 const loginValues = {
-  user: "abc",
-  password: "1234"
+  user: 'abc',
+  password: '1234',
 };
 
 formValidation
-  .validateField("user", loginValues.user)
+  .validateField('user', loginValues.user)
   .then(validationResult => {
     console.log(validationResult);
   });
@@ -142,6 +142,8 @@ The result that we get back:
 ```
 
 In this case all field associated passed and we get as result validation succeeded.
+
+![validating-field](./gifs/validating-field.gif)
 
 Examples:
 
