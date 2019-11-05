@@ -54,16 +54,16 @@ const validationSchema: ValidationSchema = {
       loginValidator, // This is a custom async validator
       {
         validator: Validators.required.validator, // This is a sync validator
-        customArgs: { otherField: "other" },
-        message: "Required field"
+        customArgs: { otherField: 'other' },
+        message: 'Required field',
       },
       {
         validator: loginValidator, // This is a custom async validator
-        customArgs: { otherField: "other" },
-        message: "Invalid login"
-      }
-    ]
-  }
+        customArgs: { otherField: 'other' },
+        message: 'Invalid login',
+      },
+    ],
+  },
 };
 ```
 
@@ -87,8 +87,8 @@ Let's say we want to build a Login Form, and it contains the following record:
 
 ```javascript
 const loginModel = {
-  user: "",
-  password: ""
+  user: '',
+  password: '',
 };
 ```
 
@@ -96,13 +96,13 @@ We want to validate that both user and password are required field, a validation
 schema to define these validations:
 
 ```javascript
-import { Validators } from "@lemoncode/fonk";
+import { Validators } from '@lemoncode/fonk';
 
 const loginFormValidationSchema = {
   field: {
     user: [Validators.required.validator],
-    password: [Validators.required.validator]
-  }
+    password: [Validators.required.validator],
+  },
 };
 ```
 
@@ -110,13 +110,13 @@ Let's follow up completing this form validation, in this case it wants to ensure
 that the user field is required and a well formed email address:
 
 ```javascript
-import { Validators } from "@lemoncode/fonk";
+import { Validators } from '@lemoncode/fonk';
 
 const loginFormValidationSchema = {
   field: {
     user: [Validators.required.validator, Validators.email.validator],
-    password: [Validators.required.validator]
-  }
+    password: [Validators.required.validator],
+  },
 };
 ```
 
@@ -128,7 +128,7 @@ both function and structure based definition to include validation it will
 use the second option.
 
 ```javascript
-import { Validators } from "@lemoncode/fonk";
+import { Validators } from '@lemoncode/fonk';
 
 const loginFormValidationSchema = {
   field: {
@@ -137,12 +137,14 @@ const loginFormValidationSchema = {
       Validators.required.validator,
       {
         validator: Validators.minLength.validator,
-        customArgs: { length: 3 }
-      }
-    ]
-  }
+        customArgs: { length: 3 },
+      },
+    ],
+  },
 };
 ```
+
+![field-validator](../gifs/field-validator.gif)
 
 ### RecordValidationSchema
 
@@ -165,14 +167,14 @@ const validationSchema: ValidationSchema = {
       asyncFreeShippingAllowed, // This is a custom async validator
       {
         validator: freeShippingAllowed, // This is a sync validator
-        message: "Total must be greater than 30USD"
+        message: 'Total must be greater than 30USD',
       },
       {
         validator: asyncFreeShippingAllowed, // This is a custom async validator
-        message: "Total must be greater than 60USD"
-      }
-    ]
-  }
+        message: 'Total must be greater than 60USD',
+      },
+    ],
+  },
 };
 ```
 
@@ -199,7 +201,7 @@ if total amount (including discount) is greater than 30 USD
 ```javascript
 const checkoutForm = {
   subtotal: 0,
-  discount: 0
+  discount: 0,
 };
 ```
 
@@ -209,11 +211,11 @@ Let's define our record validator rule:
 const freeShippingAllowed = ({ values }) => {
   const succeeded = values.subtotal - values.discount >= 30;
   return {
-    type: "RECORD_FREE_SHIPPING",
+    type: 'RECORD_FREE_SHIPPING',
     succeeded,
     message: succeeded
-      ? ""
-      : "Total must be greater than 30USD to get cost free shippings"
+      ? ''
+      : 'Total must be greater than 30USD to get cost free shippings',
   };
 };
 ```
@@ -221,10 +223,12 @@ const freeShippingAllowed = ({ values }) => {
 ```javascript
 const validationSchema = {
   record: {
-    freeShippingValidation: [freeShippingAllowed]
-  }
+    freeShippingValidation: [freeShippingAllowed],
+  },
 };
 ```
+
+![record-validator](../gifs/record-validator.gif)
 
 ## createFormValidation
 
@@ -557,19 +561,19 @@ Usage:
 - Simple, (trim default value equals true):
 
 ```typescript
-import { Validators, createFormValidation } from "@lemoncode/fonk";
+import { Validators, createFormValidation } from '@lemoncode/fonk';
 
 const validationSchema = {
   field: {
-    login: [Validators.required.validator]
-  }
+    login: [Validators.required.validator],
+  },
 };
 ```
 
 customArgs
 
 ```typescript
-import { Validators, createFormValidation } from "@lemoncode/fonk";
+import { Validators, createFormValidation } from '@lemoncode/fonk';
 
 const validationSchema = {
   field: {
@@ -577,14 +581,16 @@ const validationSchema = {
     password: [
       {
         validator: Validators.required.validator,
-        customArgs: { trim: false }
-      }
-    ]
-  }
+        customArgs: { trim: false },
+      },
+    ],
+  },
 };
 ```
 
 Example:
+
+![required](../gifs/required.gif)
 
 You can find this example in [javascript example](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/js/required) and [typescript example](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/ts/required).
 
@@ -601,16 +607,18 @@ export const email: FieldValidationFunctionSync = (fieldValidatorArgs) : Validat
 Usage:
 
 ```typescript
-import { Validators } from "@lemoncode/fonk";
+import { Validators } from '@lemoncode/fonk';
 
 const validationSchema = {
   field: {
-    email: [Validators.email.validator]
-  }
+    email: [Validators.email.validator],
+  },
 };
 ```
 
 Example:
+
+![email](../gifs/email.gif)
 
 You can find this example in [javascript example](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/js/email) and [typescript example](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/ts/email).
 
@@ -635,55 +643,57 @@ Usage:
 String:
 
 ```typescript
-import { Validators } from "@lemoncode/fonk";
+import { Validators } from '@lemoncode/fonk';
 
 const validationSchema = {
   field: {
     phone: [
       {
         validator: Validators.pattern.validator,
-        customArgs: { pattern: "^(7|8|9)\\d{9}$" }
-      }
-    ]
-  }
+        customArgs: { pattern: '^(7|8|9)\\d{9}$' },
+      },
+    ],
+  },
 };
 ```
 
 Regex:
 
 ```typescript
-import { Validators } from "@lemoncode/fonk";
+import { Validators } from '@lemoncode/fonk';
 
 const validationSchema = {
   field: {
     phone: [
       {
         validator: Validators.pattern.validator,
-        customArgs: { pattern: /^(7|8|9)\d{9}$/ }
-      }
-    ]
-  }
+        customArgs: { pattern: /^(7|8|9)\d{9}$/ },
+      },
+    ],
+  },
 };
 ```
 
 Regex constructor:
 
 ```typescript
-import { Validators } from "@lemoncode/fonk";
+import { Validators } from '@lemoncode/fonk';
 
 const validationSchema = {
   field: {
     phone: [
       {
         validator: Validators.pattern.validator,
-        customArgs: { pattern: new RegExp(/^(7|8|9)\d{9}$/) }
-      }
-    ]
-  }
+        customArgs: { pattern: new RegExp(/^(7|8|9)\d{9}$/) },
+      },
+    ],
+  },
 };
 ```
 
 Example:
+
+![pattern](../gifs/pattern.gif)
 
 You can find this example in [javascript example](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/js/pattern) and [typescript example](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/ts/pattern).
 
@@ -706,21 +716,23 @@ export const minLength: FieldValidationFunctionSync<LengthArgs> = (fieldValidato
 Sample usage:
 
 ```typescript
-import { Validators } from "@lemoncode/fonk";
+import { Validators } from '@lemoncode/fonk';
 
 const validationSchema = {
   field: {
     description: [
       {
         validator: Validators.minLength.validator,
-        customArgs: { length: 10 } // Valid description for length greater than 10 chars
-      }
-    ]
-  }
+        customArgs: { length: 10 }, // Valid description for length greater than 10 chars
+      },
+    ],
+  },
 };
 ```
 
 Example:
+
+![min-length](../gifs/min-length.gif)
 
 You can find this example in [javascript example](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/js/min-length) and [typescript example](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/ts/min-length).
 
@@ -743,21 +755,23 @@ export const maxLength: FieldValidationFunctionSync<LengthArgs> = (fieldValidato
 Sample usage:
 
 ```typescript
-import { Validators } from "@lemoncode/fonk";
+import { Validators } from '@lemoncode/fonk';
 
 const validationSchema = {
   field: {
     description: [
       {
         validator: Validators.maxLength.validator,
-        customArgs: { length: 20 } // Valid description for length lower than 20 chars
-      }
-    ]
-  }
+        customArgs: { length: 20 }, // Valid description for length lower than 20 chars
+      },
+    ],
+  },
 };
 ```
 
 Example:
+
+![max-length](../gifs/max-length.gif)
 
 You can find this example in [javascript example](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/js/max-length) and [typescript example](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/ts/max-length).
 
@@ -777,12 +791,16 @@ You could see some examples creating custom validators in:
 
 **Sync custom validators**
 
+![custom-validators](../gifs/validate-field.gif)
+
 - [Plain Vanilla JS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/vanilla/js/custom-validators).
 - [Plain Vanilla TS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/vanilla/ts/custom-validators).
 - [React + React Final Form JS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/react-final-form/js/custom-validators).
 - [React + React Final Form TS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/react-final-form/ts/custom-validators).
 
 **Async custom validators**
+
+![async-validator](../gifs/async-validator.gif)
 
 - [Plain Vanilla JS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/vanilla/js/async-validator).
 - [Plain Vanilla TS](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/vanilla/ts/async-validator).
