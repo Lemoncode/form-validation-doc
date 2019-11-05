@@ -63,6 +63,8 @@ const validationSchema: ValidationSchema = {
 };
 ```
 
+![required](../gifs/required.gif)
+
 Example:
 
 You can find this example in [Javascript](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/js/required) and [Typescript](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/ts/required).
@@ -80,7 +82,8 @@ export interface PatternArgs {
   pattern: string | RegExp;
 }
 
-export const pattern: FieldValidationFunctionSync<PatternArgs> = (fieldValidatorArgs) : ValidationResult => {...}
+export const pattern: FieldValidationFunctionSync<PatternArgs> =
+(fieldValidatorArgs): ValidationResult => {...}
 ```
 
 Usage:
@@ -135,6 +138,8 @@ const validationSchema: ValidationSchema = {
   },
 };
 ```
+
+![pattern](../gifs/pattern.gif)
 
 Example:
 
@@ -191,6 +196,8 @@ const validationSchema: ValidationSchema = {
 };
 ```
 
+![min-length](../gifs/min-length.gif)
+
 Example:
 
 You can find this example in [Javascript](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/js/min-length) and [Typescript](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/ts/min-length).
@@ -246,6 +253,8 @@ const validationSchema: ValidationSchema = {
 };
 ```
 
+![max-length](../gifs/max-length.gif)
+
 Example:
 
 You can find this example in [Javascript](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/js/max-length) and [Typescript](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/ts/max-length).
@@ -271,6 +280,8 @@ const validationSchema: ValidationSchema = {
   },
 };
 ```
+
+![email](../gifs/email.gif)
 
 Example:
 

@@ -34,10 +34,10 @@ We have the following form model:
 
 ```javascript
 const checkoutForm = {
-  product: "",
+  product: '',
   discount: null,
   price: null,
-  isPrime: false
+  isPrime: false,
 };
 ```
 
@@ -56,9 +56,9 @@ const freeShippingRecordValidator = ({ values }) => {
   return {
     succeeded,
     message: succeeded
-      ? ""
-      : "Subscribe to prime service or total must be greater than 20USD",
-    type: "RECORD_FREE_SHIPPING"
+      ? ''
+      : 'Subscribe to prime service or total must be greater than 20USD',
+    type: 'RECORD_FREE_SHIPPING',
   };
 };
 ```
@@ -66,17 +66,17 @@ const freeShippingRecordValidator = ({ values }) => {
 Let's define the form schema validation and instantiate our FormValidation object:
 
 ```javascript
-import { createFormValidation, Validators } from "@lemoncode/fonk";
+import { createFormValidation, Validators } from '@lemoncode/fonk';
 
 const validationSchema = {
   field: {
     product: [Validators.required.validator],
     discount: [Validators.required.validator],
-    price: [Validators.required.validator]
+    price: [Validators.required.validator],
   },
   record: {
-    freeShipping: [freeShippingRecordValidator]
-  }
+    freeShipping: [freeShippingRecordValidator],
+  },
 };
 
 const formValidation = createFormValidation(validationSchema);
@@ -165,6 +165,8 @@ It will return succeed:
   }
 }
 ```
+
+![validate-field-record-and-form](../gifs/validate-field-record-and-form.gif)
 
 Examples:
 
