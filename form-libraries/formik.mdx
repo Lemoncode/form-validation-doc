@@ -23,7 +23,7 @@ The main change to apply when using a **fonk-formik** comes when you want to ins
 ```diff
 - import { createFormValidation, Validators } from '@lemoncode/fonk';
 + import { Validators } from '@lemoncode/fonk';
-+ import { createFonkValidation } from '@lemoncode/fonk-formik';
++ import { createFormikValidation } from '@lemoncode/fonk-formik';
 
 const validationSchema = {
   field: {
@@ -41,7 +41,7 @@ Now you can hook to Formik form validation (example):
 ```diff
     <Formik
       initialValues={{ email: "", password: "" }}
-+       validate={formValidation.validateForm}
++     validate={formValidation.validateForm}
       onSubmit={(values, { setSubmitting }) => {
         setTimeout(() => {
           alert(JSON.stringify(values, null, 2));
@@ -52,6 +52,15 @@ Now you can hook to Formik form validation (example):
 ```
 
 And if you want to hook to Formik field validations (example):
+
+```diff
+  <form onSubmit={handleSubmit}>
+    <Field
+      name="email"
++     validate={(value) => formValidation.validateField("email", value)} />
+```
+
+Example: How to display field validation error message:
 
 ```diff
     <Field name="email"/>
@@ -65,18 +74,36 @@ And if you want to hook to Formik field validations (example):
 
 [Basic example](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/formik/js/basic)
 
+![basic](../gifs/formik/basic.gif)
+
 [Using formik Field](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/formik/js/formik-components)
 
-[Firing validations at field level](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/formik/js/field-level-validations)
+![formik-components](../gifs/formik/formik-components.gif)
+
+[Firing validations at field level](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/formik/js/field-level-validation)
+
+![field-level-validation](../gifs/formik/field-level-validation.gif)
 
 [Asynchronous validation](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/formik/js/async-validator)
 
+![async-validator](../gifs/formik/async-validator.gif)
+
 [Customizing validator's error messages globaly](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/formik/js/custom-error-message-global)
+
+![custom-error-message-global](../gifs/formik/custom-error-message-global.gif)
 
 [Customizing validator's error messages just for a given form](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/formik/js/custom-error-message-local)
 
+![custom-error-message-local](../gifs/formik/custom-error-message-local.gif)
+
 [Creating custom validators](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/formik/js/custom-validators)
+
+![custom-validators](../gifs/formik/custom-validators.gif)
 
 [Validating nested fields](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/formik/js/nested-field)
 
+![nested-field](../gifs/formik/nested-field.gif)
+
 [Defining record validations](https://codesandbox.io/s/github/lemoncode/fonk/tree/master/examples/formik/js/record-validation)
+
+![record-validation](../gifs/formik/record-validation.gif)
