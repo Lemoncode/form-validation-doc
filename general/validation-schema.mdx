@@ -41,9 +41,9 @@ import { createFormValidation, Validators } from '@lemoncode/fonk';
 
 const validationSchema = {
   field: {
-    product: [Validators.required.validator],
-    discount: [Validators.required.validator],
-    price: [Validators.required.validator],
+    product: [Validators.required],
+    discount: [Validators.required],
+    price: [Validators.required],
   },
 };
 
@@ -104,9 +104,9 @@ import { createFormValidation, Validators } from "@lemoncode/fonk";
 
 const validationSchema = {
   field: {
-    product: [Validators.required.validator],
-    discount: [Validators.required.validator],
-    price: [Validators.required.validator]
+    product: [Validators.required],
+    discount: [Validators.required],
+    price: [Validators.required]
   },
 + record: {
 +   freeShipping: [freeShippingRecordValidator],
@@ -157,7 +157,7 @@ What happens if we need to add addional context information to the validator fun
 ```javascript
 const validationSchema = {
   field: {
-    product: [validators.required.validator],
+    product: [validators.required],
   },
 };
 ```
@@ -169,7 +169,7 @@ const validationSchema = {
   field: {
     product: [
       {
-        validator: validators.required.validator,
+        validator: validators.required,
         message: 'My custom error message',
       },
     ],
@@ -206,8 +206,8 @@ How can we add _product.name_ to my validation schema? It's easy just use _produ
 ```diff
 const validationSchema = {
   field: {
--    product: [Validators.required.validator],
-+    "product.name": [Validators.required.validator],
+-    product: [Validators.required],
++    "product.name": [Validators.required],
   }
 };
 ```
@@ -269,7 +269,7 @@ import { createFormValidation, Validators } from '@lemoncode/fonk';
 
 const validationSchema = {
   field: {
-    user: [Validators.required.validator, userExistsOnGithubValidator],
+    user: [Validators.required, userExistsOnGithubValidator],
   },
 };
 
@@ -325,7 +325,9 @@ export type FieldValidationFunctionAsync = (
 ) => Promise<ValidationResult>;
 
 export interface FullFieldValidation {
-  validator: FieldValidationFunctionSyncAsync;
+  validator:
+    | FieldValidationFunctionSyncAsync
+    | { validator: FieldValidationFunctionSyncAsync };
   customArgs?: any;
   message?: string | string[];
 }
@@ -360,7 +362,9 @@ export interface RecordValidatorArgs {
 }
 
 export interface FullRecordValidation {
-  validator: RecordValidationFunctionSyncAsync;
+  validator:
+    | RecordValidationFunctionSyncAsync
+    | { validator: RecordValidationFunctionSyncAsync };
   message?: string | string[];
 }
 ```
