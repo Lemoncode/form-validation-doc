@@ -50,10 +50,10 @@ Values:
 const validationSchema: ValidationSchema = {
   field: {
     myFieldName: [
-      Validators.required.validator, // This is a sync validator
+      Validators.required, // This is a sync validator
       loginValidator, // This is a custom async validator
       {
-        validator: Validators.required.validator, // This is a sync validator
+        validator: Validators.required, // This is a sync validator
         customArgs: { otherField: 'other' },
         message: 'Required field',
       },
@@ -73,7 +73,7 @@ Structure to define a field validation:
 
 Properties:
 
-- **validator**: [field async validator](/api#field-asynchronous-validator) or [full field validation](/api#fullfieldvalidation) validation function to apply.
+- **validator**: [field async validator](/api#field-asynchronous-validator) or [field sync validator](/api#field-synchronous-validator) validation function to apply. As syntactic sugar, you could provide an object with `validator` property.
 - **customArgs**: optional, here you can pass any additional configuration, needed to setup the validator (e.g. in a max-length validation the length value, or in a regEx validator the regEx pattern).
 - **message**: optional, in this parameter you can override the default message(s) that the validator generates.
 
@@ -100,8 +100,8 @@ import { Validators } from '@lemoncode/fonk';
 
 const loginFormValidationSchema = {
   field: {
-    user: [Validators.required.validator],
-    password: [Validators.required.validator],
+    user: [Validators.required],
+    password: [Validators.required],
   },
 };
 ```
@@ -114,8 +114,8 @@ import { Validators } from '@lemoncode/fonk';
 
 const loginFormValidationSchema = {
   field: {
-    user: [Validators.required.validator, Validators.email.validator],
-    password: [Validators.required.validator],
+    user: [Validators.required, Validators.email],
+    password: [Validators.required],
   },
 };
 ```
@@ -132,11 +132,11 @@ import { Validators } from '@lemoncode/fonk';
 
 const loginFormValidationSchema = {
   field: {
-    user: [Validators.required.validator, Validators.email.validator],
+    user: [Validators.required, Validators.email],
     password: [
-      Validators.required.validator,
+      Validators.required,
       {
-        validator: Validators.minLength.validator,
+        validator: Validators.minLength,
         customArgs: { length: 3 },
       },
     ],
@@ -565,7 +565,7 @@ import { Validators, createFormValidation } from '@lemoncode/fonk';
 
 const validationSchema = {
   field: {
-    login: [Validators.required.validator],
+    login: [Validators.required],
   },
 };
 ```
@@ -577,10 +577,10 @@ import { Validators, createFormValidation } from '@lemoncode/fonk';
 
 const validationSchema = {
   field: {
-    login: [Validators.required.validator],
+    login: [Validators.required],
     password: [
       {
-        validator: Validators.required.validator,
+        validator: Validators.required,
         customArgs: { trim: false },
       },
     ],
@@ -611,7 +611,7 @@ import { Validators } from '@lemoncode/fonk';
 
 const validationSchema = {
   field: {
-    email: [Validators.email.validator],
+    email: [Validators.email],
   },
 };
 ```
@@ -649,7 +649,7 @@ const validationSchema = {
   field: {
     phone: [
       {
-        validator: Validators.pattern.validator,
+        validator: Validators.pattern,
         customArgs: { pattern: '^(7|8|9)\\d{9}$' },
       },
     ],
@@ -666,7 +666,7 @@ const validationSchema = {
   field: {
     phone: [
       {
-        validator: Validators.pattern.validator,
+        validator: Validators.pattern,
         customArgs: { pattern: /^(7|8|9)\d{9}$/ },
       },
     ],
@@ -683,7 +683,7 @@ const validationSchema = {
   field: {
     phone: [
       {
-        validator: Validators.pattern.validator,
+        validator: Validators.pattern,
         customArgs: { pattern: new RegExp(/^(7|8|9)\d{9}$/) },
       },
     ],
@@ -722,7 +722,7 @@ const validationSchema = {
   field: {
     description: [
       {
-        validator: Validators.minLength.validator,
+        validator: Validators.minLength,
         customArgs: { length: 10 }, // Valid description for length greater than 10 chars
       },
     ],
@@ -761,7 +761,7 @@ const validationSchema = {
   field: {
     description: [
       {
-        validator: Validators.maxLength.validator,
+        validator: Validators.maxLength,
         customArgs: { length: 20 }, // Valid description for length lower than 20 chars
       },
     ],
