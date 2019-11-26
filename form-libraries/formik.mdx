@@ -27,8 +27,8 @@ The main change to apply when using a **fonk-formik** comes when you want to ins
 
 const validationSchema = {
   field: {
-    email: [Validators.required.validator],
-    password: [Validators.required.validator]
+    email: [Validators.required],
+    password: [Validators.required]
   }
 };
 
@@ -41,7 +41,7 @@ Now you can hook to Formik form validation (example):
 ```diff
     <Formik
       initialValues={{ email: "", password: "" }}
-+     validate={values => formValidation.validateForm(values)}
++     validate={formValidation.validateForm}
       onSubmit={(values, { setSubmitting }) => {
         setTimeout(() => {
           alert(JSON.stringify(values, null, 2));
