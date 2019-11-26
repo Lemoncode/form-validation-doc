@@ -41,7 +41,7 @@ const validationSchema = {
   field: {
     // The default error message is:
     // "Please fill in this mandatory field."
-    user: [Validators.required.validator],
+    user: [Validators.required],
   },
 };
 
@@ -60,7 +60,7 @@ const validationSchema = {
   field: {
     // The default error message is:
     // "Please fill in this mandatory field."
-    user: [Validators.required.validator],
+    user: [Validators.required],
   },
 };
 
@@ -86,13 +86,13 @@ const validationSchema = {
   field: {
     ibanAccount: [
       {
-        validator: Validators.pattern.validator,
+        validator: Validators.pattern,
         customArgs: { pattern: /^ES\d*$/ },
       },
     ],
     bicAccount: [
       {
-        validator: Validators.pattern.validator,
+        validator: Validators.pattern,
         customArgs: { pattern: /^BIC\d*$/ },
       },
     ],
@@ -111,14 +111,14 @@ const validationSchema = {
   field: {
     ibanAccount: [
       {
-        validator: Validators.pattern.validator,
+        validator: Validators.pattern,
         customArgs: { pattern: /^ES\d*$/ },
 +       message: 'Invalid IBAN number',
       },
     ],
     bicAccount: [
       {
-        validator: Validators.pattern.validator,
+        validator: Validators.pattern,
         customArgs: { pattern: /^BIC\d*$/ },
 +       message: 'Invalid BIC number',
       },
