@@ -40,7 +40,7 @@ import { Validators, ValidationSchema } from '@lemoncode/fonk';
 
 const validationSchema: ValidationSchema = {
   field: {
-    login: [Validators.required.validator],
+    login: [Validators.required],
   },
 };
 ```
@@ -52,10 +52,10 @@ import { Validators, ValidationSchema } from '@lemoncode/fonk';
 
 const validationSchema: ValidationSchema = {
   field: {
-    login: [Validators.required.validator],
+    login: [Validators.required],
     password: [
       {
-        validator: Validators.required.validator,
+        validator: Validators.required,
         customArgs: { trim: false },
       },
     ],
@@ -97,7 +97,7 @@ const validationSchema: ValidationSchema = {
   field: {
     phone: [
       {
-        validator: Validators.pattern.validator,
+        validator: Validators.pattern,
         customArgs: { pattern: '^(7|8|9)\\d{9}$' },
       },
     ],
@@ -114,7 +114,7 @@ const validationSchema: ValidationSchema = {
   field: {
     phone: [
       {
-        validator: Validators.pattern.validator,
+        validator: Validators.pattern,
         customArgs: { pattern: /^(7|8|9)\d{9}$/ },
       },
     ],
@@ -131,7 +131,7 @@ const validationSchema: ValidationSchema = {
   field: {
     phone: [
       {
-        validator: Validators.pattern.validator,
+        validator: Validators.pattern,
         customArgs: { pattern: new RegExp(/^(7|8|9)\d{9}$/) },
       },
     ],
@@ -170,7 +170,7 @@ const validationSchema: ValidationSchema = {
   field: {
     description: [
       {
-        validator: Validators.minLength.validator,
+        validator: Validators.minLength,
         customArgs: { length: 10 }, // Valid description for length greater than 10 chars
       },
     ],
@@ -187,7 +187,7 @@ const validationSchema: ValidationSchema = {
   field: {
     description: [
       {
-        validator: Validators.minLength.validator,
+        validator: Validators.minLength,
         customArgs: { length: 10 }, // Valid description for length greater than 10 chars
         message: 'The min length is {{length}}',
       },
@@ -227,7 +227,7 @@ const validationSchema: ValidationSchema = {
   field: {
     description: [
       {
-        validator: Validators.maxLength.validator,
+        validator: Validators.maxLength,
         customArgs: { length: 20 }, // Valid description for length lower than 20 chars
       },
     ],
@@ -244,7 +244,7 @@ const validationSchema: ValidationSchema = {
   field: {
     description: [
       {
-        validator: Validators.maxLength.validator,
+        validator: Validators.maxLength,
         customArgs: { length: 20 }, // Valid description for length lower than 20 chars
         message: 'The max length is {{length}}',
       },
@@ -276,7 +276,7 @@ import { Validators, ValidationSchema } from '@lemoncode/fonk';
 
 const validationSchema: ValidationSchema = {
   field: {
-    email: [Validators.email.validator],
+    email: [Validators.email],
   },
 };
 ```
