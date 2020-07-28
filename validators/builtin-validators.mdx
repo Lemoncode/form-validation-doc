@@ -13,6 +13,7 @@ Fonk already ships a set of basic validators:
 - MinLength: check if a string field has a minimum length.
 - MaxLength: check if a string field has a maximum length.
 - Email: check if a string field is a well formed email address.
+- Array: adds validation support to form array fields.
 
 > If you want to customize the error messages that this validators provide by default, check the [error-message](/messages/error-message) and [internationalization](/messages/internationalization)
 
@@ -286,6 +287,28 @@ const validationSchema: ValidationSchema = {
 Example:
 
 You can find this example in [Javascript](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/js/email) and [Typescript](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/ts/email).
+
+## Array
+
+This validator allows you to add support to validation to array form fields, it work as an inception,
+you get the fonk engine embedded into that array, _e.g. you got a shopping cart list and you want
+to validate that each Quantity field on each row is informed and is a valid number_.
+
+```typescript
+TODO: ADD HERE INTERFACE DEFINITION
+```
+
+Usage:
+
+```Javascript
+TODO: ADD SIMPLE EXAMPLE
+```
+
+Animated GIF how it works
+
+Example
+
+TODO: include both examples
 
 ## More validators
 
