@@ -295,20 +295,47 @@ you get the fonk engine embedded into that array, _e.g. you got a shopping cart 
 to validate that each Quantity field on each row is informed and is a valid number_.
 
 ```typescript
-TODO: ADD HERE INTERFACE DEFINITION
+export interface ArrayArgs {
+  field: FieldValidationSchema;
+}
+
+interface ArrayValidationResult {
+  succeeded: boolean;
+  arrayErrors: {
+    [fieldId: string]: ValidationResult;
+  }[];
+}
+
+const createEmptyArrayValidationResult = (): ArrayValidationResult => ({
+  succeeded: true,
+  arrayErrors: [],
+});
+
+export const validator: FieldValidationFunctionAsync = validatorArgs => {
 ```
 
 Usage:
 
 ```Javascript
-TODO: ADD SIMPLE EXAMPLE
+const validationSchema = {
+  field: {
+    products: [
+      {
+        validator: Validators.array,
+        customArgs: {
+          field: {
+            name: [Validators.required],
+            quantity: [Validators.required, isNumber],
+            price: [Validators.required, isNumber],
+          },
+        },
+      },
+    ],
+  },
+};
 ```
 
-Animated GIF how it works
-
-Example
-
-TODO: include both examples
+![array-shopping-cart-validation](../gifs/formik/array-shopping-cart-validation.gif)
 
 ## More validators
 
