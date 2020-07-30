@@ -290,7 +290,7 @@ You can find this example in [Javascript](https://github.com/Lemoncode/fonk
 
 ## Array
 
-This validator allows you to add support to validation to array form fields, it work as an inception,
+This validator allows you to add support to validation to array form fields, it works as an inception,
 you get the fonk engine embedded into that array, _e.g. you got a shopping cart list and you want
 to validate that each Quantity field on each row is informed and is a valid number_.
 
@@ -298,18 +298,6 @@ to validate that each Quantity field on each row is informed and is a valid numb
 export interface ArrayArgs {
   field: FieldValidationSchema;
 }
-
-interface ArrayValidationResult {
-  succeeded: boolean;
-  arrayErrors: {
-    [fieldId: string]: ValidationResult;
-  }[];
-}
-
-const createEmptyArrayValidationResult = (): ArrayValidationResult => ({
-  succeeded: true,
-  arrayErrors: [],
-});
 
 export const validator: FieldValidationFunctionAsync = validatorArgs => {
 ```
