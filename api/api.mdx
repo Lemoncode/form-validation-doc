@@ -775,6 +775,47 @@ Example:
 
 You can find this example in [javascript example](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/js/max-length) and [typescript example](https://github.com/Lemoncode/fonk/tree/master/examples/docs/api/ts/max-length).
 
+##### array-validator
+
+Validates an array form field, and returns an array of validation results per row/field.
+
+Is mandatory to feed the validation schema.
+
+```typescript
+export interface ArrayArgs {
+  field: FieldValidationSchema;
+}
+
+export const validator: FieldValidationFunctionAsync = validatorArgs => {
+```
+
+Sample usage:
+
+```typescript
+const validationSchema = {
+  field: {
+    products: [
+      {
+        validator: Validators.array,
+        customArgs: {
+          field: {
+            name: [Validators.required],
+            quantity: [Validators.required, isNumber],
+            price: [Validators.required, isNumber],
+          },
+        },
+      },
+    ],
+  },
+};
+```
+
+Example:
+
+![array](../gifs/formik/array-shopping-cart-validation.gif)
+
+You can find this example in [javascript example](https://github.com/Lemoncode/fonk/tree/master/examples/vanilla/js/shopping-cart-array-validator).
+
 #### Third party validators:
 
 Prior to create a custom validator, check out if there is already one implemented that covers the functionality you need.
